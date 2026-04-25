@@ -130,8 +130,8 @@ export function SidebarAccountMenu({
 
   const displayName = session?.user.name?.trim() || "Board";
   const secondaryLabel =
-    session?.user.email?.trim() || (deploymentMode === "authenticated" ? "Signed in" : "Local workspace board");
-  const accountBadge = deploymentMode === "authenticated" ? "Account" : "Local";
+    session?.user.email?.trim() || (deploymentMode === "authenticated" ? "已登录" : "本地工作台");
+  const accountBadge = deploymentMode === "authenticated" ? "账户" : "本地";
   const initials = deriveInitials(displayName);
   const profileHref = `/u/${deriveUserSlug(session?.user.name, session?.user.email, session?.user.id)}`;
 
@@ -147,7 +147,7 @@ export function SidebarAccountMenu({
           <button
             type="button"
             className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] font-medium text-foreground/80 transition-colors hover:bg-accent/50 hover:text-foreground"
-            aria-label="Open account menu"
+            aria-label="打开账户菜单"
           >
             <Avatar size="sm">
               {session?.user.image ? <AvatarImage src={session.user.image} alt={displayName} /> : null}
@@ -187,37 +187,37 @@ export function SidebarAccountMenu({
 
             <div className="mt-4 space-y-1">
               <MenuAction
-                label="View profile"
-                description="Open your activity, task, and usage ledger."
+                label="查看个人资料"
+                description="查看你的活动、任务和使用记录。"
                 icon={UserRound}
                 href={profileHref}
                 onClick={closeNavigationChrome}
               />
               <MenuAction
-                label="Edit profile"
-                description="Update your display name and avatar."
+                label="编辑个人资料"
+                description="更新你的显示名称和头像。"
                 icon={UserRoundPen}
                 href={PROFILE_SETTINGS_PATH}
                 onClick={closeNavigationChrome}
               />
               <MenuAction
-                label="Instance settings"
-                description="Jump back to the last settings page you opened."
+                label="实例设置"
+                description="跳转到你上次打开的设置页面。"
                 icon={Settings}
                 href={instanceSettingsTarget}
                 onClick={closeNavigationChrome}
               />
               <MenuAction
-                label="Documentation"
-                description="Open Paperclip docs in a new tab."
+                label="文档"
+                description="在新标签页中打开 Paperclip 文档。"
                 icon={BookOpen}
                 href={DOCS_URL}
                 external
                 onClick={() => setOpen(false)}
               />
               <MenuAction
-                label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                description="Toggle the app appearance."
+                label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
+                description="切换应用外观。"
                 icon={theme === "dark" ? Sun : Moon}
                 onClick={() => {
                   toggleTheme();
@@ -239,10 +239,10 @@ export function SidebarAccountMenu({
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-medium text-foreground">
-                      {signOutMutation.isPending ? "Signing out..." : "Sign out"}
+                      {signOutMutation.isPending ? "退出中..." : "退出登录"}
                     </span>
                     <span className="block text-xs text-muted-foreground">
-                      End this browser session.
+                      结束当前浏览器会话。
                     </span>
                   </span>
                 </button>

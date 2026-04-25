@@ -107,7 +107,7 @@ export function ActiveAgentsPanel({
       {showMoreLink && hiddenRunCount > 0 && (
         <div className="mt-3 flex justify-end text-xs text-muted-foreground">
           <Link to="/dashboard/live" className="hover:text-foreground hover:underline">
-            {hiddenRunCount} more active/recent run{hiddenRunCount === 1 ? "" : "s"}
+            {hiddenRunCount} 个活跃/近期运行
           </Link>
         </div>
       )}
@@ -155,7 +155,7 @@ const AgentRunCard = memo(function AgentRunCard({
               <Identity name={run.agentName} size="sm" className="[&>span:last-child]:!text-[11px]" />
             </div>
             <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
-              <span>{isActive ? "Live now" : run.finishedAt ? `Finished ${relativeTime(run.finishedAt)}` : `Started ${relativeTime(run.createdAt)}`}</span>
+              <span>{isActive ? "运行中" : run.finishedAt ? `完成于 ${relativeTime(run.finishedAt)}` : `启动于 ${relativeTime(run.createdAt)}`}</span>
             </div>
           </div>
 

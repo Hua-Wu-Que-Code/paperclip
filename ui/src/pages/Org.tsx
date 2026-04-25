@@ -94,7 +94,7 @@ export function Org() {
   const { setBreadcrumbs } = useBreadcrumbs();
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Org Chart" }]);
+    setBreadcrumbs([{ label: "组织架构" }]);
   }, [setBreadcrumbs]);
 
   const { data, isLoading, error } = useQuery({
@@ -104,7 +104,7 @@ export function Org() {
   });
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={GitBranch} message="Select a company to view org chart." />;
+    return <EmptyState icon={GitBranch} message="请选择一个公司以查看组织架构。" />;
   }
 
   if (isLoading) {
@@ -118,7 +118,7 @@ export function Org() {
       {data && data.length === 0 && (
         <EmptyState
           icon={GitBranch}
-          message="No agents in the organization. Create agents to build your org chart."
+          message="组织中暂无智能体。创建智能体以构建您的组织架构。"
         />
       )}
 

@@ -17,7 +17,7 @@ export function HttpConfigFields({
   mark,
 }: AdapterConfigFieldsProps) {
   return (
-    <Field label="Webhook URL" hint={help.webhookUrl}>
+    <Field label="Webhook 地址" hint={help.webhookUrl}>
       <DraftInput
         value={
           isCreate

@@ -20,28 +20,28 @@ const platforms: { id: Platform; label: string; icon: typeof Apple }[] = [
 const instructions: Record<Platform, { steps: string[]; tip?: string }> = {
   mac: {
     steps: [
-      "Open Finder and navigate to the folder.",
-      "Right-click (or Control-click) the folder.",
-      "Hold the Option (⌥) key — \"Copy\" changes to \"Copy as Pathname\".",
-      "Click \"Copy as Pathname\", then paste here.",
+      "打开 Finder 并导航到目标文件夹。",
+      "右键点击（或按住 Control 键点击）该文件夹。",
+      "按住 Option (⌥) 键——\"拷贝\"会变为\"拷贝为路径名\"。",
+      "点击\"拷贝为路径名\"，然后粘贴到此处。",
     ],
-    tip: "You can also open Terminal, type cd, drag the folder into the terminal window, and press Enter. Then type pwd to see the full path.",
+    tip: "你也可以打开终端，输入 cd，然后将文件夹拖入终端窗口并按回车。然后输入 pwd 即可查看完整路径。",
   },
   windows: {
     steps: [
-      "Open File Explorer and navigate to the folder.",
-      "Click in the address bar at the top — the full path will appear.",
-      "Copy the path, then paste here.",
+      "打开文件资源管理器并导航到目标文件夹。",
+      "点击顶部的地址栏——将显示完整路径。",
+      "复制路径，然后粘贴到此处。",
     ],
-    tip: "Alternatively, hold Shift and right-click the folder, then select \"Copy as path\".",
+    tip: "或者，按住 Shift 键并右键点击文件夹，然后选择\"复制为路径\"。",
   },
   linux: {
     steps: [
-      "Open a terminal and navigate to the directory with cd.",
-      "Run pwd to print the full path.",
-      "Copy the output and paste here.",
+      "打开终端，使用 cd 导航到目标目录。",
+      "运行 pwd 以打印完整路径。",
+      "复制输出内容并粘贴到此处。",
     ],
-    tip: "In most file managers, Ctrl+L reveals the full path in the address bar.",
+    tip: "在大多数文件管理器中，按 Ctrl+L 可以在地址栏中显示完整路径。",
   },
 };
 
@@ -69,11 +69,11 @@ export function PathInstructionsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-base">How to get a full path</DialogTitle>
+          <DialogTitle className="text-base">如何获取完整路径</DialogTitle>
           <DialogDescription>
-            Paste the absolute path (e.g.{" "}
-            <code className="text-xs bg-muted px-1 py-0.5 rounded">/Users/you/project</code>
-            ) into the input field.
+            将绝对路径（例如{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">/Users/你/项目</code>
+            ）粘贴到输入框中。
           </DialogDescription>
         </DialogHeader>
 
@@ -135,7 +135,7 @@ export function ChoosePathButton({ className }: { className?: string }) {
         )}
         onClick={() => setOpen(true)}
       >
-        Choose
+        选择
       </button>
       <PathInstructionsModal open={open} onOpenChange={setOpen} />
     </>

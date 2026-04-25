@@ -941,7 +941,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
         )}
       >
         <div className="flex items-start justify-between gap-3 px-3 pt-2 text-xs text-muted-foreground">
-          <p>Rich editor unavailable for this markdown. Showing raw source instead.</p>
+          <p>富文本编辑器无法加载此 Markdown 内容，正在显示原始源码。</p>
           <button
             type="button"
             className="shrink-0 underline underline-offset-2 hover:text-foreground"
@@ -949,7 +949,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
               setRichEditorError(null);
             }}
           >
-            Retry rich editor
+            重试富文本编辑器
           </button>
         </div>
         <textarea
@@ -1176,17 +1176,17 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
                 <span>{option.kind === "skill" ? `/${option.slug}` : option.name}</span>
                 {option.kind === "project" && option.projectId && (
                   <span className="ml-auto text-[10px] uppercase tracking-wide text-muted-foreground">
-                    Project
+                    项目
                   </span>
                 )}
                 {option.kind === "user" && (
                   <span className="ml-auto text-[10px] uppercase tracking-wide text-muted-foreground">
-                    User
+                    用户
                   </span>
                 )}
                 {option.kind === "skill" && (
                   <span className="ml-auto text-[10px] uppercase tracking-wide text-muted-foreground">
-                    Skill
+                    技能
                   </span>
                 )}
               </button>
@@ -1202,7 +1202,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
             !bordered && "inset-0 rounded-sm",
           )}
         >
-          Drop {onDropFile ? "file" : "image"} to upload
+          拖放{onDropFile ? "文件" : "图片"}以上传
         </div>
       )}
       {uploadError && (

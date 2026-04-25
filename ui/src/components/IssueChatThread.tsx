@@ -353,7 +353,7 @@ function IssueBlockedNotice({
 }) {
   if (blockers.length === 0 && issueStatus !== "blocked") return null;
 
-  const blockerLabel = blockers.length === 1 ? "the linked issue" : "the linked issues";
+  const blockerLabel = blockers.length === 1 ? "关联的问题" : "关联的问题";
   const terminalBlockers = blockers
     .flatMap((blocker) => blocker.terminalBlockers ?? [])
     .filter((blocker, index, all) => all.findIndex((candidate) => candidate.id === blocker.id) === index);
@@ -382,8 +382,8 @@ function IssueBlockedNotice({
         <div className="min-w-0 space-y-1.5">
           <p className="leading-5">
             {blockers.length > 0
-              ? <>Work on this issue is blocked by {blockerLabel} until {blockers.length === 1 ? "it is" : "they are"} complete. Comments still wake the assignee for questions or triage.</>
-              : <>Work on this issue is blocked until it is moved back to todo. Comments still wake the assignee for questions or triage.</>}
+              ? <>此问题的工作被{blockerLabel}阻塞，直到{blockers.length === 1 ? "其" : "它们"}完成。评论仍会唤醒负责人进行问题或分类。</>
+              : <>此问题的工作被阻塞，直到移回待办状态。评论仍会唤醒负责人进行问题或分类。</>}
           </p>
           {blockers.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
@@ -393,7 +393,7 @@ function IssueBlockedNotice({
           {terminalBlockers.length > 0 ? (
             <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
               <span className="text-xs font-medium text-amber-800 dark:text-amber-200">
-                Ultimately waiting on
+                最终等待
               </span>
               {terminalBlockers.map(renderBlockerChip)}
             </div>
@@ -409,17 +409,17 @@ function IssueAssigneePausedNotice({ agent }: { agent: Agent | null }) {
 
   const pauseDetail =
     agent.pauseReason === "budget"
-      ? "It was paused by a budget hard stop."
+      ? "因预算硬限制已暂停。"
       : agent.pauseReason === "system"
-        ? "It was paused by the system."
-        : "It was paused manually.";
+        ? "因系统原因已暂停。"
+        : "已手动暂停。";
 
   return (
     <div className="mb-3 rounded-md border border-orange-300/70 bg-orange-50/90 px-3 py-2.5 text-sm text-orange-950 shadow-sm dark:border-orange-500/40 dark:bg-orange-500/10 dark:text-orange-100">
       <div className="flex items-start gap-2">
         <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-orange-600 dark:text-orange-300" />
         <p className="min-w-0 leading-5">
-          <span className="font-medium">{agent.name}</span> is paused. New runs will not start until the agent is resumed. {pauseDetail}
+          <span className="font-medium">{agent.name}</span> 已暂停。新的运行将不会启动，直到恢复此代理。 {pauseDetail}
         </p>
       </div>
     </div>
@@ -430,9 +430,9 @@ function fallbackAuthorLabel(message: ThreadMessage) {
   const custom = message.metadata?.custom as Record<string, unknown> | undefined;
   if (typeof custom?.["authorName"] === "string") return custom["authorName"];
   if (typeof custom?.["runAgentName"] === "string") return custom["runAgentName"];
-  if (message.role === "assistant") return "Agent";
-  if (message.role === "user") return "You";
-  return "System";
+  if (message.role === "assistant") return "代理";
+  if (message.role === "user") return "你";
+  return "系统";
 }
 
 function fallbackTextParts(message: ThreadMessage) {
@@ -443,9 +443,9 @@ function fallbackTextParts(message: ThreadMessage) {
       continue;
     }
     if (part.type === "tool-call") {
-      const lines = [`Tool: ${part.toolName}`];
-      if (part.argsText?.trim()) lines.push(`Args:\n${part.argsText}`);
-      if (typeof part.result === "string" && part.result.trim()) lines.push(`Result:\n${part.result}`);
+      const lines = [`工具: ${part.toolName}`];
+      if (part.argsText?.trim()) lines.push(`参数:\n${part.argsText}`);
+      if (typeof part.result === "string" && part.result.trim()) lines.push(`结果:\n${part.result}`);
       contentLines.push(lines.join("\n\n"));
     }
   }
@@ -472,9 +472,9 @@ function IssueChatFallbackThread({
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div className="space-y-1">
-            <p className="font-medium">Chat renderer hit an internal state error.</p>
+            <p className="font-medium">聊天渲染器遇到内部状态错误。</p>
             <p className="text-xs opacity-80">
-              Showing a safe fallback transcript instead of crashing the issues page.
+              正在显示安全的回退记录，而不是崩溃问题页面。
             </p>
           </div>
         </div>
@@ -507,7 +507,7 @@ function IssueChatFallbackThread({
                   {lines.length > 0 ? lines.map((line, index) => (
                     <MarkdownBody key={`${message.id}:fallback:${index}`}>{line}</MarkdownBody>
                   )) : (
-                    <p className="text-sm text-muted-foreground">No message content.</p>
+                    <p className="text-sm text-muted-foreground">无消息内容。</p>
                   )}
                 </div>
               </div>
@@ -621,7 +621,7 @@ function IssueChatTextPart({ text, recessed }: { text: string; recessed?: boolea
 }
 
 function humanizeValue(value: string | null) {
-  if (!value) return "None";
+  if (!value) return "无";
   return value.replace(/_/g, " ");
 }
 
@@ -635,9 +635,9 @@ function formatTimelineAssigneeLabel(
     return agentMap?.get(assignee.agentId)?.name ?? assignee.agentId.slice(0, 8);
   }
   if (assignee.userId) {
-    return formatAssigneeUserLabel(assignee.userId, currentUserId, userLabelMap) ?? "Board";
+    return formatAssigneeUserLabel(assignee.userId, currentUserId, userLabelMap) ?? "面板";
   }
-  return "Unassigned";
+  return "未分配";
 }
 
 function initialsForName(name: string) {
@@ -660,9 +660,9 @@ function formatInteractionActorLabel(args: {
   if (userId) {
     return userLabelMap?.get(userId)
       ?? formatAssigneeUserLabel(userId, currentUserId, userLabelMap)
-      ?? "Board";
+      ?? "面板";
   }
-  return "System";
+  return "系统";
 }
 
 export function resolveIssueChatHumanAuthor(args: {
@@ -676,7 +676,7 @@ export function resolveIssueChatHumanAuthor(args: {
   const isCurrentUser = Boolean(authorUserId && currentUserId && authorUserId === currentUserId);
   const resolvedAuthorName = profile?.label?.trim()
     || authorName?.trim()
-    || (authorUserId === "local-board" ? "Board" : (isCurrentUser ? "You" : "User"));
+    || (authorUserId === "local-board" ? "面板" : (isCurrentUser ? "你" : "用户"));
 
   return {
     isCurrentUser,
@@ -688,7 +688,7 @@ export function resolveIssueChatHumanAuthor(args: {
 function formatRunStatusLabel(status: string) {
   switch (status) {
     case "timed_out":
-      return "timed out";
+      return "超时";
     default:
       return status.replace(/_/g, " ");
   }
@@ -724,8 +724,8 @@ function toolCountSummary(toolParts: ToolCallMessagePart[]): string | null {
     else other++;
   }
   const parts: string[] = [];
-  if (commands > 0) parts.push(`ran ${commands} command${commands === 1 ? "" : "s"}`);
-  if (other > 0) parts.push(`called ${other} tool${other === 1 ? "" : "s"}`);
+  if (commands > 0) parts.push(`运行了 ${commands} 个命令`);
+  if (other > 0) parts.push(`调用了 ${other} 个工具`);
   return parts.join(", ");
 }
 
@@ -784,15 +784,15 @@ function IssueChatChainOfThought({
   let headerVerb: string;
   let headerSuffix: string | null = null;
   if (isActive) {
-    headerVerb = "Working";
-    if (liveElapsed) headerSuffix = `for ${liveElapsed}`;
+    headerVerb = "处理中";
+    if (liveElapsed) headerSuffix = `${liveElapsed}`;
   } else if (segmentTiming) {
     const durationMs = segmentTiming.endMs - segmentTiming.startMs;
     const durationText = formatDurationWords(durationMs);
-    headerVerb = "Worked";
-    if (durationText) headerSuffix = `for ${durationText}`;
+    headerVerb = "已处理";
+    if (durationText) headerSuffix = `${durationText}`;
   } else {
-    headerVerb = "Worked";
+    headerVerb = "已处理";
   }
 
   const toolSummary = toolCountSummary(toolParts);
@@ -974,8 +974,8 @@ function CopyablePreBlock({ children, className }: { children: string; className
           "absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded-md bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-opacity hover:text-foreground group-hover/pre:opacity-100",
           copied && "opacity-100",
         )}
-        title="Copy"
-        aria-label="Copy"
+        title="复制"
+        aria-label="复制"
         onClick={() => {
           void navigator.clipboard.writeText(children).then(() => {
             setCopied(true);
@@ -1061,7 +1061,7 @@ function IssueChatToolPart({
             {nonIntentDetails.length > 0 ? (
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/60">
-                  Input
+                  输入
                 </div>
                 <dl className="space-y-1.5">
                   {nonIntentDetails.map((detail) => (
@@ -1079,7 +1079,7 @@ function IssueChatToolPart({
             ) : rawArgsText ? (
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/60">
-                  Input
+                  输入
                 </div>
                 <CopyablePreBlock className="overflow-x-auto rounded-md bg-accent/30 p-2 text-[11px] leading-4 text-foreground/70">{rawArgsText}</CopyablePreBlock>
               </div>
@@ -1087,7 +1087,7 @@ function IssueChatToolPart({
             {result !== undefined ? (
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/60">
-                  Result
+                  结果
                 </div>
                 <CopyablePreBlock className="overflow-x-auto rounded-md bg-accent/30 p-2 text-[11px] leading-4 text-foreground/70">{resultText}</CopyablePreBlock>
               </div>
@@ -1211,7 +1211,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
   const queued = custom.queueState === "queued" || custom.clientStatus === "queued";
   const followUpRequested = custom.followUpRequested === true;
   const queueReason = typeof custom.queueReason === "string" ? custom.queueReason : null;
-  const queueBadgeLabel = queueReason === "hold" ? "\u23f8 Deferred wake" : "Queued";
+  const queueBadgeLabel = queueReason === "hold" ? "\u23f8 延迟唤醒" : "排队中";
   const pending = custom.clientStatus === "pending";
   const queueTargetRunId = typeof custom.queueTargetRunId === "string" ? custom.queueTargetRunId : null;
   const [copied, setCopied] = useState(false);
@@ -1263,7 +1263,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
                 disabled={interruptingQueuedRunId === queueTargetRunId}
                 onClick={() => void onInterruptQueued(queueTargetRunId)}
               >
-                {interruptingQueuedRunId === queueTargetRunId ? "Interrupting..." : "Interrupt"}
+                {interruptingQueuedRunId === queueTargetRunId ? "中断中..." : "中断"}
               </Button>
             ) : null}
             {onCancelQueued ? (
@@ -1273,7 +1273,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
                 className="h-6 border-amber-300 px-2 text-[11px] text-amber-900 hover:bg-amber-100/80 hover:text-amber-950 dark:border-amber-500/40 dark:text-amber-100 dark:hover:bg-amber-500/10"
                 onClick={() => onCancelQueued(commentId)}
               >
-                Cancel
+                取消
               </Button>
             ) : null}
           </div>
@@ -1285,7 +1285,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
 
       {pending ? (
         <div className={cn("mt-1 flex px-1 text-[11px] text-muted-foreground", isCurrentUser ? "justify-end" : "justify-start")}>
-          Sending...
+          发送中...
         </div>
       ) : (
         <div
@@ -1310,8 +1310,8 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
           <button
             type="button"
             className="inline-flex h-6 w-6 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-            title="Copy message"
-            aria-label="Copy message"
+            title="复制消息"
+            aria-label="复制消息"
             onClick={() => {
               const text = message.content
                 .filter((p): p is { type: "text"; text: string } => p.type === "text")
@@ -1366,7 +1366,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
     ? custom.authorName
     : typeof custom.runAgentName === "string"
       ? custom.runAgentName
-      : "Agent";
+      : "代理";
   const authorAgentId = typeof custom.authorAgentId === "string" ? custom.authorAgentId : null;
   const runId = typeof custom.runId === "string" ? custom.runId : null;
   const runAgentId = typeof custom.runAgentId === "string" ? custom.runAgentId : null;
@@ -1457,7 +1457,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
               {isRunning ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-cyan-700 dark:text-cyan-200">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Running
+                  运行中
                 </span>
               ) : null}
             </div>
@@ -1497,8 +1497,8 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                 <button
                   type="button"
                   className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                  title="Copy message"
-                  aria-label="Copy message"
+                  title="复制消息"
+                  aria-label="复制消息"
                   onClick={() => {
                     void navigator.clipboard.writeText(copyText).then(() => {
                       setCopied(true);
@@ -1535,8 +1535,8 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       variant="ghost"
                       size="icon-xs"
                       className="text-muted-foreground hover:text-foreground"
-                      title="More actions"
-                      aria-label="More actions"
+                      title="更多操作"
+                      aria-label="更多操作"
                     >
                       <MoreHorizontal className="h-3.5 w-3.5" />
                     </Button>
@@ -1548,7 +1548,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       }}
                     >
                       <Copy className="mr-2 h-3.5 w-3.5" />
-                      Copy message
+                      复制消息
                     </DropdownMenuItem>
                     {canStopRun && onStopRun && runId ? (
                       <DropdownMenuItem
@@ -1559,14 +1559,14 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                         }}
                       >
                         <Square className="mr-2 h-3.5 w-3.5 fill-current" />
-                        {stoppingRunId === runId ? "Stopping…" : "Stop run"}
+                        {stoppingRunId === runId ? "停止中…" : "停止运行"}
                       </DropdownMenuItem>
                     ) : null}
                     {runHref ? (
                       <DropdownMenuItem asChild>
                         <Link to={runHref} target="_blank" rel="noreferrer noopener">
                           <Search className="mr-2 h-3.5 w-3.5" />
-                          View run
+                          查看运行
                         </Link>
                       </DropdownMenuItem>
                     ) : null}
@@ -1671,8 +1671,8 @@ function IssueChatFeedbackButtons({
             ? "text-green-600 dark:text-green-400"
             : "text-muted-foreground hover:bg-accent hover:text-foreground",
         )}
-        title="Helpful"
-        aria-label="Helpful"
+        title="有用"
+        aria-label="有用"
         onClick={handleThumbsUp}
       >
         <ThumbsUp className="h-3.5 w-3.5" />
@@ -1688,19 +1688,19 @@ function IssueChatFeedbackButtons({
                 ? "text-amber-600 dark:text-amber-400"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground",
             )}
-            title="Needs work"
-            aria-label="Needs work"
+            title="需要改进"
+            aria-label="需要改进"
             onClick={handleThumbsDown}
           >
             <ThumbsDown className="h-3.5 w-3.5" />
           </button>
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-80 p-3">
-          <div className="mb-2 text-sm font-medium">What could have been better?</div>
+          <div className="mb-2 text-sm font-medium">哪些方面可以改进？</div>
           <Textarea
             value={downvoteReason}
             onChange={(event) => setDownvoteReason(event.target.value)}
-            placeholder="Add a short note"
+            placeholder="添加简短备注"
             className="min-h-20 resize-y bg-background text-sm"
             disabled={isSaving}
           />
@@ -1715,7 +1715,7 @@ function IssueChatFeedbackButtons({
                 setDownvoteReason("");
               }}
             >
-              Dismiss
+              关闭
             </Button>
             <Button
               type="button"
@@ -1723,7 +1723,7 @@ function IssueChatFeedbackButtons({
               disabled={isSaving || !downvoteReason.trim()}
               onClick={handleSubmitReason}
             >
-              {isSaving ? "Saving..." : "Save note"}
+              {isSaving ? "保存中..." : "保存备注"}
             </Button>
           </div>
         </PopoverContent>
@@ -1740,21 +1740,20 @@ function IssueChatFeedbackButtons({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save your feedback sharing preference</DialogTitle>
+            <DialogTitle>保存你的反馈共享偏好</DialogTitle>
             <DialogDescription>
-              Choose whether voted AI outputs can be shared with Paperclip Labs. This
-              answer becomes the default for future thumbs up and thumbs down votes.
+              选择是否可以将投票的AI输出共享给Paperclip Labs。此答案将成为以后点赞和点踩的默认选项。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>This vote is always saved locally.</p>
+            <p>此投票始终保存在本地。</p>
             <p>
-              Choose <span className="font-medium text-foreground">Always allow</span> to share
-              this vote and future voted AI outputs. Choose{" "}
-              <span className="font-medium text-foreground">Don't allow</span> to keep this vote
-              and future votes local.
+              选择 <span className="font-medium text-foreground">始终允许</span> 以共享
+              此投票及未来的AI输出。选择{" "}
+              <span className="font-medium text-foreground">不允许</span> 以将此投票
+              及未来的投票保留在本地。
             </p>
-            <p>You can change this later in Instance Settings &gt; General.</p>
+            <p>你稍后可以在实例设置 &gt; 通用中更改此选项。</p>
             {termsUrl ? (
               <a
                 href={termsUrl}
@@ -1762,7 +1761,7 @@ function IssueChatFeedbackButtons({
                 rel="noreferrer"
                 className="inline-flex text-sm text-foreground underline underline-offset-4"
               >
-                Read our terms of service
+                阅读我们的服务条款
               </a>
             ) : null}
           </div>
@@ -1779,7 +1778,7 @@ function IssueChatFeedbackButtons({
                 ).then(() => setPendingSharingDialog(null));
               }}
             >
-              {isSaving ? "Saving..." : "Don't allow"}
+              {isSaving ? "保存中..." : "不允许"}
             </Button>
             <Button
               type="button"
@@ -1792,7 +1791,7 @@ function IssueChatFeedbackButtons({
                 }).then(() => setPendingSharingDialog(null));
               }}
             >
-              {isSaving ? "Saving..." : "Always allow"}
+              {isSaving ? "保存中..." : "始终允许"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1841,7 +1840,7 @@ function ExpiredRequestConfirmationActivity({
     <div className="min-w-0 flex-1">
       <div className={cn("flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs", isCurrentUser && "justify-end")}>
         <span className="font-medium text-foreground">{actorName}</span>
-        <span className="text-muted-foreground">updated this task</span>
+        <span className="text-muted-foreground">更新了此任务</span>
         <a
           href={anchorId ? `#${anchorId}` : undefined}
           className="text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline"
@@ -1856,7 +1855,7 @@ function ExpiredRequestConfirmationActivity({
           onClick={() => setExpanded((current) => !current)}
         >
           <ChevronDown className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} />
-          {expanded ? "Hide confirmation" : "Expired confirmation"}
+          {expanded ? "隐藏确认" : "已过期的确认"}
         </button>
       </div>
       {expanded ? (
@@ -1970,7 +1969,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         <div className={cn("flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-xs", isCurrentUser && "justify-end")}>
           <span className="font-medium text-foreground">{actorName}</span>
           <span className="text-muted-foreground">
-            {custom.followUpRequested === true ? "requested follow-up" : "updated this task"}
+            {custom.followUpRequested === true ? "请求了后续跟进" : "更新了此任务"}
           </span>
           <a
             href={anchorId ? `#${anchorId}` : undefined}
@@ -1983,7 +1982,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         {statusChange ? (
           <div className={cn("flex flex-wrap items-center gap-1.5 text-xs", isCurrentUser && "justify-end")}>
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Status
+              状态
             </span>
             <span className="text-muted-foreground">{humanizeValue(statusChange.from)}</span>
             <ArrowRight className="h-3 w-3 text-muted-foreground" />
@@ -1994,7 +1993,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         {assigneeChange ? (
           <div className={cn("flex flex-wrap items-center gap-1.5 text-xs", isCurrentUser && "justify-end")}>
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Assignee
+              负责人
             </span>
             <span className="text-muted-foreground">
               {formatTimelineAssigneeLabel(assigneeChange.from, agentMap, currentUserId, userLabelMap)}
@@ -2055,7 +2054,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
               <Link to={`/agents/${runAgentId}`} className="font-medium text-foreground transition-colors hover:underline">
                 {displayedRunAgentName}
               </Link>
-              <span className="text-muted-foreground">run</span>
+              <span className="text-muted-foreground">运行</span>
               <Link
                 to={`/agents/${runAgentId}/runs/${runId}`}
                 className="inline-flex items-center rounded-md border border-border bg-accent/40 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
@@ -2372,7 +2371,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
         ref={editorRef}
         value={body}
         onChange={setBody}
-        placeholder="Reply"
+        placeholder="回复"
         mentions={mentions}
         onSubmit={handleSubmit}
         imageUploadHandler={onImageUpload}
@@ -2446,7 +2445,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
               size="icon-sm"
               onClick={() => attachInputRef.current?.click()}
               disabled={attaching}
-              title="Attach file"
+              title="附加文件"
             >
               <Paperclip className="h-4 w-4" />
             </Button>
@@ -2457,14 +2456,14 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
           <InlineEntitySelector
             value={reassignTarget}
             options={reassignOptions}
-            placeholder="Assignee"
-            noneLabel="No assignee"
-            searchPlaceholder="Search assignees..."
-            emptyMessage="No assignees found."
+            placeholder="负责人"
+            noneLabel="无负责人"
+            searchPlaceholder="搜索负责人..."
+            emptyMessage="未找到负责人。"
             onChange={setReassignTarget}
             className="h-8 text-xs"
             renderTriggerValue={(option) => {
-              if (!option) return <span className="text-muted-foreground">Assignee</span>;
+              if (!option) return <span className="text-muted-foreground">负责人</span>;
               const agentId = option.id.startsWith("agent:") ? option.id.slice("agent:".length) : null;
               const agent = agentId ? agentMap?.get(agentId) : null;
               return (
@@ -2493,7 +2492,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
         ) : null}
 
         <Button size="sm" disabled={!canSubmit} onClick={() => void handleSubmit()}>
-          {submitting ? "Posting..." : "Send"}
+          {submitting ? "发送中..." : "发送"}
         </Button>
       </div>
     </div>
@@ -2808,8 +2807,8 @@ export function IssueChatThread({
   const resolvedShowJumpToLatest = showJumpToLatest ?? variant === "full";
   const resolvedEmptyMessage = emptyMessage
     ?? (variant === "embedded"
-      ? "No run output yet."
-      : "This issue conversation is empty. Start with a message below.");
+      ? "暂无运行输出。"
+      : "此问题的对话为空。请在下方发送消息开始。");
   const errorBoundaryResetKey = useMemo(
     () => messages.map((message) => `${message.id}:${message.role}:${message.content.length}:${message.status?.type ?? "none"}`).join("|"),
     [messages],
@@ -2826,7 +2825,7 @@ export function IssueChatThread({
               onClick={handleJumpToLatest}
               className="text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
-              Jump to latest
+              跳转到最新
             </button>
           </div>
         ) : null}

@@ -32,7 +32,7 @@ export function FilterBar({ filters, onRemove, onClear }: FilterBarProps) {
         </Badge>
       ))}
       <Button variant="ghost" size="sm" className="text-xs h-6" onClick={onClear}>
-        Clear all
+        清除全部
       </Button>
     </div>
   );

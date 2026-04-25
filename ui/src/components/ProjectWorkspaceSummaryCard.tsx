@@ -9,7 +9,7 @@ import { timeAgo } from "../lib/timeAgo";
 import { Copy, ExternalLink, FolderOpen, GitBranch, Loader2, Play, Square } from "lucide-react";
 
 function workspaceKindLabel(kind: ProjectWorkspaceSummary["kind"]) {
-  return kind === "execution_workspace" ? "Execution workspace" : "Project workspace";
+  return kind === "execution_workspace" ? "执行工作区" : "项目工作区";
 }
 
 function truncatePath(path: string) {
@@ -63,7 +63,7 @@ export function ProjectWorkspaceSummaryCard({
                 {workspaceKindLabel(summary.kind)}
               </span>
               <span className="inline-flex items-center rounded-full border border-border/70 bg-background px-2.5 py-1 text-xs text-muted-foreground">
-                Updated {timeAgo(summary.lastUpdatedAt)}
+                {timeAgo(summary.lastUpdatedAt)}前更新
               </span>
               {summary.serviceCount > 0 ? (
                 <span
@@ -80,7 +80,7 @@ export function ProjectWorkspaceSummaryCard({
                       hasRunningServices ? "bg-emerald-500" : "bg-muted-foreground/40",
                     )}
                   />
-                  {summary.runningServiceCount}/{summary.serviceCount} services
+                  {summary.runningServiceCount}/{summary.serviceCount} 服务
                 </span>
               ) : null}
               {summary.executionWorkspaceStatus ? (
@@ -123,7 +123,7 @@ export function ProjectWorkspaceSummaryCard({
                 ) : (
                   <Play className="mr-2 h-3.5 w-3.5" />
                 )}
-                {hasRunningServices ? "Stop services" : "Start services"}
+                {hasRunningServices ? "停止服务" : "启动服务"}
               </Button>
             ) : null}
             {summary.kind === "execution_workspace" && summary.executionWorkspaceId && summary.executionWorkspaceStatus ? (
@@ -137,7 +137,7 @@ export function ProjectWorkspaceSummaryCard({
                   status: summary.executionWorkspaceStatus!,
                 })}
               >
-                {summary.executionWorkspaceStatus === "cleanup_failed" ? "Retry close" : "Close workspace"}
+                {summary.executionWorkspaceStatus === "cleanup_failed" ? "重试关闭" : "关闭工作区"}
               </Button>
             ) : null}
           </div>
@@ -149,13 +149,13 @@ export function ProjectWorkspaceSummaryCard({
               <div className="flex items-start gap-2">
                 <GitBranch className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Branch</div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">分支</div>
                   <div className="flex items-start gap-2">
                     <CopyText
                       text={summary.branchName}
                       containerClassName="min-w-0"
                       className="min-w-0 break-all text-left font-mono text-xs text-foreground"
-                      copiedLabel="Branch copied"
+                      copiedLabel="分支已复制"
                     >
                       {summary.branchName}
                     </CopyText>
@@ -163,7 +163,7 @@ export function ProjectWorkspaceSummaryCard({
                       text={summary.branchName}
                       ariaLabel="Copy branch"
                       className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground"
-                      copiedLabel="Branch copied"
+                      copiedLabel="分支已复制"
                     >
                       <Copy className="h-3.5 w-3.5" />
                     </CopyText>
@@ -176,14 +176,14 @@ export function ProjectWorkspaceSummaryCard({
               <div className="flex items-start gap-2">
                 <FolderOpen className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Path</div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">路径</div>
                   <div className="flex items-start gap-2">
                     <CopyText
                       text={summary.cwd}
                       title={summary.cwd}
                       containerClassName="min-w-0"
                       className="min-w-0 break-all text-left font-mono text-xs text-foreground"
-                      copiedLabel="Path copied"
+                      copiedLabel="路径已复制"
                     >
                       {truncatePath(summary.cwd)}
                     </CopyText>
@@ -191,7 +191,7 @@ export function ProjectWorkspaceSummaryCard({
                       text={summary.cwd}
                       ariaLabel="Copy path"
                       className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground"
-                      copiedLabel="Path copied"
+                      copiedLabel="路径已复制"
                     >
                       <Copy className="h-3.5 w-3.5" />
                     </CopyText>
@@ -204,7 +204,7 @@ export function ProjectWorkspaceSummaryCard({
               <div className="flex items-start gap-2">
                 <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 <div className="min-w-0">
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Service</div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">服务</div>
                   <a
                     href={summary.primaryServiceUrl}
                     target="_blank"
@@ -227,7 +227,7 @@ export function ProjectWorkspaceSummaryCard({
         {summary.issues.length > 0 ? (
           <div className="space-y-2">
             <div className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              Linked issues
+              关联任务
             </div>
             <div className="flex flex-wrap gap-2">
               {visibleIssues.map((issue) => (
@@ -238,7 +238,7 @@ export function ProjectWorkspaceSummaryCard({
                   to={workspaceHref}
                   className="inline-flex items-center rounded-full border border-border bg-background px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground hover:underline"
                 >
-                  +{hiddenIssueCount} more
+                  +{hiddenIssueCount} 更多
                 </Link>
               ) : null}
             </div>

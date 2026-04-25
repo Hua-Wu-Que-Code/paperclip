@@ -124,7 +124,7 @@ export function OutputFeedbackButtons({
           onClick={() => handleVote("up")}
         >
           <ThumbsUp className="mr-1.5 h-3.5 w-3.5" />
-          Helpful
+          有用
         </Button>
         <Button
           type="button"
@@ -135,17 +135,17 @@ export function OutputFeedbackButtons({
           onClick={() => handleVote("down")}
         >
           <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
-          Needs work
+          需要改进
         </Button>
         {rightSlot ? <div className="ml-auto">{rightSlot}</div> : null}
       </div>
       {collectingDownvoteReason ? (
         <div className="mt-2 rounded-md border border-border/60 bg-accent/20 p-3">
-          <div className="mb-2 text-sm font-medium">What could have been better?</div>
+          <div className="mb-2 text-sm font-medium">哪里可以改进？</div>
           <Textarea
             value={downvoteReason}
             onChange={(event) => setDownvoteReason(event.target.value)}
-            placeholder="Add a short note"
+            placeholder="添加简短备注"
             className="min-h-20 resize-y bg-background"
             disabled={disabled || isSaving}
           />
@@ -161,7 +161,7 @@ export function OutputFeedbackButtons({
                 setDownvoteAllowSharing(undefined);
               }}
             >
-              Dismiss
+              忽略
             </Button>
             <Button
               type="button"
@@ -174,7 +174,7 @@ export function OutputFeedbackButtons({
                 });
               }}
             >
-              {isSaving ? "Saving..." : "Save note"}
+              {isSaving ? "保存中..." : "保存备注"}
             </Button>
           </div>
         </div>
@@ -191,24 +191,22 @@ export function OutputFeedbackButtons({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save your feedback sharing preference</DialogTitle>
+            <DialogTitle>保存您的反馈分享偏好</DialogTitle>
             <DialogDescription>
-              Choose whether voted AI outputs can be shared with Paperclip Labs. This
-              answer becomes the default for future thumbs up and thumbs down votes.
+              选择是否可以将投票的 AI 输出与 Paperclip Labs 分享。
+              此选择将成为以后点赞和点踩的默认设置。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>
-              This vote is always saved locally.
+              此投票始终保存在本地。
             </p>
             <p>
-              Choose <span className="font-medium text-foreground">Always allow</span> to share
-              this vote and future voted AI outputs. Choose{" "}
-              <span className="font-medium text-foreground">Don't allow</span> to keep this vote
-              and future votes local.
+              选择 <span className="font-medium text-foreground">始终允许</span> 以分享此投票及未来的 AI 输出投票。选择{" "}
+              <span className="font-medium text-foreground">不允许</span> 以将此投票及未来投票保留在本地。
             </p>
             <p>
-              You can change this later in Instance Settings &gt; General.
+              您可以稍后在实例设置 &gt; 通用中更改此选项。
             </p>
             {termsUrl ? (
               <a
@@ -217,7 +215,7 @@ export function OutputFeedbackButtons({
                 rel="noreferrer"
                 className="inline-flex text-sm text-foreground underline underline-offset-4"
               >
-                Read our terms of service
+                阅读我们的服务条款
               </a>
             ) : null}
           </div>
@@ -238,7 +236,7 @@ export function OutputFeedbackButtons({
                 );
               }}
             >
-              {isSaving ? "Saving..." : "Don't allow"}
+              {isSaving ? "保存中..." : "不允许"}
             </Button>
             <Button
               type="button"
@@ -258,7 +256,7 @@ export function OutputFeedbackButtons({
                 );
               }}
             >
-              {isSaving ? "Saving..." : "Always allow"}
+              {isSaving ? "保存中..." : "始终允许"}
             </Button>
           </DialogFooter>
         </DialogContent>

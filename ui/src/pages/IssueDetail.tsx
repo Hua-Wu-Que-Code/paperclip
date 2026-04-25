@@ -153,25 +153,25 @@ type IssueDetailComment = (IssueComment | OptimisticIssueComment) & {
 const FEEDBACK_TERMS_URL = import.meta.env.VITE_FEEDBACK_TERMS_URL?.trim() || "https://paperclip.ing/tos";
 const ISSUE_COMMENT_PAGE_SIZE = 50;
 const TREE_CONTROL_MODE_LABEL: Record<IssueTreeControlMode, string> = {
-  pause: "Pause subtree",
-  resume: "Resume subtree",
-  cancel: "Cancel subtree",
-  restore: "Restore subtree",
+  pause: "暂停子任务",
+  resume: "恢复子任务",
+  cancel: "取消子任务",
+  restore: "恢复子任务",
 };
 const TREE_CONTROL_MODE_HELP_TEXT: Record<IssueTreeControlMode, string> = {
-  pause: "Pause active execution in this issue subtree until an explicit resume.",
-  resume: "Release the active subtree pause hold so held work can continue.",
-  cancel: "Cancel non-terminal issues in this subtree and stop queued/running work where possible.",
-  restore: "Restore issues cancelled by this subtree operation so work can resume.",
+  pause: "暂停此任务子树中的活跃执行，直到显式恢复。",
+  resume: "释放子树暂停，使被暂停的工作可以继续。",
+  cancel: "取消此子树中非终止状态的任务，并尽可能停止排队/运行中的工作。",
+  restore: "恢复被此子树操作取消的任务，使工作可以继续。",
 };
 
 function treeControlPreviewErrorCopy(error: unknown): string {
   if (error instanceof ApiError) {
-    if (error.status === 403) return "Only board users can preview subtree controls.";
-    if (error.status === 409) return "Preview is stale because subtree hold state changed. Retry to refresh.";
-    if (error.status === 422) return "This subtree action is currently invalid for the selected issues.";
+    if (error.status === 403) return "只有面板用户可以预览子任务控制。";
+    if (error.status === 409) return "预览已过期，因为子树暂停状态已更改。请重试刷新。";
+    if (error.status === 422) return "此子任务操作对选中的任务当前无效。";
   }
-  return error instanceof Error ? error.message : "Unable to load preview.";
+  return error instanceof Error ? error.message : "无法加载预览。";
 }
 
 function resolveRunningIssueRun(
@@ -309,12 +309,12 @@ function ActorIdentity({ evt, agentMap, userProfileMap }: { evt: ActivityEvent; 
     const agent = agentMap.get(id);
     return <Identity name={agent?.name ?? id.slice(0, 8)} size="sm" />;
   }
-  if (evt.actorType === "system") return <Identity name="System" size="sm" />;
+  if (evt.actorType === "system") return <Identity name="系统" size="sm" />;
   if (evt.actorType === "user") {
     const profile = userProfileMap?.get(id);
-    return <Identity name={profile?.label ?? "Board"} avatarUrl={profile?.image} size="sm" />;
+    return <Identity name={profile?.label ?? "面板"} avatarUrl={profile?.image} size="sm" />;
   }
-  return <Identity name={id || "Unknown"} size="sm" />;
+  return <Identity name={id || "未知"} size="sm" />;
 }
 
 function IssueSectionSkeleton({
@@ -390,7 +390,7 @@ function IssueDetailLoadingState({
               {headerSeed.originKind === "routine_execution" && headerSeed.originId ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-medium text-violet-600 dark:text-violet-400 shrink-0">
                   <Repeat className="h-3 w-3" />
-                  Routine
+                  例程
                 </span>
               ) : null}
               {headerSeed.projectId ? (
@@ -403,7 +403,7 @@ function IssueDetailLoadingState({
               ) : (
                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground opacity-50 px-1 -mx-1 py-0.5">
                   <Hexagon className="h-3 w-3 shrink-0" />
-                  No project
+                  无项目
                 </span>
               )}
             </>
@@ -487,7 +487,7 @@ function InboxMobileToolbar({
             navigate(backHref);
           }
         }}
-        aria-label="Back to inbox"
+        aria-label="返回收件箱"
       >
         <ArrowLeft className="h-5 w-5" />
       </Button>
@@ -499,7 +499,7 @@ function InboxMobileToolbar({
             size="icon-sm"
             onClick={onArchive}
             disabled={archivePending}
-            aria-label="Archive from inbox"
+            aria-label="从收件箱归档"
           >
             <Archive className="h-5 w-5" />
           </Button>
@@ -507,7 +507,7 @@ function InboxMobileToolbar({
 
         <Popover open={menuOpen} onOpenChange={setMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon-sm" aria-label="More actions">
+            <Button variant="ghost" size="icon-sm" aria-label="更多操作">
               <MoreVertical className="h-5 w-5" />
             </Button>
           </PopoverTrigger>
@@ -517,14 +517,14 @@ function InboxMobileToolbar({
               onClick={() => { onCopy(); setMenuOpen(false); }}
             >
               <Copy className="h-3 w-3" />
-              Copy as markdown
+              复制为 Markdown
             </button>
             <button
               className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50"
               onClick={() => { onProperties(); setMenuOpen(false); }}
             >
               <SlidersHorizontal className="h-3 w-3" />
-              Properties
+              属性
             </button>
             {issueIdProp && (
               <button
@@ -532,7 +532,7 @@ function InboxMobileToolbar({
                 onClick={() => { onHide(); setMenuOpen(false); }}
               >
                 <EyeOff className="h-3 w-3" />
-                Hide this issue
+                隐藏此任务
               </button>
             )}
           </PopoverContent>
@@ -779,7 +779,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
             disabled={commentsLoadingOlder}
             onClick={onLoadOlderComments}
           >
-            {commentsLoadingOlder ? "Loading earlier comments..." : "Load earlier comments"}
+            {commentsLoadingOlder ? "加载更早的评论..." : "加载更早的评论"}
           </Button>
         </div>
       ) : null}
@@ -973,9 +973,9 @@ function IssueDetailActivityTab({
       )}
       {linkedRuns && linkedRuns.length > 0 && (
         <div className="mb-3 px-3 py-2 rounded-lg border border-border">
-          <div className="text-sm font-medium text-muted-foreground mb-1">Cost Summary</div>
+          <div className="text-sm font-medium text-muted-foreground mb-1">费用摘要</div>
           {!issueCostSummary.hasCost && !issueCostSummary.hasTokens ? (
-            <div className="text-xs text-muted-foreground">No cost data yet.</div>
+            <div className="text-xs text-muted-foreground">暂无费用数据。</div>
           ) : (
             <div className="flex flex-wrap gap-3 text-xs text-muted-foreground tabular-nums">
               {issueCostSummary.hasCost && (
@@ -985,10 +985,10 @@ function IssueDetailActivityTab({
               )}
               {issueCostSummary.hasTokens && (
                 <span>
-                  Tokens {formatTokens(issueCostSummary.totalTokens)}
+                  词元 {formatTokens(issueCostSummary.totalTokens)}
                   {issueCostSummary.cached > 0
-                    ? ` (in ${formatTokens(issueCostSummary.input)}, out ${formatTokens(issueCostSummary.output)}, cached ${formatTokens(issueCostSummary.cached)})`
-                    : ` (in ${formatTokens(issueCostSummary.input)}, out ${formatTokens(issueCostSummary.output)})`}
+                    ? ` (输入 ${formatTokens(issueCostSummary.input)}, 输出 ${formatTokens(issueCostSummary.output)}, 缓存 ${formatTokens(issueCostSummary.cached)})`
+                    : ` (输入 ${formatTokens(issueCostSummary.input)}, 输出 ${formatTokens(issueCostSummary.output)})`}
                 </span>
               )}
             </div>
@@ -996,7 +996,7 @@ function IssueDetailActivityTab({
         </div>
       )}
       {!activity || activity.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No activity yet.</p>
+        <p className="text-xs text-muted-foreground">暂无活动。</p>
       ) : (
         <div className="space-y-1.5">
           {activity.slice(0, 20).map((evt) => (
@@ -1142,7 +1142,7 @@ export function IssueDetail() {
     }
   }, [hasLiveRuns, locallyQueuedCommentRunIds.size]);
   const sourceBreadcrumb = useMemo(
-    () => readIssueDetailBreadcrumb(issueId, location.state, location.search) ?? { label: "Issues", href: "/issues" },
+    () => readIssueDetailBreadcrumb(issueId, location.state, location.search) ?? { label: "任务", href: "/issues" },
     [issueId, location.state, location.search],
   );
 
@@ -1342,7 +1342,7 @@ export function IssueDetail() {
       options.push({ id: `agent:${agent.id}`, label: agent.name });
     }
     if (currentUserId) {
-      options.push({ id: `user:${currentUserId}`, label: "Me" });
+      options.push({ id: `user:${currentUserId}`, label: "我" });
     }
     return options;
   }, [agents, companyMembers?.users, currentUserId]);
@@ -1366,7 +1366,7 @@ export function IssueDetail() {
     () => mergeIssueComments(comments ?? [], optimisticComments),
     [comments, optimisticComments],
   );
-  const breadcrumbTitle = issue?.title ?? issueId ?? "Issue";
+  const breadcrumbTitle = issue?.title ?? issueId ?? "任务";
 
   const invalidateIssueDetail = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: queryKeys.issues.detail(issueId!) });
@@ -1505,8 +1505,8 @@ export function IssueDetail() {
         queryClient.setQueryData(queryKeys.issues.list(context.selectedCompanyId), context.previousList);
       }
       pushToast({
-        title: "Issue update failed",
-        body: err instanceof Error ? err.message : "Unable to save issue changes",
+        title: "任务更新失败",
+        body: err instanceof Error ? err.message : "无法保存任务更改",
         tone: "error",
       });
     },
@@ -1550,17 +1550,17 @@ export function IssueDetail() {
       const cancelCount = result.preview?.totals.activeRuns ?? 0;
       pushToast({
         title: result.kind === "release"
-          ? "Subtree resumed"
+          ? "子任务已恢复"
           : result.hold.mode === "pause"
-            ? "Subtree paused"
-            : `${modeLabel} applied`,
+            ? "子任务已暂停"
+            : `${modeLabel}已应用`,
         body: result.kind === "release"
-          ? (result.hold.releaseReason?.trim() || "Active subtree pause released.")
+          ? (result.hold.releaseReason?.trim() || "子树暂停已释放。")
           : result.hold.mode === "pause"
-            ? `Subtree paused. ${cancelCount} run${cancelCount === 1 ? "" : "s"} cancelled.`
+            ? `子任务已暂停。${cancelCount} 个运行已取消。`
             : result.hold.reason?.trim()
               ? result.hold.reason
-              : "Subtree control applied.",
+              : "子任务控制已应用。",
       });
       setTreeControlOpen(false);
       setTreeControlReason("");
@@ -1586,8 +1586,8 @@ export function IssueDetail() {
     },
     onError: (err) => {
       pushToast({
-        title: "Unable to apply subtree control",
-        body: err instanceof Error ? err.message : "Please try again.",
+        title: "无法应用子任务控制",
+        body: err instanceof Error ? err.message : "请重试。",
         tone: "error",
       });
     },
@@ -1606,8 +1606,8 @@ export function IssueDetail() {
     },
     onError: (err) => {
       pushToast({
-        title: "Issue update failed",
-        body: err instanceof Error ? err.message : "Unable to save sub-issue changes",
+        title: "任务更新失败",
+        body: err instanceof Error ? err.message : "无法保存子任务更改",
         tone: "error",
       });
     },
@@ -1635,14 +1635,14 @@ export function IssueDetail() {
         queryClient.invalidateQueries({ queryKey: queryKeys.approvals.list(resolvedCompanyId) });
       }
       pushToast({
-        title: variables.action === "approve" ? "Approval approved" : "Approval rejected",
+        title: variables.action === "approve" ? "审批已通过" : "审批已拒绝",
         tone: "success",
       });
     },
     onError: (err, variables) => {
       pushToast({
-        title: variables.action === "approve" ? "Approval failed" : "Rejection failed",
-        body: err instanceof Error ? err.message : "Unable to update approval",
+        title: variables.action === "approve" ? "审批失败" : "拒绝失败",
+        body: err instanceof Error ? err.message : "无法更新审批",
         tone: "error",
       });
     },
@@ -1703,8 +1703,8 @@ export function IssueDetail() {
           return;
         } catch (err) {
           pushToast({
-            title: "Cancel failed",
-            body: err instanceof Error ? err.message : "Unable to cancel the queued comment",
+            title: "取消失败",
+            body: err instanceof Error ? err.message : "无法取消排队的评论",
             tone: "error",
           });
         }
@@ -1737,8 +1737,8 @@ export function IssueDetail() {
         queryClient.setQueryData(queryKeys.issues.detail(issueId!), context.previousIssue);
       }
       pushToast({
-        title: "Comment failed",
-        body: err instanceof Error ? err.message : "Unable to post comment",
+        title: "评论失败",
+        body: err instanceof Error ? err.message : "无法发送评论",
         tone: "error",
       });
     },
@@ -1775,17 +1775,17 @@ export function IssueDetail() {
         : 0;
       pushToast({
         title: interaction.kind === "request_confirmation"
-          ? "Request confirmed"
+          ? "请求已确认"
           : skippedCount > 0
-          ? `Accepted ${createdCount} draft${createdCount === 1 ? "" : "s"} and skipped ${skippedCount}`
-          : "Suggested tasks accepted",
+          ? `已接受 ${createdCount} 个草稿并跳过 ${skippedCount} 个`
+          : "建议的任务已接受",
         tone: "success",
       });
     },
     onError: (err) => {
       pushToast({
-        title: "Accept failed",
-        body: err instanceof Error ? err.message : "Unable to accept the suggested tasks",
+        title: "接受失败",
+        body: err instanceof Error ? err.message : "无法接受建议的任务",
         tone: "error",
       });
     },
@@ -1798,14 +1798,14 @@ export function IssueDetail() {
       invalidateIssueDetail();
       invalidateIssueCollections();
       pushToast({
-        title: interaction.kind === "request_confirmation" ? "Request declined" : "Suggestion rejected",
+        title: interaction.kind === "request_confirmation" ? "请求已拒绝" : "建议已拒绝",
         tone: "success",
       });
     },
     onError: (err) => {
       pushToast({
-        title: "Reject failed",
-        body: err instanceof Error ? err.message : "Unable to reject the suggested tasks",
+        title: "拒绝失败",
+        body: err instanceof Error ? err.message : "无法拒绝建议的任务",
         tone: "error",
       });
     },
@@ -1823,14 +1823,14 @@ export function IssueDetail() {
       invalidateIssueDetail();
       invalidateIssueCollections();
       pushToast({
-        title: "Answers submitted",
+        title: "答案已提交",
         tone: "success",
       });
     },
     onError: (err) => {
       pushToast({
-        title: "Submit failed",
-        body: err instanceof Error ? err.message : "Unable to submit answers",
+        title: "提交失败",
+        body: err instanceof Error ? err.message : "无法提交答案",
         tone: "error",
       });
     },
@@ -1907,8 +1907,8 @@ export function IssueDetail() {
           return;
         } catch (err) {
           pushToast({
-            title: "Cancel failed",
-            body: err instanceof Error ? err.message : "Unable to cancel the queued comment",
+            title: "取消失败",
+            body: err instanceof Error ? err.message : "无法取消排队的评论",
             tone: "error",
           });
         }
@@ -1943,8 +1943,8 @@ export function IssueDetail() {
         queryClient.setQueryData(queryKeys.issues.detail(issueId!), context.previousIssue);
       }
       pushToast({
-        title: "Comment failed",
-        body: err instanceof Error ? err.message : "Unable to post comment",
+        title: "评论失败",
+        body: err instanceof Error ? err.message : "无法发送评论",
         tone: "error",
       });
     },
@@ -2015,8 +2015,8 @@ export function IssueDetail() {
       invalidateIssueDetail();
       invalidateIssueRunState();
       pushToast({
-        title: "Interrupt requested",
-        body: "The active run is stopping so queued comments can continue next.",
+      title: "已请求中断",
+      body: "活跃运行正在停止，以便排队的评论可以继续。",
         tone: "success",
       });
     },
@@ -2029,8 +2029,8 @@ export function IssueDetail() {
         setLocallyQueuedCommentRunIds(context.previousLocalQueuedCommentRunIds);
       }
       pushToast({
-        title: "Interrupt failed",
-        body: err instanceof Error ? err.message : "Unable to interrupt the active run",
+        title: "中断失败",
+        body: err instanceof Error ? err.message : "无法中断活跃运行",
         tone: "error",
       });
     },
@@ -2051,15 +2051,15 @@ export function IssueDetail() {
       invalidateIssueThreadLazily();
       invalidateIssueCollections();
       pushToast({
-        title: "Queued comment canceled",
-        body: "The queued message was restored to the composer.",
+        title: "已取消排队评论",
+        body: "排队消息已恢复到编辑器。",
         tone: "success",
       });
     },
     onError: (err) => {
       pushToast({
-        title: "Cancel failed",
-        body: err instanceof Error ? err.message : "Unable to cancel the queued comment",
+        title: "取消失败",
+        body: err instanceof Error ? err.message : "无法取消排队的评论",
         tone: "error",
       });
     },
@@ -2130,14 +2130,14 @@ export function IssueDetail() {
       queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.instance.generalSettings });
       pushToast({
-        title:
-          variables.sharingPreferenceAtSubmit === "prompt"
-            ? variables.allowSharing
-              ? "Feedback saved. Future votes will share"
-              : "Feedback saved. Future votes will stay local"
-            : variables.allowSharing
-              ? "Feedback saved and sharing enabled"
-              : "Feedback saved",
+      title:
+        variables.sharingPreferenceAtSubmit === "prompt"
+          ? variables.allowSharing
+            ? "反馈已保存。后续投票将共享"
+            : "反馈已保存。后续投票将保持本地"
+          : variables.allowSharing
+            ? "反馈已保存并已启用共享"
+            : "反馈已保存",
         tone: "success",
       });
     },
@@ -2146,8 +2146,8 @@ export function IssueDetail() {
         queryClient.setQueryData(queryKeys.issues.feedbackVotes(issueId!), context.previousVotes);
       }
       pushToast({
-        title: "Failed to save feedback",
-        body: err instanceof Error ? err.message : "Unknown error",
+        title: "保存反馈失败",
+        body: err instanceof Error ? err.message : "未知错误",
         tone: "error",
       });
     },
@@ -2164,7 +2164,7 @@ export function IssueDetail() {
       invalidateIssueDetail();
     },
     onError: (err) => {
-      setAttachmentError(err instanceof Error ? err.message : "Upload failed");
+      setAttachmentError(err instanceof Error ? err.message : "上传失败");
     },
   });
 
@@ -2189,7 +2189,7 @@ export function IssueDetail() {
       queryClient.invalidateQueries({ queryKey: queryKeys.issues.documents(issueId!) });
     },
     onError: (err) => {
-      setAttachmentError(err instanceof Error ? err.message : "Document import failed");
+      setAttachmentError(err instanceof Error ? err.message : "文档导入失败");
     },
   });
 
@@ -2201,7 +2201,7 @@ export function IssueDetail() {
       invalidateIssueDetail();
     },
     onError: (err) => {
-      setAttachmentError(err instanceof Error ? err.message : "Delete failed");
+      setAttachmentError(err instanceof Error ? err.message : "删除失败");
     },
   });
 
@@ -2210,12 +2210,12 @@ export function IssueDetail() {
     onSuccess: () => {
       invalidateIssueCollections();
       navigate(sourceBreadcrumb.href.startsWith("/inbox") ? sourceBreadcrumb.href : "/inbox", { replace: true });
-      pushToast({ title: "Issue archived from inbox", tone: "success" });
+      pushToast({ title: "任务已从收件箱归档", tone: "success" });
     },
     onError: (err) => {
       pushToast({
-        title: "Archive failed",
-        body: err instanceof Error ? err.message : "Unable to archive this issue from the inbox",
+        title: "归档失败",
+        body: err instanceof Error ? err.message : "无法从收件箱归档此任务",
         tone: "error",
       });
     },
@@ -2470,7 +2470,7 @@ export function IssueDetail() {
     const md = `# ${issue.identifier}: ${title}\n\n${body}`.trimEnd();
     await navigator.clipboard.writeText(md);
     setCopied(true);
-    pushToast({ title: "Copied to clipboard", tone: "success" });
+    pushToast({ title: "已复制到剪贴板", tone: "success" });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -2620,7 +2620,7 @@ export function IssueDetail() {
     const badges = new Map<string, string>();
     for (const child of childIssues) {
       if (!heldIssueIds.has(child.id)) continue;
-      badges.set(child.id, "Paused");
+      badges.set(child.id, "已暂停");
     }
     return badges;
   }, [childIssues, heldIssueIds]);
@@ -2680,12 +2680,12 @@ export function IssueDetail() {
   const previewAffectedAgentCount = treeControlPreview?.totals.affectedAgents ?? 0;
   const treeControlPrimaryButtonLabel =
     treeControlMode === "pause"
-      ? "Pause and stop work"
+      ? "暂停并停止工作"
       : treeControlMode === "cancel"
-        ? `Cancel ${previewAffectedIssueCount} issues`
+        ? `取消 ${previewAffectedIssueCount} 个任务`
       : treeControlMode === "restore"
-          ? `Restore ${previewAffectedIssueCount} issues`
-          : "Resume subtree";
+          ? `恢复 ${previewAffectedIssueCount} 个任务`
+          : "恢复子任务";
   const treePreviewAffectedIssueRows = treePreviewDisplayIssues.map((candidate) => ({
     candidate,
     issue: {
@@ -2709,8 +2709,8 @@ export function IssueDetail() {
   const pausedComposerHint = activePauseHold
     ? (
       issue.assigneeAgentId
-        ? `Sending this comment will wake ${agentMap.get(issue.assigneeAgentId)?.name ?? "the assignee"} for triage while the subtree remains paused.`
-        : "Assign an agent to wake them for triage while the subtree remains paused."
+      ? `发送此评论将在子树暂停期间唤醒 ${agentMap.get(issue.assigneeAgentId)?.name ?? "负责人"} 进行分流。`
+      : "分配一个智能体以在子树暂停期间唤醒其进行分流。"
     )
     : null;
   const composerHint = pausedComposerHint;
@@ -2739,10 +2739,10 @@ export function IssueDetail() {
         )}
       >
         <Paperclip className="h-3.5 w-3.5 mr-1.5" />
-        {uploadAttachment.isPending || importMarkdownDocument.isPending ? "Uploading..." : (
+        {uploadAttachment.isPending || importMarkdownDocument.isPending ? "上传中..." : (
           <>
-            <span className="hidden sm:inline">Upload attachment</span>
-            <span className="sm:hidden">Upload</span>
+            <span className="hidden sm:inline">上传附件</span>
+            <span className="sm:hidden">上传</span>
           </>
         )}
       </Button>
@@ -2781,7 +2781,7 @@ export function IssueDetail() {
       {issue.hiddenAt && (
         <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           <EyeOff className="h-4 w-4 shrink-0" />
-          This issue is hidden
+          此任务已隐藏
         </div>
       )}
       {activePauseHold && (
@@ -2789,14 +2789,14 @@ export function IssueDetail() {
           {activePauseHold.isRoot ? (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-medium">Subtree pause is active.</span>
+                <span className="font-medium">子任务暂停已激活。</span>
                 <span className="text-xs text-amber-900/80 dark:text-amber-100/80">
-                  Root and descendant execution is held until resume. Human comments can still wake assignees for triage.
+                  根任务及子任务的执行已暂停，直到恢复。人工评论仍可唤醒负责人进行分流。
                 </span>
               </div>
               <div className="text-xs text-amber-900/80 dark:text-amber-100/80">
-                {heldDescendantCount} descendant{heldDescendantCount === 1 ? "" : "s"} held
-                {activeRootPauseHold?.createdAt ? ` · started ${relativeTime(activeRootPauseHold.createdAt)}` : ""}
+                {heldDescendantCount} 个子任务已暂停
+                {activeRootPauseHold?.createdAt ? ` · 开始于 ${relativeTime(activeRootPauseHold.createdAt)}` : ""}
               </div>
               {canShowSubtreeControls ? (
                 <div className="flex flex-wrap items-center gap-2">
@@ -2808,7 +2808,7 @@ export function IssueDetail() {
                       setTreeControlOpen(true);
                     }}
                   >
-                    Resume subtree
+                    恢复子任务
                   </Button>
                   <Button
                     variant="outline"
@@ -2819,7 +2819,7 @@ export function IssueDetail() {
                       setTreeControlOpen(true);
                     }}
                   >
-                    View affected ({heldDescendantCount})
+                    查看受影响 ({heldDescendantCount})
                   </Button>
                   <Button
                     variant="ghost"
@@ -2831,14 +2831,14 @@ export function IssueDetail() {
                       setTreeControlOpen(true);
                     }}
                   >
-                    Cancel subtree...
+                    取消子任务...
                   </Button>
                 </div>
               ) : null}
             </div>
           ) : (
             <div className="text-xs">
-              This issue is paused by ancestor{" "}
+              此任务被祖先任务暂停{" "}
               {activePauseHoldRoot?.identifier ? (
                 <Link to={createIssueDetailPath(activePauseHoldRoot.identifier)} className="underline">
                   {activePauseHoldRoot.identifier}
@@ -2846,7 +2846,7 @@ export function IssueDetail() {
               ) : (
                 activePauseHold.rootIssueId.slice(0, 8)
               )}
-              . Resume from the root issue to deliver deferred work.
+              。从根任务恢复以交付延迟的工作。
             </div>
           )}
         </div>
@@ -2871,7 +2871,7 @@ export function IssueDetail() {
                 <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-400" />
               </span>
-              Live
+              活跃
             </span>
           )}
 
@@ -2881,7 +2881,7 @@ export function IssueDetail() {
               className="inline-flex items-center gap-1 rounded-full bg-violet-500/10 border border-violet-500/30 px-2 py-0.5 text-[10px] font-medium text-violet-600 dark:text-violet-400 shrink-0 hover:bg-violet-500/20 transition-colors"
             >
               <Repeat className="h-3 w-3" />
-              Routine
+              例程
             </Link>
           )}
 
@@ -2896,7 +2896,7 @@ export function IssueDetail() {
           ) : (
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground opacity-50 px-1 -mx-1 py-0.5">
               <Hexagon className="h-3 w-3 shrink-0" />
-              No project
+              无项目
             </span>
           )}
 
@@ -2927,7 +2927,7 @@ export function IssueDetail() {
                 variant="ghost"
                 size="icon-xs"
                 onClick={copyIssueToClipboard}
-                title="Copy issue as markdown"
+                title="复制任务为 Markdown"
               >
                 {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
               </Button>
@@ -2935,7 +2935,7 @@ export function IssueDetail() {
                 variant="ghost"
                 size="icon-xs"
                 onClick={() => setMobilePropsOpen(true)}
-                title="Properties"
+                title="属性"
               >
                 <SlidersHorizontal className="h-4 w-4" />
               </Button>
@@ -2951,8 +2951,8 @@ export function IssueDetail() {
                   if (!archivePending && issue?.id) archiveFromInbox.mutate(issue.id);
                 }}
                 disabled={archivePending}
-                title="Archive from inbox"
-                aria-label="Archive from inbox"
+                title="从收件箱归档"
+                aria-label="从收件箱归档"
               >
                 <Archive className="h-4 w-4" />
               </Button>
@@ -2961,7 +2961,7 @@ export function IssueDetail() {
               variant="ghost"
               size="icon-xs"
               onClick={copyIssueToClipboard}
-              title="Copy issue as markdown"
+              title="复制任务为 Markdown"
             >
               {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
             </Button>
@@ -2973,7 +2973,7 @@ export function IssueDetail() {
                 panelVisible ? "opacity-0 pointer-events-none w-0 overflow-hidden" : "opacity-100",
               )}
               onClick={() => setPanelVisible(true)}
-              title="Show properties"
+              title="显示属性"
             >
               <SlidersHorizontal className="h-4 w-4" />
             </Button>
@@ -2984,8 +2984,8 @@ export function IssueDetail() {
                   variant="ghost"
                   size="icon-xs"
                   className="shrink-0"
-                  aria-label="More issue actions"
-                  title="More issue actions"
+                  aria-label="更多操作"
+                  title="更多操作"
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
@@ -3084,7 +3084,7 @@ export function IssueDetail() {
           onSave={(description) => updateIssue.mutateAsync({ description })}
           as="p"
           className="text-[15px] leading-7 text-foreground"
-          placeholder="Add a description..."
+          placeholder="添加描述..."
           multiline
           foldable
           mentions={mentionOptions}
@@ -3217,7 +3217,7 @@ export function IssueDetail() {
         onDrop={(evt) => void handleAttachmentDrop(evt)}
       >
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Attachments</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">附件</h3>
           {attachmentUploadButton}
         </div>
 
@@ -3283,7 +3283,7 @@ export function IssueDetail() {
                       e.stopPropagation();
                       setConfirmDeleteId(attachment.id);
                     }}
-                    title="Delete attachment"
+                    title="删除附件"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -3312,7 +3312,7 @@ export function IssueDetail() {
                     className="text-muted-foreground hover:text-destructive"
                     onClick={() => deleteAttachment.mutate(attachment.id)}
                     disabled={deleteAttachment.isPending}
-                    title="Delete attachment"
+                    title="删除附件"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -3471,7 +3471,7 @@ export function IssueDetail() {
               <Textarea
                 value={treeControlReason}
                 onChange={(event) => setTreeControlReason(event.target.value)}
-                placeholder="Explain why this subtree control is being applied..."
+                placeholder="请说明为何应用此子树控制..."
                 className="min-h-[88px]"
               />
             </div>
@@ -3572,7 +3572,7 @@ export function IssueDetail() {
                             </span>
                             <span className="min-w-0 flex-1 truncate">{candidate.title}</span>
                             {candidate.skipped && candidate.skipReason === "terminal_status" ? (
-                              <span className="shrink-0 text-xs text-muted-foreground">Complete</span>
+                              <span className="shrink-0 text-xs text-muted-foreground">完成</span>
                             ) : null}
                           </Link>
                         </div>
@@ -3604,7 +3604,7 @@ export function IssueDetail() {
       <Sheet open={mobilePropsOpen} onOpenChange={setMobilePropsOpen}>
         <SheetContent side="bottom" className="max-h-[85dvh] pb-[env(safe-area-inset-bottom)]">
           <SheetHeader>
-            <SheetTitle className="text-sm">Properties</SheetTitle>
+            <SheetTitle className="text-sm">属性</SheetTitle>
           </SheetHeader>
           <ScrollArea className="flex-1 overflow-y-auto">
             <div className="px-4 pb-4">

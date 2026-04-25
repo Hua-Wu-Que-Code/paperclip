@@ -9,11 +9,11 @@ function BootstrapPendingPage({ hasActiveInvite = false }: { hasActiveInvite?: b
   return (
     <div className="mx-auto max-w-xl py-10">
       <div className="rounded-lg border border-border bg-card p-6">
-        <h1 className="text-xl font-semibold">Instance setup required</h1>
+        <h1 className="text-xl font-semibold">需要实例设置</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {hasActiveInvite
-            ? "No instance admin exists yet. A bootstrap invite is already active. Check your Paperclip startup logs for the first admin invite URL, or run this command to rotate it:"
-            : "No instance admin exists yet. Run this command in your Paperclip environment to generate the first admin invite URL:"}
+            ? "尚无实例管理员。引导邀请已激活。请查看 Paperclip 启动日志中的首个管理员邀请 URL，或运行以下命令来轮换："
+            : "尚无实例管理员。请在 Paperclip 环境中运行以下命令以生成首个管理员邀请 URL："}
         </p>
         <pre className="mt-4 overflow-x-auto rounded-md border border-border bg-muted/30 p-3 text-xs">
 {`pnpm paperclipai auth bootstrap-ceo`}
@@ -27,13 +27,12 @@ function NoBoardAccessPage() {
   return (
     <div className="mx-auto max-w-xl py-10">
       <div className="rounded-lg border border-border bg-card p-6">
-        <h1 className="text-xl font-semibold">No company access</h1>
+        <h1 className="text-xl font-semibold">无公司访问权限</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          This account is signed in, but it does not have an active company membership or instance-admin access on
-          this Paperclip instance.
+          此账户已登录，但没有活跃的公司成员资格或实例管理员权限在此 Paperclip 实例上。
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Use a company invite or sign in with an account that already belongs to this org.
+          请使用公司邀请或使用已属于此组织的账户登录。
         </p>
       </div>
     </div>

@@ -13,27 +13,27 @@ import { queryKeys } from "@/lib/queryKeys";
 const inviteRoleOptions = [
   {
     value: "viewer",
-    label: "Viewer",
-    description: "Can view company work and follow along without operational permissions.",
-    gets: "No built-in grants.",
+    label: "查看者",
+    description: "可以查看公司工作并跟随进度，没有操作权限。",
+    gets: "无内置授权。",
   },
   {
     value: "operator",
-    label: "Operator",
-    description: "Recommended for people who need to help run work without managing access.",
-    gets: "Can assign tasks.",
+    label: "操作员",
+    description: "适合需要协助运行工作但不需要管理访问权限的人员。",
+    gets: "可以分配任务。",
   },
   {
     value: "admin",
-    label: "Admin",
-    description: "Recommended for operators who need to invite people, create agents, and approve joins.",
-    gets: "Can create agents, invite users, assign tasks, and approve join requests.",
+    label: "管理员",
+    description: "适合需要邀请人员、创建智能体和批准加入的操作员。",
+    gets: "可以创建智能体、邀请用户、分配任务和批准加入请求。",
   },
   {
     value: "owner",
-    label: "Owner",
-    description: "Full company access, including membership and permission management.",
-    gets: "Everything in Admin, plus managing members and permission grants.",
+    label: "所有者",
+    description: "完全的公司访问权限，包括成员和权限管理。",
+    gets: "包含管理员的所有权限，加上管理成员和权限授权。",
   },
 ] as const;
 
@@ -72,8 +72,8 @@ export function CompanyInvites() {
     }
 
     pushToast({
-      title: "Clipboard unavailable",
-      body: "Copy the invite URL manually from the field below.",
+      title: "剪贴板不可用",
+      body: "请手动复制下面的邀请链接。",
       tone: "warn",
     });
     return false;
@@ -81,9 +81,9 @@ export function CompanyInvites() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings", href: "/company/settings" },
-      { label: "Invites" },
+      { label: selectedCompany?.name ?? "公司", href: "/dashboard" },
+      { label: "设置", href: "/company/settings" },
+      { label: "邀请" },
     ]);
   }, [selectedCompany?.name, setBreadcrumbs]);
 
@@ -121,15 +121,15 @@ export function CompanyInvites() {
 
       await queryClient.invalidateQueries({ queryKey: inviteHistoryQueryKey });
       pushToast({
-        title: "Invite created",
-        body: copied ? "Invite ready below and copied to clipboard." : "Invite ready below.",
+        title: "邀请已创建",
+        body: copied ? "邀请已准备好并已复制到剪贴板。" : "邀请已准备好。",
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to create invite",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: "创建邀请失败",
+        body: error instanceof Error ? error.message : "未知错误",
         tone: "error",
       });
     },
@@ -139,32 +139,32 @@ export function CompanyInvites() {
     mutationFn: (inviteId: string) => accessApi.revokeInvite(inviteId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: inviteHistoryQueryKey });
-      pushToast({ title: "Invite revoked", tone: "success" });
+      pushToast({ title: "邀请已撤销", tone: "success" });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to revoke invite",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: "撤销邀请失败",
+        body: error instanceof Error ? error.message : "未知错误",
         tone: "error",
       });
     },
   });
 
   if (!selectedCompanyId) {
-    return <div className="text-sm text-muted-foreground">Select a company to manage invites.</div>;
+    return <div className="text-sm text-muted-foreground">请选择一个公司来管理邀请。</div>;
   }
 
   if (invitesQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading invites…</div>;
+    return <div className="text-sm text-muted-foreground">加载邀请中…</div>;
   }
 
   if (invitesQuery.error) {
     const message =
       invitesQuery.error instanceof ApiError && invitesQuery.error.status === 403
-        ? "You do not have permission to manage company invites."
+        ? "您没有权限管理公司邀请。"
         : invitesQuery.error instanceof Error
           ? invitesQuery.error.message
-          : "Failed to load invites.";
+          : "加载邀请失败。";
     return <div className="text-sm text-destructive">{message}</div>;
   }
 
@@ -173,23 +173,23 @@ export function CompanyInvites() {
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <MailPlus className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Company Invites</h1>
+          <h1 className="text-lg font-semibold">公司邀请</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Create human invite links for company access. New invite links are copied to your clipboard when they are generated.
+          创建人类邀请链接以访问公司。新邀请链接在生成时会自动复制到剪贴板。
         </p>
       </div>
 
       <section className="space-y-4 rounded-xl border border-border p-5">
         <div className="space-y-1">
-          <h2 className="text-sm font-semibold">Create invite</h2>
+          <h2 className="text-sm font-semibold">创建邀请</h2>
           <p className="text-sm text-muted-foreground">
-            Generate a human invite link and choose the default access it should request.
+            生成人类邀请链接并选择其应请求的默认访问权限。
           </p>
         </div>
 
         <fieldset className="space-y-3">
-          <legend className="text-sm font-medium">Choose a role</legend>
+          <legend className="text-sm font-medium">选择角色</legend>
           <div className="rounded-xl border border-border">
             {inviteRoleOptions.map((option, index) => {
               const checked = humanRole === option.value;
@@ -211,7 +211,7 @@ export function CompanyInvites() {
                       <span className="text-sm font-medium">{option.label}</span>
                       {option.value === "operator" ? (
                         <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-                          Default
+                          默认
                         </span>
                       ) : null}
                     </span>
@@ -225,30 +225,30 @@ export function CompanyInvites() {
         </fieldset>
 
         <div className="rounded-lg border border-border px-4 py-3 text-sm text-muted-foreground">
-          Each invite link is single-use. The first successful use consumes the link and creates or reuses the matching join request before approval.
+          每个邀请链接为一次性使用。首次成功使用将消耗该链接，并在审批前创建或复用匹配的加入请求。
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <Button onClick={() => createInviteMutation.mutate()} disabled={createInviteMutation.isPending}>
-            {createInviteMutation.isPending ? "Creating…" : "Create invite"}
+            {createInviteMutation.isPending ? "创建中…" : "创建邀请"}
           </Button>
-          <span className="text-sm text-muted-foreground">Invite history below keeps the audit trail.</span>
+          <span className="text-sm text-muted-foreground">下面的邀请历史保留了审计记录。</span>
         </div>
 
         {latestInviteUrl ? (
           <div className="space-y-3 rounded-lg border border-border px-4 py-4">
             <div className="space-y-1">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-medium">Latest invite link</div>
+                <div className="text-sm font-medium">最新邀请链接</div>
                 {latestInviteCopied ? (
                   <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
                     <Check className="h-3.5 w-3.5" />
-                    Copied
+                    已复制
                   </div>
                 ) : null}
               </div>
               <div className="text-sm text-muted-foreground">
-                This URL includes the current Paperclip domain returned by the server.
+                此 URL 包含服务器返回的当前 Paperclip 域名。
               </div>
             </div>
             <button
@@ -265,7 +265,7 @@ export function CompanyInvites() {
               <Button size="sm" variant="outline" asChild>
                 <a href={latestInviteUrl} target="_blank" rel="noreferrer">
                   <ExternalLink className="h-4 w-4" />
-                  Open invite
+                  打开邀请
                 </a>
               </Button>
             </div>
@@ -276,19 +276,19 @@ export function CompanyInvites() {
       <section className="rounded-xl border border-border">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
           <div className="space-y-1">
-            <h2 className="text-sm font-semibold">Invite history</h2>
+            <h2 className="text-sm font-semibold">邀请历史</h2>
             <p className="text-sm text-muted-foreground">
-              Review invite status, role, inviter, and any linked join request.
+              查看邀请状态、角色、邀请人和关联的加入请求。
             </p>
           </div>
           <Link to="/inbox/requests" className="text-sm underline underline-offset-4">
-            Open join request queue
+            打开加入请求队列
           </Link>
         </div>
 
         {inviteHistory.length === 0 ? (
           <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
-            No invites have been created for this company yet.
+            该公司暂未创建任何邀请。
           </div>
         ) : (
           <div className="border-t border-border">
@@ -296,12 +296,12 @@ export function CompanyInvites() {
               <table className="min-w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-5 py-3 font-medium text-muted-foreground">State</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Role</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Invited by</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Created</th>
-                    <th className="px-5 py-3 font-medium text-muted-foreground">Join request</th>
-                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">Action</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">状态</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">角色</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">邀请人</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">创建时间</th>
+                    <th className="px-5 py-3 font-medium text-muted-foreground">加入请求</th>
+                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">操作</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -314,7 +314,7 @@ export function CompanyInvites() {
                       </td>
                       <td className="px-5 py-3 align-top">{invite.humanRole ?? "—"}</td>
                       <td className="px-5 py-3 align-top">
-                        <div>{invite.invitedByUser?.name || invite.invitedByUser?.email || "Unknown inviter"}</div>
+                        <div>{invite.invitedByUser?.name || invite.invitedByUser?.email || "未知邀请人"}</div>
                         {invite.invitedByUser?.email && invite.invitedByUser.name ? (
                           <div className="text-xs text-muted-foreground">{invite.invitedByUser.email}</div>
                         ) : null}
@@ -325,7 +325,7 @@ export function CompanyInvites() {
                       <td className="px-5 py-3 align-top">
                         {invite.relatedJoinRequestId ? (
                           <Link to="/inbox/requests" className="underline underline-offset-4">
-                            Review request
+                            查看请求
                           </Link>
                         ) : (
                           <span className="text-muted-foreground">—</span>
@@ -339,10 +339,10 @@ export function CompanyInvites() {
                             onClick={() => revokeMutation.mutate(invite.id)}
                             disabled={revokeMutation.isPending}
                           >
-                            Revoke
+                            撤销
                           </Button>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Inactive</span>
+                          <span className="text-xs text-muted-foreground">已失效</span>
                         )}
                       </td>
                     </tr>
@@ -358,7 +358,7 @@ export function CompanyInvites() {
                   onClick={() => invitesQuery.fetchNextPage()}
                   disabled={invitesQuery.isFetchingNextPage}
                 >
-                  {invitesQuery.isFetchingNextPage ? "Loading more…" : "View more"}
+                  {invitesQuery.isFetchingNextPage ? "加载更多…" : "查看更多"}
                 </Button>
               </div>
             ) : null}
@@ -369,6 +369,13 @@ export function CompanyInvites() {
   );
 }
 
+const inviteStateLabels: Record<"active" | "accepted" | "expired" | "revoked", string> = {
+  active: "待使用",
+  accepted: "已接受",
+  expired: "已过期",
+  revoked: "已撤销",
+};
+
 function formatInviteState(state: "active" | "accepted" | "expired" | "revoked") {
-  return state.charAt(0).toUpperCase() + state.slice(1);
+  return inviteStateLabels[state] ?? state;
 }

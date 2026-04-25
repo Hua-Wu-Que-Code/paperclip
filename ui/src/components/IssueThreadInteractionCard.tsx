@@ -57,25 +57,25 @@ function resolveActorLabel(args: {
     return agentMap?.get(agentId)?.name ?? agentId.slice(0, 8);
   }
   if (userId) {
-    return formatAssigneeUserLabel(userId, currentUserId, userLabelMap) ?? "Board";
+    return formatAssigneeUserLabel(userId, currentUserId, userLabelMap) ?? "看板";
   }
-  return "Unknown";
+  return "未知";
 }
 
 function statusLabel(status: IssueThreadInteraction["status"]) {
   switch (status) {
     case "pending":
-      return "Pending";
+      return "待处理";
     case "accepted":
-      return "Accepted";
+      return "已接受";
     case "rejected":
-      return "Rejected";
+      return "已拒绝";
     case "answered":
-      return "Answered";
+      return "已回答";
     case "expired":
-      return "Expired";
+      return "已过期";
     case "failed":
-      return "Failed";
+      return "失败";
     default:
       return status;
   }
@@ -84,11 +84,11 @@ function statusLabel(status: IssueThreadInteraction["status"]) {
 function interactionKindLabel(kind: IssueThreadInteraction["kind"]) {
   switch (kind) {
     case "suggest_tasks":
-      return "Suggested tasks";
+      return "建议的任务";
     case "ask_user_questions":
-      return "Ask user questions";
+      return "向用户提问";
     case "request_confirmation":
-      return "Confirmation";
+      return "确认请求";
     default:
       return kind;
   }
@@ -277,16 +277,16 @@ function TaskTreeNode({
         {hasMetadata ? (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {hasExplicitAssignee ? (
-              <TaskField label="Assignee" value={assigneeLabel} />
+              <TaskField label="指派人" value={assigneeLabel} />
             ) : null}
             {node.task.billingCode ? (
-              <TaskField label="Billing" value={node.task.billingCode} />
+              <TaskField label="计费" value={node.task.billingCode} />
             ) : null}
             {node.task.projectId ? (
-              <TaskField label="Project" value={node.task.projectId} tone="subtle" />
+              <TaskField label="项目" value={node.task.projectId} tone="subtle" />
             ) : null}
             {labels.map((label) => (
-              <TaskField key={label} label="Label" value={label} tone="subtle" />
+              <TaskField key={label} label="标签" value={label} tone="subtle" />
             ))}
           </div>
         ) : null}
@@ -445,9 +445,9 @@ function SuggestTasksCard({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span>{totalTasks === 1 ? "1 draft issue" : `${totalTasks} draft issues`}</span>
+        <span>{totalTasks === 1 ? "1 个草稿议题" : `${totalTasks} 个草稿议题`}</span>
         {interaction.payload.defaultParentId ? (
-          <TaskField label="Default parent" value={interaction.payload.defaultParentId} tone="subtle" />
+          <TaskField label="默认父级" value={interaction.payload.defaultParentId} tone="subtle" />
         ) : null}
       </div>
 
@@ -490,7 +490,7 @@ function SuggestTasksCard({
             "mt-1 leading-6",
             !interaction.result?.rejectionReason && "text-rose-900/75",
           )}>
-            {interaction.result?.rejectionReason || "No reason provided."}
+            {interaction.result?.rejectionReason || "未提供原因。"}
           </p>
         </div>
       ) : null}
@@ -501,12 +501,12 @@ function SuggestTasksCard({
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span>
                 {selectedCount === totalTasks
-                  ? `All ${totalTasks} draft ${totalTasks === 1 ? "issue" : "issues"} selected`
-                  : `${selectedCount} of ${totalTasks} draft ${totalTasks === 1 ? "issue" : "issues"} selected`}
+                  ? `已选择全部 ${totalTasks} 个草稿任务`
+                  : `已选择 ${selectedCount}/${totalTasks} 个草稿任务`}
               </span>
               {selectedCount < totalTasks ? (
                 <span>
-                  {totalTasks - selectedCount} will be skipped if you accept this interaction.
+                  {totalTasks - selectedCount} 个将被跳过（如果接受此交互）。
                 </span>
               ) : null}
             </div>
@@ -520,10 +520,10 @@ function SuggestTasksCard({
                 {working === "accept" ? (
                   <>
                     <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                    Accepting...
+                    接受中...
                   </>
                 ) : (
-                  selectedCount === totalTasks ? "Accept drafts" : "Accept selected drafts"
+                  selectedCount === totalTasks ? "接受草稿" : "接受选中的草稿"
                 )}
               </Button>
               <Button
@@ -532,7 +532,7 @@ function SuggestTasksCard({
                 disabled={!onRejectInteraction || working !== null}
                 onClick={() => setRejecting((current) => !current)}
               >
-                Reject
+                拒绝
               </Button>
               {selectedCount < totalTasks ? (
                 <Button
@@ -541,7 +541,7 @@ function SuggestTasksCard({
                   disabled={working !== null}
                   onClick={() => setSelectedClientKeys(new Set(interaction.payload.tasks.map((task) => task.clientKey)))}
                 >
-                  Reset selection
+                  重置选择
                 </Button>
               ) : null}
             </div>
@@ -552,7 +552,7 @@ function SuggestTasksCard({
               <Textarea
                 value={rejectReason}
                 onChange={(event) => setRejectReason(event.target.value)}
-                placeholder="Add a short reason for rejecting this suggestion"
+                placeholder="添加简短的拒绝原因"
                 className="min-h-24 bg-background text-sm"
               />
               <div className="flex justify-end">
@@ -565,10 +565,10 @@ function SuggestTasksCard({
                   {working === "reject" ? (
                     <>
                       <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                      Saving...
+                      保存中...
                     </>
                   ) : (
-                    "Save rejection"
+                    "保存拒绝"
                   )}
                 </Button>
               </div>
@@ -704,12 +704,12 @@ function AskUserQuestionsCard({
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/70 px-2.5 py-1 font-medium uppercase tracking-[0.16em] text-foreground/70">
           <MessageSquareQuote className="h-3 w-3" />
-          Ask user questions
+          询问用户
         </span>
         <span>
           {questions.length === 1
-            ? "1 question"
-            : `${questions.length} questions`}
+            ? "1 个问题"
+            : `${questions.length} 个问题`}
         </span>
       </div>
 
@@ -723,7 +723,7 @@ function AskUserQuestionsCard({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                    Question {index + 1}
+                    问题 {index + 1}
                   </div>
                   <div
                     id={`${interaction.id}-${question.id}-prompt`}
@@ -738,8 +738,8 @@ function AskUserQuestionsCard({
                   ) : null}
                 </div>
                 <TaskField
-                  label={question.selectionMode === "single" ? "Pick" : "Pick many"}
-                  value={question.required ? "Required" : "Optional"}
+                  label={question.selectionMode === "single" ? "选择" : "选择多项"}
+                  value={question.required ? "必填" : "可选"}
                   tone="subtle"
                 />
               </div>
@@ -767,7 +767,7 @@ function AskUserQuestionsCard({
 
           <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/75 p-4">
             <div className="text-sm text-muted-foreground">
-              Submit once after you finish the full form.
+              完成整个表单后提交一次。
             </div>
             <Button
               size="sm"
@@ -777,10 +777,10 @@ function AskUserQuestionsCard({
               {working ? (
                 <>
                   <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                  Submitting...
+                  提交中...
                 </>
               ) : (
-                interaction.payload.submitLabel ?? "Submit answers"
+                interaction.payload.submitLabel ?? "提交回答"
               )}
             </Button>
           </div>
@@ -803,10 +803,10 @@ function AskUserQuestionsCard({
                 <div className="mt-2 flex flex-wrap gap-2">
                   {labels.length > 0 ? (
                     labels.map((label) => (
-                      <TaskField key={label} label="Answer" value={label} />
+                      <TaskField key={label} label="回答" value={label} />
                     ))
                   ) : (
-                    <span className="text-sm text-muted-foreground">No answer recorded.</span>
+                    <span className="text-sm text-muted-foreground">未记录回答。</span>
                   )}
                 </div>
               </div>
@@ -816,7 +816,7 @@ function AskUserQuestionsCard({
           {interaction.result?.summaryMarkdown ? (
             <div className="rounded-2xl border border-emerald-300/60 bg-emerald-50/85 p-4">
               <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
-                Submitted summary
+                已提交的摘要
               </div>
               <MarkdownBody>{interaction.result.summaryMarkdown}</MarkdownBody>
             </div>
@@ -904,7 +904,7 @@ function RequestConfirmationResolution({
   if (interaction.status === "accepted") {
     return (
       <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
-        <span className="font-medium">Confirmed</span>
+        <span className="font-medium">已确认</span>
         <RequestConfirmationTargetChip interaction={interaction} target={target} />
       </div>
     );
@@ -914,7 +914,7 @@ function RequestConfirmationResolution({
     return (
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-2 text-sm leading-6 text-foreground">
-          <span className="font-medium">Declined</span>
+          <span className="font-medium">已拒绝</span>
           <RequestConfirmationTargetChip interaction={interaction} target={target} />
         </div>
         {interaction.result?.reason ? (
@@ -932,16 +932,16 @@ function RequestConfirmationResolution({
     return (
       <div className="space-y-3 rounded-sm border border-amber-500/60 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
         <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">
-          {expiredByComment ? "Expired by comment" : "Expired by target change"}
+          {expiredByComment ? "因评论过期" : "因目标变更过期"}
         </div>
         <p className="leading-6">
           {expiredByComment
-            ? "A board comment superseded this confirmation before it was resolved."
-            : "The requested target changed before this confirmation was resolved."}
+            ? "在此确认解决之前，一条看板评论已将其取代。"
+            : "请求的目标在此确认解决之前已变更。"}
         </p>
         {expiredByComment && interaction.result?.commentId ? (
           <Button asChild size="sm" variant="ghost" className="h-7 px-2 text-amber-950 hover:bg-amber-500/15 dark:text-amber-50">
-            <a href={`#comment-${interaction.result.commentId}`}>Jump to comment</a>
+            <a href={`#comment-${interaction.result.commentId}`}>跳转到评论</a>
           </Button>
         ) : null}
         {expiredByTargetChange ? (
@@ -964,7 +964,7 @@ function RequestConfirmationResolution({
   if (interaction.status === "failed") {
     return (
       <p className="text-sm leading-6 text-muted-foreground">
-        This request could not be resolved. Try again or create a new request.
+        此请求无法解决。请重试或创建新请求。
       </p>
     );
   }
@@ -999,8 +999,8 @@ function RequestConfirmationCard({
   const declineReasonPlaceholder =
     interaction.payload.declineReasonPlaceholder
     ?? (interaction.payload.acceptLabel === "Approve plan"
-      ? "Optional: what would you like revised?"
-      : "Optional: tell the agent what you'd change.");
+      ? "可选：您希望修改什么？"
+      : "可选：告诉智能体您想更改什么。");
 
   useEffect(() => {
     setRejectReason(interaction.result?.reason ?? "");
@@ -1019,7 +1019,7 @@ function RequestConfirmationCard({
     try {
       await onAcceptInteraction(interaction);
     } catch {
-      setActionError("Try again");
+      setActionError("请重试");
     } finally {
       setWorking(null);
     }
@@ -1034,7 +1034,7 @@ function RequestConfirmationCard({
       await onRejectInteraction(interaction, trimmedRejectReason || undefined);
       setRejecting(false);
     } catch {
-      setActionError("Try again");
+      setActionError("请重试");
     } finally {
       setWorking(null);
     }
@@ -1071,10 +1071,10 @@ function RequestConfirmationCard({
               {working === "accept" ? (
                 <>
                   <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                  Confirming...
+                  确认中...
                 </>
               ) : (
-                interaction.payload.acceptLabel ?? "Confirm"
+                interaction.payload.acceptLabel ?? "确认"
               )}
             </Button>
             <Button
@@ -1090,7 +1090,7 @@ function RequestConfirmationCard({
                 setRejecting((current) => !current);
               }}
             >
-              {interaction.payload.rejectLabel ?? "Decline"}
+              {interaction.payload.rejectLabel ?? "拒绝"}
             </Button>
           </div>
 
@@ -1108,7 +1108,7 @@ function RequestConfirmationCard({
                 )}
               />
               {rejectAttempted && declineReasonInvalid ? (
-                <p className="text-xs text-destructive">A decline reason is required.</p>
+                <p className="text-xs text-destructive">拒绝原因为必填项。</p>
               ) : null}
               <div className="flex flex-wrap justify-end gap-2">
                 <Button
@@ -1120,7 +1120,7 @@ function RequestConfirmationCard({
                     setRejectAttempted(false);
                   }}
                 >
-                  Cancel decline
+                  取消拒绝
                 </Button>
                 <Button
                   size="sm"
@@ -1131,10 +1131,10 @@ function RequestConfirmationCard({
                   {working === "reject" ? (
                     <>
                       <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                      Saving...
+                      保存中...
                     </>
                   ) : (
-                    interaction.payload.rejectLabel ?? "Decline"
+                    interaction.payload.rejectLabel ?? "拒绝"
                   )}
                 </Button>
               </div>
@@ -1199,8 +1199,8 @@ export function IssueThreadInteractionCard({
               <span className="inline-flex items-center gap-1 rounded-sm border border-border/70 bg-transparent px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-foreground/70">
                 <ListChecks className="h-3.5 w-3.5" />
                 {interaction.continuationPolicy === "wake_assignee_on_accept"
-                  ? "Wakes on confirm"
-                  : "Wakes assignee"}
+                  ? "确认后唤醒"
+                  : "唤醒指派人"}
               </span>
             ) : null}
           </div>
@@ -1208,10 +1208,10 @@ export function IssueThreadInteractionCard({
           <div className="mt-3 text-lg font-bold text-foreground">
             {interaction.title
               ?? (interaction.kind === "suggest_tasks"
-                ? "Suggested task tree"
+                ? "建议的任务树"
                 : interaction.kind === "ask_user_questions"
-                  ? interaction.payload.title ?? "Questions for the operator"
-                  : "Confirmation requested")}
+                  ? (interaction.payload as { title?: string }).title ?? "操作员问题"
+                  : "请求确认")}
           </div>
           {interaction.summary ? (
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
@@ -1224,11 +1224,11 @@ export function IssueThreadInteractionCard({
           <TooltipTrigger asChild>
             <div className="rounded-sm border border-border/70 bg-transparent px-3 py-2 text-right text-xs text-muted-foreground">
               <div className="font-medium text-foreground">{formatShortDate(interaction.createdAt)}</div>
-              <div>proposed by {createdByLabel}</div>
+              <div>由 {createdByLabel} 提出</div>
             </div>
           </TooltipTrigger>
           <TooltipContent side="bottom" className="text-xs">
-            Created {formatDateTime(interaction.createdAt)}
+            创建于 {formatDateTime(interaction.createdAt)}
           </TooltipContent>
         </Tooltip>
       </div>
@@ -1259,8 +1259,8 @@ export function IssueThreadInteractionCard({
 
       {resolvedByLabel ? (
         <div className="mt-4 border-t border-border/60 pt-3 text-xs text-muted-foreground">
-          Resolved by <span className="font-medium text-foreground">{resolvedByLabel}</span>
-          {interaction.resolvedAt ? ` on ${formatShortDate(interaction.resolvedAt)}` : ""}
+          由 <span className="font-medium text-foreground">{resolvedByLabel}</span> 解决
+          {interaction.resolvedAt ? ` 于 ${formatShortDate(interaction.resolvedAt)}` : ""}
         </div>
       ) : null}
     </div>

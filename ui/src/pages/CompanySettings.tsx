@@ -2,6 +2,8 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AGENT_ADAPTER_TYPES,
+  DEFAULT_FEEDBACK_DATA_SHARING_TERMS_VERSION,
+  FEEDBACK_TERMS_URL,
   getAdapterEnvironmentSupport,
   type Environment,
   type EnvironmentProbeResult,
@@ -162,10 +164,10 @@ function SupportMark({ supported }: { supported: boolean }) {
   return supported ? (
     <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400">
       <Check className="h-3 w-3" />
-      Yes
+      是
     </span>
   ) : (
-    <span className="text-muted-foreground">No</span>
+    <span className="text-muted-foreground">否</span>
   );
 }
 
@@ -254,6 +256,28 @@ export function CompanySettings() {
     }
   });
 
+
+  const feedbackSharingMutation = useMutation({
+    mutationFn: (enabled: boolean) =>
+      companiesApi.update(selectedCompanyId!, {
+        feedbackDataSharingEnabled: enabled,
+      }),
+    onSuccess: (_company, enabled) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
+      pushToast({
+        title: enabled ? "已启用反馈共享" : "已禁用反馈共享",
+        tone: "success",
+      });
+    },
+    onError: (err) => {
+      pushToast({
+        title: "更新反馈共享失败",
+        body: err instanceof Error ? err.message : "未知错误",
+        tone: "error",
+      });
+    },
+  });
+
   const inviteMutation = useMutation({
     mutationFn: () =>
       accessApi.createOpenClawInvitePrompt(selectedCompanyId!),
@@ -302,7 +326,7 @@ export function CompanySettings() {
     },
     onError: (err) => {
       setInviteError(
-        err instanceof Error ? err.message : "Failed to create invite"
+        err instanceof Error ? err.message : "创建邀请失败"
       );
     }
   });
@@ -348,15 +372,15 @@ export function CompanySettings() {
       setEditingEnvironmentId(null);
       setEnvironmentForm(createEmptyEnvironmentForm());
       pushToast({
-        title: editingEnvironmentId ? "Environment updated" : "Environment created",
-        body: `${environment.name} is ready.`,
+        title: editingEnvironmentId ? "环境已更新" : "环境已创建",
+        body: `${environment.name} 已就绪。`,
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to save environment",
-        body: error instanceof Error ? error.message : "Environment save failed.",
+        title: "保存环境失败",
+        body: error instanceof Error ? error.message : "环境保存失败。",
         tone: "error",
       });
     },
@@ -370,7 +394,7 @@ export function CompanySettings() {
         [environmentId]: probe,
       }));
       pushToast({
-        title: probe.ok ? "Environment probe passed" : "Environment probe failed",
+        title: probe.ok ? "环境探测通过" : "环境探测失败",
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
@@ -382,13 +406,13 @@ export function CompanySettings() {
         [environmentId]: {
           ok: false,
           driver: failedEnvironment?.driver ?? "local",
-          summary: error instanceof Error ? error.message : "Environment probe failed.",
+          summary: error instanceof Error ? error.message : "环境探测失败。",
           details: null,
         },
       }));
       pushToast({
-        title: "Environment probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: "环境探测失败",
+        body: error instanceof Error ? error.message : "环境探测失败。",
         tone: "error",
       });
     },
@@ -401,15 +425,15 @@ export function CompanySettings() {
     },
     onSuccess: (probe) => {
       pushToast({
-        title: probe.ok ? "Draft probe passed" : "Draft probe failed",
+        title: probe.ok ? "草稿探测通过" : "草稿探测失败",
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Draft probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: "草稿探测失败",
+        body: error instanceof Error ? error.message : "环境探测失败。",
         tone: "error",
       });
     },
@@ -460,15 +484,15 @@ export function CompanySettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings" }
+      { label: selectedCompany?.name ?? "公司", href: "/dashboard" },
+      { label: "设置" }
     ]);
   }, [setBreadcrumbs, selectedCompany?.name]);
 
   if (!selectedCompany) {
     return (
       <div className="text-sm text-muted-foreground">
-        No company selected. Select a company from the switcher above.
+        未选择公司。请从上方的切换器中选择一个公司。
       </div>
     );
   }
@@ -592,16 +616,16 @@ export function CompanySettings() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-muted-foreground" />
-        <h1 className="text-lg font-semibold">Company Settings</h1>
+        <h1 className="text-lg font-semibold">公司设置</h1>
       </div>
 
       {/* General */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          General
+          通用
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
-          <Field label="Company name" hint="The display name for your company.">
+          <Field label="公司名称" hint="公司的显示名称。">
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
@@ -610,14 +634,14 @@ export function CompanySettings() {
             />
           </Field>
           <Field
-            label="Description"
-            hint="Optional description shown in the company profile."
+            label="描述"
+            hint="可选描述，显示在公司简介中。"
           >
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
               value={description}
-              placeholder="Optional company description"
+              placeholder="可选的公司描述"
               onChange={(e) => setDescription(e.target.value)}
             />
           </Field>
@@ -627,7 +651,7 @@ export function CompanySettings() {
       {/* Appearance */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Appearance
+          外观
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-start gap-4">
@@ -642,7 +666,7 @@ export function CompanySettings() {
             <div className="flex-1 space-y-3">
               <Field
                 label="Logo"
-                hint="Upload a PNG, JPEG, WEBP, GIF, or SVG logo image."
+                hint="上传 PNG、JPEG、WEBP、GIF 或 SVG 格式的 Logo 图片。"
               >
                 <div className="space-y-2">
                   <input
@@ -659,7 +683,7 @@ export function CompanySettings() {
                         onClick={handleClearLogo}
                         disabled={clearLogoMutation.isPending}
                       >
-                        {clearLogoMutation.isPending ? "Removing..." : "Remove logo"}
+                        {clearLogoMutation.isPending ? "移除中..." : "移除 Logo"}
                       </Button>
                     </div>
                   )}
@@ -668,7 +692,7 @@ export function CompanySettings() {
                       {logoUploadError ??
                         (logoUploadMutation.error instanceof Error
                           ? logoUploadMutation.error.message
-                          : "Logo upload failed")}
+                          : "Logo 上传失败")}
                     </span>
                   )}
                   {clearLogoMutation.isError && (
@@ -677,13 +701,13 @@ export function CompanySettings() {
                     </span>
                   )}
                   {logoUploadMutation.isPending && (
-                    <span className="text-xs text-muted-foreground">Uploading logo...</span>
+                    <span className="text-xs text-muted-foreground">正在上传 Logo...</span>
                   )}
                 </div>
               </Field>
               <Field
-                label="Brand color"
-                hint="Sets the hue for the company icon. Leave empty for auto-generated color."
+                label="品牌颜色"
+                hint="设置公司图标的色调。留空则自动生成颜色。"
               >
                 <div className="flex items-center gap-2">
                   <input
@@ -701,7 +725,7 @@ export function CompanySettings() {
                         setBrandColor(v);
                       }
                     }}
-                    placeholder="Auto"
+                    placeholder="自动"
                     className="w-28 rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-mono outline-none"
                   />
                   {brandColor && (
@@ -711,7 +735,7 @@ export function CompanySettings() {
                       onClick={() => setBrandColor("")}
                       className="text-xs text-muted-foreground"
                     >
-                      Clear
+                      清除
                     </Button>
                   )}
                 </div>
@@ -729,16 +753,16 @@ export function CompanySettings() {
             onClick={handleSaveGeneral}
             disabled={generalMutation.isPending || !companyName.trim()}
           >
-            {generalMutation.isPending ? "Saving..." : "Save changes"}
+            {generalMutation.isPending ? "保存中..." : "保存更改"}
           </Button>
           {generalMutation.isSuccess && (
-            <span className="text-xs text-muted-foreground">Saved</span>
+            <span className="text-xs text-muted-foreground">已保存</span>
           )}
           {generalMutation.isError && (
             <span className="text-xs text-destructive">
               {generalMutation.error instanceof Error
                   ? generalMutation.error.message
-                  : "Failed to save"}
+                  : "保存失败"}
             </span>
           )}
         </div>
@@ -747,25 +771,24 @@ export function CompanySettings() {
       {environmentsEnabled ? (
       <div className="space-y-4" data-testid="company-settings-environments-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Environments
+          环境
         </div>
         <div className="space-y-4 rounded-md border border-border px-4 py-4">
           <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            Environment choices use the same adapter support matrix as agent defaults. SSH is always available for
-            remote-managed adapters, and sandbox environments appear only when a run-capable sandbox provider plugin is
-            installed.
+            环境选项使用与代理默认配置相同的适配器支持矩阵。SSH 始终可用于远程管理的适配器，
+            沙箱环境仅在安装了支持运行的沙箱提供程序插件时才会出现。
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] text-left text-xs">
-              <caption className="sr-only">Environment support by adapter</caption>
+              <caption className="sr-only">适配器的环境支持</caption>
               <thead className="border-b border-border text-muted-foreground">
                 <tr>
-                  <th className="py-2 pr-3 font-medium">Adapter</th>
-                  <th className="px-3 py-2 font-medium">Local</th>
+                  <th className="py-2 pr-3 font-medium">适配器</th>
+                  <th className="px-3 py-2 font-medium">本地</th>
                   <th className="px-3 py-2 font-medium">SSH</th>
                   {sandboxSupportVisible ? (
-                    <th className="px-3 py-2 font-medium">Sandbox</th>
+                    <th className="px-3 py-2 font-medium">沙箱</th>
                   ) : null}
                 </tr>
               </thead>
@@ -800,7 +823,7 @@ export function CompanySettings() {
 
           <div className="space-y-3">
             {(environments ?? []).length === 0 ? (
-              <div className="text-sm text-muted-foreground">No environments saved for this company yet.</div>
+              <div className="text-sm text-muted-foreground">该公司尚未保存任何环境。</div>
             ) : (
               (environments ?? []).map((environment) => {
                 const probe = probeResults[environment.id] ?? null;
@@ -820,8 +843,8 @@ export function CompanySettings() {
                         ) : null}
                         {environment.driver === "ssh" ? (
                           <div className="text-xs text-muted-foreground">
-                            {typeof environment.config.host === "string" ? environment.config.host : "SSH host"} ·{" "}
-                            {typeof environment.config.username === "string" ? environment.config.username : "user"}
+                            {typeof environment.config.host === "string" ? environment.config.host : "SSH 主机"} ·{" "}
+                            {typeof environment.config.username === "string" ? environment.config.username : "用户"}
                           </div>
                         ) : environment.driver === "sandbox" ? (
                           <div className="text-xs text-muted-foreground">
@@ -831,11 +854,11 @@ export function CompanySettings() {
                               const displayName =
                                 environmentCapabilities?.sandboxProviders?.[provider]?.displayName ?? provider;
                               const summary = summarizeSandboxConfig(environment.config as Record<string, unknown>);
-                              return `${displayName} sandbox provider${summary ? ` · ${summary}` : ""}`;
+                              return `${displayName} 沙箱提供程序${summary ? ` · ${summary}` : ""}`;
                             })()}
                           </div>
                         ) : (
-                          <div className="text-xs text-muted-foreground">Runs on this Paperclip host.</div>
+                          <div className="text-xs text-muted-foreground">在此 Paperclip 主机上运行。</div>
                         )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -847,10 +870,10 @@ export function CompanySettings() {
                             disabled={environmentProbeMutation.isPending}
                           >
                             {environmentProbeMutation.isPending
-                              ? "Testing..."
+                              ? "测试中..."
                               : environment.driver === "ssh"
-                                ? "Test connection"
-                                : "Test provider"}
+                                ? "测试连接"
+                                : "测试提供程序"}
                           </Button>
                         ) : null}
                         <Button
@@ -858,7 +881,7 @@ export function CompanySettings() {
                           variant="ghost"
                           onClick={() => handleEditEnvironment(environment)}
                         >
-                          {isEditing ? "Editing" : "Edit"}
+                          {isEditing ? "编辑中" : "编辑"}
                         </Button>
                       </div>
                     </div>
@@ -884,10 +907,10 @@ export function CompanySettings() {
 
           <div className="border-t border-border/60 pt-4">
             <div className="mb-3 text-sm font-medium">
-              {editingEnvironmentId ? "Edit environment" : "Add environment"}
+              {editingEnvironmentId ? "编辑环境" : "添加环境"}
             </div>
             <div className="space-y-3">
-              <Field label="Name" hint="Operator-facing name for this execution target.">
+              <Field label="名称" hint="操作员可识别的执行目标名称。">
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -895,7 +918,7 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, name: e.target.value }))}
                 />
               </Field>
-              <Field label="Description" hint="Optional note about what this machine is for.">
+              <Field label="描述" hint="可选的备注，说明此机器用途。">
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -903,7 +926,7 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, description: e.target.value }))}
                 />
               </Field>
-              <Field label="Driver" hint="Local runs on this host. SSH stores a remote machine target. Sandbox stores plugin-backed provider config on the shared environment seam.">
+              <Field label="驱动" hint="Local 在本机运行。SSH 存储远程机器目标。Sandbox 存储插件支持的提供程序配置。">
                 <select
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   value={environmentForm.driver}
@@ -934,15 +957,15 @@ export function CompanySettings() {
                 >
                   <option value="ssh">SSH</option>
                   {sandboxCreationEnabled || environmentForm.driver === "sandbox" ? (
-                    <option value="sandbox">Sandbox</option>
+                    <option value="sandbox">沙箱</option>
                   ) : null}
-                  <option value="local">Local</option>
+                  <option value="local">本地</option>
                 </select>
               </Field>
 
               {environmentForm.driver === "ssh" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Host" hint="DNS name or IP address for the remote machine.">
+                  <Field label="主机" hint="远程机器的 DNS 名称或 IP 地址。">
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -950,7 +973,7 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshHost: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Port" hint="Defaults to 22.">
+                  <Field label="端口" hint="默认为 22。">
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="number"
@@ -960,7 +983,7 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshPort: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Username" hint="SSH login user.">
+                  <Field label="用户名" hint="SSH 登录用户。">
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -968,7 +991,7 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshUsername: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Remote workspace path" hint="Absolute path that Paperclip will verify during SSH connection tests.">
+                  <Field label="远程工作空间路径" hint="Paperclip 在 SSH 连接测试期间将验证的绝对路径。">
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -978,7 +1001,7 @@ export function CompanySettings() {
                         setEnvironmentForm((current) => ({ ...current, sshRemoteWorkspacePath: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Private key" hint="Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain.">
+                  <Field label="私钥" hint="可选的 PEM 私钥。留空则使用服务器的 SSH 代理或默认密钥链。">
                     <div className="space-y-2">
                       <select
                         className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
@@ -990,7 +1013,7 @@ export function CompanySettings() {
                             sshPrivateKey: e.target.value ? "" : current.sshPrivateKey,
                           }))}
                       >
-                        <option value="">No saved secret</option>
+                        <option value="">无已保存的密钥</option>
                         {(secrets ?? []).map((secret) => (
                           <option key={secret.id} value={secret.id}>{secret.name}</option>
                         ))}
@@ -1003,7 +1026,7 @@ export function CompanySettings() {
                       />
                     </div>
                   </Field>
-                  <Field label="Known hosts" hint="Optional known_hosts block used when strict host key checking is enabled.">
+                  <Field label="已知主机" hint="启用严格主机密钥检查时使用的可选 known_hosts 内容。">
                     <textarea
                       className="h-32 w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-mono outline-none"
                       value={environmentForm.sshKnownHosts}
@@ -1012,8 +1035,8 @@ export function CompanySettings() {
                   </Field>
                   <div className="md:col-span-2">
                     <ToggleField
-                      label="Strict host key checking"
-                      hint="Keep this on unless you deliberately want probe-time host key acceptance disabled."
+                      label="严格主机密钥检查"
+                      hint="除非您明确需要在探测时禁用主机密钥自动接受，否则请保持开启。"
                       checked={environmentForm.sshStrictHostKeyChecking}
                       onChange={(checked) =>
                         setEnvironmentForm((current) => ({ ...current, sshStrictHostKeyChecking: checked }))}
@@ -1024,7 +1047,7 @@ export function CompanySettings() {
 
               {environmentForm.driver === "sandbox" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Provider" hint="Installed run-capable sandbox provider plugins appear here.">
+                  <Field label="提供程序" hint="已安装的支持运行的沙箱提供程序插件会显示在这里。">
                     <select
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       value={environmentForm.sandboxProvider}
@@ -1066,7 +1089,7 @@ export function CompanySettings() {
                       />
                     ) : (
                       <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-                        This provider does not declare additional configuration fields.
+                        此提供程序未声明额外的配置字段。
                       </div>
                     )}
                   </div>
@@ -1081,11 +1104,11 @@ export function CompanySettings() {
                 >
                   {environmentMutation.isPending
                     ? editingEnvironmentId
-                      ? "Saving..."
-                      : "Creating..."
+                      ? "保存中..."
+                      : "创建中..."
                     : editingEnvironmentId
-                      ? "Save environment"
-                      : "Create environment"}
+                      ? "保存环境"
+                      : "创建环境"}
                 </Button>
                 {editingEnvironmentId ? (
                   <Button
@@ -1094,7 +1117,7 @@ export function CompanySettings() {
                     onClick={handleCancelEnvironmentEdit}
                     disabled={environmentMutation.isPending}
                   >
-                    Cancel
+                    取消
                   </Button>
                 ) : null}
                 {environmentForm.driver !== "local" ? (
@@ -1104,14 +1127,14 @@ export function CompanySettings() {
                     onClick={() => draftEnvironmentProbeMutation.mutate(environmentForm)}
                     disabled={draftEnvironmentProbeMutation.isPending || !environmentFormValid}
                   >
-                    {draftEnvironmentProbeMutation.isPending ? "Testing..." : "Test draft"}
+                    {draftEnvironmentProbeMutation.isPending ? "测试中..." : "测试草稿"}
                   </Button>
                 ) : null}
                 {environmentMutation.isError ? (
                   <span className="text-xs text-destructive">
                     {environmentMutation.error instanceof Error
                       ? environmentMutation.error.message
-                      : "Failed to save environment"}
+                      : "保存环境失败"}
                   </span>
                 ) : null}
                 {draftEnvironmentProbeMutation.data ? (
@@ -1129,12 +1152,12 @@ export function CompanySettings() {
       {/* Hiring */}
       <div className="space-y-4" data-testid="company-settings-team-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Hiring
+          招聘
         </div>
         <div className="rounded-md border border-border px-4 py-3">
           <ToggleField
-            label="Require board approval for new hires"
-            hint="New agent hires stay pending until approved by board."
+            label="新雇佣需要董事会审批"
+            hint="新代理雇佣在获得董事会批准前将保持待审状态。"
             checked={!!selectedCompany.requireBoardApprovalForNewAgents}
             onChange={(v) => settingsMutation.mutate(v)}
             toggleTestId="company-settings-team-approval-toggle"
@@ -1142,17 +1165,60 @@ export function CompanySettings() {
         </div>
       </div>
 
+
+      <div className="space-y-4">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          反馈共享
+        </div>
+        <div className="space-y-3 rounded-md border border-border px-4 py-4">
+          <ToggleField
+            label="允许将投票的 AI 输出共享给 Paperclip Labs"
+            hint="仅您明确投票的 AI 生成输出才有资格进行反馈共享。"
+            checked={!!selectedCompany.feedbackDataSharingEnabled}
+            onChange={(enabled) => feedbackSharingMutation.mutate(enabled)}
+          />
+          <p className="text-sm text-muted-foreground">
+            投票始终保存在本地。此设置控制是否可以将已投票的 AI 输出标记为共享给 Paperclip Labs。
+          </p>
+          <div className="space-y-1 text-xs text-muted-foreground">
+            <div>
+              条款版本：{selectedCompany.feedbackDataSharingTermsVersion ?? DEFAULT_FEEDBACK_DATA_SHARING_TERMS_VERSION}
+            </div>
+            {selectedCompany.feedbackDataSharingConsentAt ? (
+              <div>
+                启用于 {new Date(selectedCompany.feedbackDataSharingConsentAt).toLocaleString()}
+                {selectedCompany.feedbackDataSharingConsentByUserId
+                  ? `，操作人：${selectedCompany.feedbackDataSharingConsentByUserId}`
+                  : ""}
+              </div>
+            ) : (
+              <div>当前未启用共享。</div>
+            )}
+            {FEEDBACK_TERMS_URL ? (
+              <a
+                href={FEEDBACK_TERMS_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex text-foreground underline underline-offset-4"
+              >
+                阅读服务条款
+              </a>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
       {/* Invites */}
       <div className="space-y-4" data-testid="company-settings-invites-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Invites
+          邀请
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">
-              Generate an OpenClaw agent invite snippet.
+              生成一个 OpenClaw 智能体邀请代码片段。
             </span>
-            <HintIcon text="Creates a short-lived OpenClaw agent invite and renders a copy-ready prompt." />
+            <HintIcon text="创建一个短期有效的 OpenClaw 智能体邀请，并生成可复制的提示词。" />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -1162,8 +1228,8 @@ export function CompanySettings() {
               disabled={inviteMutation.isPending}
             >
               {inviteMutation.isPending
-                ? "Generating..."
-                : "Generate OpenClaw Invite Prompt"}
+                ? "生成中..."
+                : "生成 OpenClaw 邀请提示词"}
             </Button>
           </div>
           {inviteError && (
@@ -1176,7 +1242,7 @@ export function CompanySettings() {
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="text-xs text-muted-foreground">
-                  OpenClaw Invite Prompt
+                  OpenClaw 邀请提示词
                 </div>
                 {snippetCopied && (
                   <span
@@ -1184,7 +1250,7 @@ export function CompanySettings() {
                     className="flex items-center gap-1 text-xs text-green-600 animate-pulse"
                   >
                     <Check className="h-3 w-3" />
-                    Copied
+                    已复制
                   </span>
                 )}
               </div>
@@ -1211,7 +1277,7 @@ export function CompanySettings() {
                       }
                     }}
                   >
-                    {snippetCopied ? "Copied snippet" : "Copy snippet"}
+                    {snippetCopied ? "已复制代码片段" : "复制代码片段"}
                   </Button>
                 </div>
               </div>
@@ -1223,24 +1289,24 @@ export function CompanySettings() {
       {/* Import / Export */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Company Packages
+          公司包
         </div>
         <div className="rounded-md border border-border px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Import and export have moved to dedicated pages accessible from the{" "}
-            <a href="/org" className="underline hover:text-foreground">Org Chart</a> header.
+            导入和导出已移至专用页面，可从{" "}
+            <a href="/org" className="underline hover:text-foreground">组织架构</a> 头部访问。
           </p>
           <div className="mt-3 flex items-center gap-2">
             <Button size="sm" variant="outline" asChild>
               <a href="/company/export">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
-                Export
+                导出
               </a>
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="/company/import">
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
-                Import
+                导入
               </a>
             </Button>
           </div>

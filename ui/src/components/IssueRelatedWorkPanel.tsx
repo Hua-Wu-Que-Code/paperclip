@@ -94,16 +94,16 @@ export function IssueRelatedWorkPanel({
   return (
     <div className="space-y-3">
       <Section
-        title="References"
-        description="Other tasks this issue currently points at in its title, description, comments, or documents."
+        title="引用"
+        description="本事项在标题、描述、评论或文档中当前指向的其他任务。"
         items={outbound}
-        emptyLabel="This issue does not reference any other tasks yet."
+        emptyLabel="本事项尚未引用任何其他任务。"
       />
       <Section
-        title="Referenced by"
-        description="Other tasks that currently point at this issue."
+        title="被引用"
+        description="当前指向本事项的其他任务。"
         items={inbound}
-        emptyLabel="No other tasks reference this issue yet."
+        emptyLabel="暂无其他任务引用本事项。"
       />
     </div>
   );

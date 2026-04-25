@@ -40,11 +40,11 @@ import { StatusBadge } from "./StatusBadge";
 import { ChoosePathButton } from "./PathInstructionsModal";
 
 const projectStatuses = [
-  { value: "backlog", label: "Backlog" },
-  { value: "planned", label: "Planned" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "completed", label: "Completed" },
-  { value: "cancelled", label: "Cancelled" },
+  { value: "backlog", label: "待办" },
+  { value: "planned", label: "已计划" },
+  { value: "in_progress", label: "进行中" },
+  { value: "completed", label: "已完成" },
+  { value: "cancelled", label: "已取消" },
 ];
 
 export function NewProjectDialog() {
@@ -130,7 +130,7 @@ export function NewProjectDialog() {
   const deriveWorkspaceNameFromPath = (value: string) => {
     const normalized = value.trim().replace(/[\\/]+$/, "");
     const segments = normalized.split(/[\\/]/).filter(Boolean);
-    return segments[segments.length - 1] ?? "Local folder";
+    return segments[segments.length - 1] ?? "本地文件夹";
   };
 
   const deriveWorkspaceNameFromRepo = (value: string) => {
@@ -138,9 +138,9 @@ export function NewProjectDialog() {
       const parsed = new URL(value);
       const segments = parsed.pathname.split("/").filter(Boolean);
       const repo = segments[segments.length - 1]?.replace(/\.git$/i, "") ?? "";
-      return repo || "GitHub repo";
+      return repo || "GitHub 仓库";
     } catch {
-      return "GitHub repo";
+      return "GitHub 仓库";
     }
   };
 
@@ -150,11 +150,11 @@ export function NewProjectDialog() {
     const repoUrl = workspaceRepoUrl.trim();
 
     if (localPath && !isAbsolutePath(localPath)) {
-      setWorkspaceError("Local folder must be a full absolute path.");
+        setWorkspaceError("本地文件夹必须是完整的绝对路径。");
       return;
     }
     if (repoUrl && !looksLikeRepoUrl(repoUrl)) {
-      setWorkspaceError("Repo must use a valid GitHub or GitHub Enterprise repo URL.");
+      setWorkspaceError("仓库必须使用有效的 GitHub 或 GitHub Enterprise 仓库 URL。");
       return;
     }
 
@@ -224,7 +224,7 @@ export function NewProjectDialog() {
               </span>
             )}
             <span className="text-muted-foreground/60">&rsaquo;</span>
-            <span>New project</span>
+            <span>新建项目</span>
           </div>
           <div className="flex items-center gap-1">
             <Button
@@ -250,7 +250,7 @@ export function NewProjectDialog() {
         <div className="px-4 pt-4 pb-2 shrink-0">
           <input
             className="w-full text-lg font-semibold bg-transparent outline-none placeholder:text-muted-foreground/50"
-            placeholder="Project name"
+            placeholder="项目名称"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
@@ -269,7 +269,7 @@ export function NewProjectDialog() {
             ref={descriptionEditorRef}
             value={description}
             onChange={setDescription}
-            placeholder="Add description..."
+            placeholder="添加描述..."
             bordered={false}
             mentions={mentionOptions}
             contentClassName={cn("text-sm text-muted-foreground", expanded ? "min-h-[220px]" : "min-h-[120px]")}
@@ -283,14 +283,14 @@ export function NewProjectDialog() {
         <div className="px-4 pt-3 pb-3 space-y-3 border-t border-border">
           <div>
             <div className="mb-1 flex items-center gap-1.5">
-              <label className="block text-xs text-muted-foreground">Repo URL</label>
-              <span className="text-xs text-muted-foreground/50">optional</span>
+              <label className="block text-xs text-muted-foreground">仓库 URL</label>
+              <span className="text-xs text-muted-foreground/50">可选</span>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
-                  Link a GitHub repository so agents can clone, read, and push code for this project.
+                  关联 GitHub 仓库，以便智能体可以为此项目克隆、读取和推送代码。
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -304,14 +304,14 @@ export function NewProjectDialog() {
 
           <div>
             <div className="mb-1 flex items-center gap-1.5">
-              <label className="block text-xs text-muted-foreground">Local folder</label>
-              <span className="text-xs text-muted-foreground/50">optional</span>
+              <label className="block text-xs text-muted-foreground">本地文件夹</label>
+              <span className="text-xs text-muted-foreground/50">可选</span>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
-                  Set an absolute path on this machine where local agents will read and write files for this project.
+                  设置本机的绝对路径，本地智能体将在此路径下读写项目文件。
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -366,7 +366,7 @@ export function NewProjectDialog() {
               <button
                 className="text-muted-foreground hover:text-foreground"
                 onClick={() => setGoalIds((prev) => prev.filter((id) => id !== goal.id))}
-                aria-label={`Remove goal ${goal.title}`}
+                aria-label={`移除目标 ${goal.title}`}
                 type="button"
               >
                 <X className="h-3 w-3" />
@@ -381,7 +381,7 @@ export function NewProjectDialog() {
                 disabled={selectedGoals.length > 0 && availableGoals.length === 0}
               >
                 {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" /> : <Target className="h-3 w-3 text-muted-foreground" />}
-                {selectedGoals.length > 0 ? "+ Goal" : "Goal"}
+                {selectedGoals.length > 0 ? "+ 目标" : "目标"}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-1" align="start">
@@ -390,7 +390,7 @@ export function NewProjectDialog() {
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground"
                   onClick={() => setGoalOpen(false)}
                 >
-                  No goal
+                  无目标
                 </button>
               )}
               {availableGoals.map((g) => (
@@ -407,7 +407,7 @@ export function NewProjectDialog() {
               ))}
               {selectedGoals.length > 0 && availableGoals.length === 0 && (
                 <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                  All goals already selected.
+                  所有目标均已选择。
                 </div>
               )}
             </PopoverContent>
@@ -421,7 +421,7 @@ export function NewProjectDialog() {
               className="bg-transparent outline-none text-xs w-24"
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
-              placeholder="Target date"
+              placeholder="目标日期"
             />
           </div>
         </div>
@@ -429,7 +429,7 @@ export function NewProjectDialog() {
         {/* Footer */}
         <div className="flex items-center justify-between px-4 py-2.5 border-t border-border">
           {createProject.isError ? (
-            <p className="text-xs text-destructive">Failed to create project.</p>
+            <p className="text-xs text-destructive">创建项目失败。</p>
           ) : (
             <span />
           )}
@@ -438,7 +438,7 @@ export function NewProjectDialog() {
             disabled={!name.trim() || createProject.isPending}
             onClick={handleSubmit}
           >
-            {createProject.isPending ? "Creating…" : "Create project"}
+            {createProject.isPending ? "创建中…" : "创建项目"}
           </Button>
         </div>
       </DialogContent>

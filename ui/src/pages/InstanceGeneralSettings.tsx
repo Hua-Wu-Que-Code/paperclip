@@ -31,14 +31,14 @@ export function InstanceGeneralSettings() {
       queryClient.invalidateQueries({ queryKey: queryKeys.auth.session });
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to sign out.");
+      setActionError(error instanceof Error ? error.message : "退出登录失败。");
     },
   });
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Instance Settings" },
-      { label: "General" },
+      { label: "实例设置" },
+      { label: "通用" },
     ]);
   }, [setBreadcrumbs]);
 
@@ -59,12 +59,12 @@ export function InstanceGeneralSettings() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.instance.generalSettings });
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to update general settings.");
+      setActionError(error instanceof Error ? error.message : "更新通用设置失败。");
     },
   });
 
   if (generalQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading general settings...</div>;
+    return <div className="text-sm text-muted-foreground">加载通用设置中...</div>;
   }
 
   if (generalQuery.error) {
@@ -72,7 +72,7 @@ export function InstanceGeneralSettings() {
       <div className="text-sm text-destructive">
         {generalQuery.error instanceof Error
           ? generalQuery.error.message
-          : "Failed to load general settings."}
+          : "加载通用设置失败。"}
       </div>
     );
   }
@@ -87,11 +87,10 @@ export function InstanceGeneralSettings() {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">General</h1>
+          <h1 className="text-lg font-semibold">通用</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Configure instance-wide preferences including log display, keyboard shortcuts, backup
-          retention, and data sharing.
+          配置实例范围的偏好设置，包括日志显示、键盘快捷键、备份保留和数据共享。
         </p>
       </div>
 
@@ -104,7 +103,7 @@ export function InstanceGeneralSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold">Deployment and auth</h2>
+            <h2 className="text-sm font-semibold">部署和认证</h2>
             <ModeBadge
               deploymentMode={healthQuery.data?.deploymentMode}
               deploymentExposure={healthQuery.data?.deploymentExposure}
@@ -112,23 +111,23 @@ export function InstanceGeneralSettings() {
           </div>
           <div className="text-sm text-muted-foreground">
             {healthQuery.data?.deploymentMode === "local_trusted"
-              ? "Local trusted mode is optimized for a local operator. Browser requests run as local board context and no sign-in is required."
+              ? "本地信任模式针对本地操作员进行了优化。浏览器请求以本地看板上下文运行，无需登录。"
               : healthQuery.data?.deploymentExposure === "public"
-                ? "Authenticated public mode requires sign-in for board access and is intended for public URLs."
-                : "Authenticated private mode requires sign-in and is intended for LAN, VPN, or other private-network deployments."}
+                ? "认证的公共模式需要登录才能访问看板，适用于公共 URL。"
+                : "认证的私有模式需要登录，适用于局域网、VPN 或其他私有网络部署。"}
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             <StatusBox
-              label="Auth readiness"
-              value={healthQuery.data?.authReady ? "Ready" : "Not ready"}
+              label="认证就绪"
+              value={healthQuery.data?.authReady ? "就绪" : "未就绪"}
             />
             <StatusBox
-              label="Bootstrap status"
-              value={healthQuery.data?.bootstrapStatus === "bootstrap_pending" ? "Setup required" : "Ready"}
+              label="引导状态"
+              value={healthQuery.data?.bootstrapStatus === "bootstrap_pending" ? "需要设置" : "就绪"}
             />
             <StatusBox
-              label="Bootstrap invite"
-              value={healthQuery.data?.bootstrapInviteActive ? "Active" : "None"}
+              label="引导邀请"
+              value={healthQuery.data?.bootstrapInviteActive ? "活跃" : "无"}
             />
           </div>
         </div>
@@ -137,11 +136,9 @@ export function InstanceGeneralSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Censor username in logs</h2>
+            <h2 className="text-sm font-semibold">日志中隐藏用户名</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Hide the username segment in home-directory paths and similar operator-visible log output. Standalone
-              username mentions outside of paths are not yet masked in the live transcript view. This is off by
-              default.
+              在主目录路径和类似的操作员可见日志输出中隐藏用户名部分。路径之外的独立用户名提及尚未在实时转录视图中屏蔽。此选项默认关闭。
             </p>
           </div>
           <ToggleSwitch
@@ -156,10 +153,9 @@ export function InstanceGeneralSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Keyboard shortcuts</h2>
+            <h2 className="text-sm font-semibold">键盘快捷键</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Enable app keyboard shortcuts, including inbox navigation and global shortcuts like creating issues or
-              toggling panels. This is off by default.
+              启用应用键盘快捷键，包括收件箱导航和全局快捷键（如创建任务或切换面板）。此选项默认关闭。
             </p>
           </div>
           <ToggleSwitch
@@ -174,16 +170,14 @@ export function InstanceGeneralSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="space-y-5">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Backup retention</h2>
+            <h2 className="text-sm font-semibold">备份保留</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Configure how long automatic database backups are retained. Backups run roughly
-              every hour and are compressed with gzip. Within the daily window all backups are
-              kept; beyond that, one backup per week and one per month are preserved.
+              配置自动数据库备份的保留时间。备份大约每小时运行一次并使用 gzip 压缩。在每日窗口内保留所有备份；超出后每周保留一个，每月保留一个。
             </p>
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Daily</h3>
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">每日</h3>
             <div className="flex flex-wrap gap-2">
               {DAILY_RETENTION_PRESETS.map((days) => {
                 const active = backupRetention.dailyDays === days;
@@ -204,7 +198,7 @@ export function InstanceGeneralSettings() {
                       })
                     }
                   >
-                    <div className="text-sm font-medium">{days} days</div>
+                    <div className="text-sm font-medium">{days} 天</div>
                   </button>
                 );
               })}
@@ -212,11 +206,11 @@ export function InstanceGeneralSettings() {
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Weekly</h3>
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">每周</h3>
             <div className="flex flex-wrap gap-2">
               {WEEKLY_RETENTION_PRESETS.map((weeks) => {
                 const active = backupRetention.weeklyWeeks === weeks;
-                const label = weeks === 1 ? "1 week" : `${weeks} weeks`;
+                const label = weeks === 1 ? "1 周" : `${weeks} 周`;
                 return (
                   <button
                     key={weeks}
@@ -242,11 +236,11 @@ export function InstanceGeneralSettings() {
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Monthly</h3>
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">每月</h3>
             <div className="flex flex-wrap gap-2">
               {MONTHLY_RETENTION_PRESETS.map((months) => {
                 const active = backupRetention.monthlyMonths === months;
-                const label = months === 1 ? "1 month" : `${months} months`;
+                const label = months === 1 ? "1 月" : `${months} 月`;
                 return (
                   <button
                     key={months}
@@ -276,10 +270,9 @@ export function InstanceGeneralSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">AI feedback sharing</h2>
+            <h2 className="text-sm font-semibold">AI 反馈共享</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Control whether thumbs up and thumbs down votes can send the voted AI output to
-              Paperclip Labs. Votes are always saved locally.
+              控制点赞和点踩投票是否可以将投票的 AI 输出发送到 Paperclip Labs。投票始终在本地保存。
             </p>
             {FEEDBACK_TERMS_URL ? (
               <a
@@ -288,27 +281,26 @@ export function InstanceGeneralSettings() {
                 rel="noreferrer"
                 className="inline-flex text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
               >
-                Read our terms of service
+                阅读我们的服务条款
               </a>
             ) : null}
           </div>
           {feedbackDataSharingPreference === "prompt" ? (
             <div className="rounded-lg border border-border/70 bg-accent/20 px-3 py-2 text-sm text-muted-foreground">
-              No default is saved yet. The next thumbs up or thumbs down choice will ask once and
-              then save the answer here.
+              尚未保存默认设置。下次点赞或点踩时会询问一次，然后将答案保存在此处。
             </div>
           ) : null}
           <div className="flex flex-wrap gap-2">
             {[
               {
                 value: "allowed",
-                label: "Always allow",
-                description: "Share voted AI outputs automatically.",
+                label: "始终允许",
+                description: "自动共享投票的 AI 输出。",
               },
               {
                 value: "not_allowed",
-                label: "Don't allow",
-                description: "Keep voted AI outputs local only.",
+                label: "不允许",
+                description: "仅在本地保留投票的 AI 输出。",
               },
             ].map((option) => {
               const active = feedbackDataSharingPreference === option.value;
@@ -340,11 +332,10 @@ export function InstanceGeneralSettings() {
             })}
           </div>
           <p className="text-xs text-muted-foreground">
-            To retest the first-use prompt in local dev, remove the{" "}
-            <code>feedbackDataSharingPreference</code> key from the{" "}
-            <code>instance_settings.general</code> JSON row for this instance, or set it back to{" "}
-            <code>"prompt"</code>. Unset and <code>"prompt"</code> both mean no default has been
-            chosen yet.
+            要在本地开发中重新测试首次使用提示，请从该实例的{" "}
+            <code>instance_settings.general</code> JSON 行中移除{" "}
+            <code>feedbackDataSharingPreference</code> 键，或将其设置回{" "}
+            <code>"prompt"</code>。未设置和 <code>"prompt"</code> 均表示尚未选择默认值。
           </p>
         </div>
       </section>
@@ -352,9 +343,9 @@ export function InstanceGeneralSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Sign out</h2>
+            <h2 className="text-sm font-semibold">退出登录</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Sign out of this Paperclip instance. You will be redirected to the login page.
+              退出此 Paperclip 实例。您将被重定向到登录页面。
             </p>
           </div>
           <Button
@@ -364,7 +355,7 @@ export function InstanceGeneralSettings() {
             onClick={() => signOutMutation.mutate()}
           >
             <LogOut className="size-4" />
-            {signOutMutation.isPending ? "Signing out..." : "Sign out"}
+            {signOutMutation.isPending ? "退出中..." : "退出登录"}
           </Button>
         </div>
       </section>

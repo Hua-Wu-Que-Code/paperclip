@@ -25,7 +25,7 @@ import {
 const NO_COMPANY = "__none__";
 
 function initials(name: string | null | undefined) {
-  const value = name?.trim() || "User";
+  const value = name?.trim() || "用户";
   const parts = value.split(/\s+/).filter(Boolean);
   if (parts.length > 1) return `${parts[0]?.[0] ?? ""}${parts[parts.length - 1]?.[0] ?? ""}`.toUpperCase();
   return value.slice(0, 2).toUpperCase();
@@ -56,24 +56,24 @@ function WindowColumn({ stats }: { stats: UserProfileWindowStats }) {
     <div className="flex min-w-0 flex-col gap-4 border-l border-border pl-5 first:border-l-0 first:pl-0">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{stats.label}</h2>
-        <span className="text-[11px] text-muted-foreground tabular-nums">{completionRate(stats)} done</span>
+        <span className="text-[11px] text-muted-foreground tabular-nums">{completionRate(stats)} 完成</span>
       </div>
 
       <div className="grid grid-cols-2 gap-x-5 gap-y-3">
-        <Metric value={formatNumber(stats.touchedIssues)} label="Touched" />
-        <Metric value={formatNumber(stats.completedIssues)} label="Completed" />
-        <Metric value={formatNumber(stats.commentCount)} label="Comments" />
-        <Metric value={formatNumber(stats.activityCount)} label="Actions" />
+        <Metric value={formatNumber(stats.touchedIssues)} label="接触" />
+        <Metric value={formatNumber(stats.completedIssues)} label="已完成" />
+        <Metric value={formatNumber(stats.commentCount)} label="评论" />
+        <Metric value={formatNumber(stats.activityCount)} label="操作" />
       </div>
 
       <div className="grid grid-cols-2 gap-x-5 gap-y-1.5 pt-3 text-xs tabular-nums text-muted-foreground">
-        <span>Tokens</span>
+        <span>令牌</span>
         <span className="text-right text-foreground">{formatTokens(tokens)}</span>
-        <span>Spend</span>
+        <span>支出</span>
         <span className="text-right text-foreground">{formatCents(stats.costCents)}</span>
-        <span>Created</span>
+        <span>已创建</span>
         <span className="text-right text-foreground">{formatNumber(stats.createdIssues)}</span>
-        <span>Open</span>
+        <span>待处理</span>
         <span className="text-right text-foreground">{formatNumber(stats.assignedOpenIssues)}</span>
       </div>
     </div>
@@ -98,10 +98,10 @@ function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
   return (
     <section>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-3">
-        <h2 className="text-sm font-semibold">Last 14 days</h2>
+        <h2 className="text-sm font-semibold">近 14 天</h2>
         <div className="flex items-baseline gap-4 text-xs text-muted-foreground">
           <span className="tabular-nums text-foreground">{formatTokens(totalTokensSum)}</span>
-          <span>tokens total</span>
+          <span>令牌总计</span>
         </div>
       </div>
       <div className="mt-6 grid grid-cols-[repeat(14,minmax(0,1fr))] items-end gap-1.5 sm:gap-2">
@@ -116,7 +116,7 @@ function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
               <div
                 className="w-full bg-foreground/80 transition-opacity group-hover:bg-foreground"
                 style={{ height: `${heightPct}%`, minHeight: tokens === 0 ? 1 : undefined }}
-                title={`${formatShortDate(point.date)}: ${formatTokens(tokens)} tokens, ${point.completedIssues} completed`}
+                title={`${formatShortDate(point.date)}: ${formatTokens(tokens)} 令牌, ${point.completedIssues} 已完成`}
               />
               {completedPct > 0 ? (
                 <div
@@ -137,10 +137,10 @@ function UsageChart({ points }: { points: UserProfileDailyPoint[] }) {
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-wide text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 bg-foreground/80" /> tokens / day
+          <span className="h-2 w-2 bg-foreground/80" /> 令牌/天
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-[3px] w-4 rounded-full bg-emerald-500/80" /> completions
+          <span className="h-[3px] w-4 rounded-full bg-emerald-500/80" /> 完成数
         </span>
       </div>
     </section>
@@ -207,7 +207,7 @@ export function UserProfile() {
   });
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Users" }, { label: data?.user.name ?? userSlug }]);
+    setBreadcrumbs([{ label: "用户" }, { label: data?.user.name ?? userSlug }]);
   }, [data?.user.name, setBreadcrumbs, userSlug]);
 
   const allTime = data?.stats.find((entry) => entry.key === "all");
@@ -219,7 +219,7 @@ export function UserProfile() {
       (data?.topAgents ?? []).map((row) => ({
         key: row.agentId ?? "unknown",
         label: row.agentName ?? (row.agentId ? row.agentId.slice(0, 8) : "unknown"),
-        sublabel: "Issue-linked usage",
+        sublabel: "关联任务的用量",
         costCents: row.costCents,
         inputTokens: row.inputTokens,
         cachedInputTokens: row.cachedInputTokens,
@@ -233,7 +233,7 @@ export function UserProfile() {
       (data?.topProviders ?? []).map((row) => ({
         key: `${row.provider}:${row.biller}:${row.model}`,
         label: `${providerDisplayName(row.provider)} / ${row.model}`,
-        sublabel: `Billed through ${providerDisplayName(row.biller)}`,
+        sublabel: `通过 ${providerDisplayName(row.biller)} 计费`,
         costCents: row.costCents,
         inputTokens: row.inputTokens,
         cachedInputTokens: row.cachedInputTokens,
@@ -243,7 +243,7 @@ export function UserProfile() {
   );
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={UserRound} message="Select a company to view user profiles." />;
+    return <EmptyState icon={UserRound} message="请先选择一个公司以查看用户档案。" />;
   }
 
   if (isLoading) {
@@ -251,14 +251,14 @@ export function UserProfile() {
   }
 
   if (error || !data) {
-    return <EmptyState icon={AlertCircle} message="User profile not found for this company." />;
+    return <EmptyState icon={AlertCircle} message="未找到该公司下的用户档案。" />;
   }
 
   const allTimeTokens = allTime ? totalTokens(allTime) : 0;
   const metaParts = [
     data.user.membershipRole ?? "member",
     data.user.membershipStatus,
-    `joined ${formatDate(data.user.joinedAt)}`,
+    `加入于 ${formatDate(data.user.joinedAt)}`,
   ];
 
   return (
@@ -283,10 +283,10 @@ export function UserProfile() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <HeroStat label="All-time tokens" value={formatTokens(allTimeTokens)} hint={formatCents(allTime?.costCents ?? 0) + " spent"} />
-          <HeroStat label="Completed" value={formatNumber(allTime?.completedIssues ?? 0)} hint={allTime ? `${completionRate(allTime)} rate` : undefined} />
-          <HeroStat label="Open assigned" value={formatNumber(allTime?.assignedOpenIssues ?? 0)} hint={`${formatNumber(allTime?.createdIssues ?? 0)} created`} />
-          <HeroStat label="7-day actions" value={formatNumber(last7?.activityCount ?? 0)} hint={`${formatNumber(last7?.commentCount ?? 0)} comments`} />
+          <HeroStat label="累计令牌" value={formatTokens(allTimeTokens)} hint={formatCents(allTime?.costCents ?? 0) + " 已支出"} />
+          <HeroStat label="已完成" value={formatNumber(allTime?.completedIssues ?? 0)} hint={allTime ? `${completionRate(allTime)} 完成率` : undefined} />
+          <HeroStat label="待处理已分配" value={formatNumber(allTime?.assignedOpenIssues ?? 0)} hint={`${formatNumber(allTime?.createdIssues ?? 0)} 已创建`} />
+          <HeroStat label="7 天操作" value={formatNumber(last7?.activityCount ?? 0)} hint={`${formatNumber(last7?.commentCount ?? 0)} 条评论`} />
         </div>
       </section>
 
@@ -299,11 +299,11 @@ export function UserProfile() {
       <div className="grid gap-10 pt-2 xl:grid-cols-2">
         <section>
           <div className="flex items-baseline justify-between gap-3 border-b border-border pb-3">
-            <h2 className="text-sm font-semibold">Recent tasks</h2>
+            <h2 className="text-sm font-semibold">近期任务</h2>
             <span className="text-xs text-muted-foreground tabular-nums">{data.recentIssues.length}</span>
           </div>
           {data.recentIssues.length === 0 ? (
-            <div className="pt-4 text-sm text-muted-foreground">No touched tasks yet.</div>
+            <div className="pt-4 text-sm text-muted-foreground">暂无接触的任务。</div>
           ) : (
             <ul className="divide-y divide-border">
               {data.recentIssues.map((issue) => (
@@ -327,11 +327,11 @@ export function UserProfile() {
 
         <section>
           <div className="flex items-baseline justify-between gap-3 border-b border-border pb-3">
-            <h2 className="text-sm font-semibold">Recent activity</h2>
+            <h2 className="text-sm font-semibold">近期活动</h2>
             <span className="text-xs text-muted-foreground tabular-nums">{data.recentActivity.length}</span>
           </div>
           {data.recentActivity.length === 0 ? (
-            <div className="pt-4 text-sm text-muted-foreground">No direct user actions recorded yet.</div>
+            <div className="pt-4 text-sm text-muted-foreground">暂无直接用户操作记录。</div>
           ) : (
             <ul className="divide-y divide-border">
               {data.recentActivity.map((event) => (
@@ -351,8 +351,8 @@ export function UserProfile() {
       </div>
 
       <div className="grid gap-10 xl:grid-cols-2">
-        <UsageList title="Agent attribution" empty="No issue-linked token usage yet." rows={agentUsageRows} />
-        <UsageList title="Provider mix" empty="No provider usage attributed yet." rows={providerUsageRows} />
+        <UsageList title="智能体归属" empty="暂无关联任务的令牌用量。" rows={agentUsageRows} />
+        <UsageList title="提供商分布" empty="暂无提供商用量归属。" rows={providerUsageRows} />
       </div>
     </div>
   );

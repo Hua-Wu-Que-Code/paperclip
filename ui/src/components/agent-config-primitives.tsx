@@ -20,43 +20,43 @@ import { AGENT_ROLE_LABELS } from "@paperclipai/shared";
 
 /* ---- Help text for (?) tooltips ---- */
 export const help: Record<string, string> = {
-  name: "Display name for this agent.",
-  title: "Job title shown in the org chart.",
-  role: "Organizational role. Determines position and capabilities.",
-  reportsTo: "The agent this one reports to in the org hierarchy.",
-  capabilities: "Describes what this agent can do. Shown in the org chart and used for task routing.",
-  adapterType: "How this agent runs: local CLI (Claude/Codex/OpenCode), OpenClaw Gateway, spawned process, or generic HTTP webhook.",
-  cwd: "Deprecated legacy working directory fallback for local adapters. Existing agents may still carry this value, but new configurations should use project workspaces instead.",
-  promptTemplate: "Sent on every heartbeat. Keep this small and dynamic. Use it for current-task framing, not large static instructions. Supports {{ agent.id }}, {{ agent.name }}, {{ agent.role }} and other template variables.",
-  model: "Override the default model used by the adapter.",
-  thinkingEffort: "Control model reasoning depth. Supported values vary by adapter/model.",
-  chrome: "Enable Claude's Chrome integration by passing --chrome.",
-  dangerouslySkipPermissions: "Run unattended by auto-approving adapter permission prompts when supported.",
-  dangerouslyBypassSandbox: "Run Codex without sandbox restrictions. Required for filesystem/network access.",
-  search: "Enable Codex web search capability during runs.",
-  fastMode: "Enable Codex Fast mode. This burns credits/tokens much faster and is supported on GPT-5.4 and manual Codex model IDs.",
-  workspaceStrategy: "How Paperclip should realize an execution workspace for this agent. Keep project_primary for normal cwd execution, or use git_worktree for issue-scoped isolated checkouts.",
-  workspaceBaseRef: "Base git ref used when creating a worktree branch. Leave blank to use the resolved workspace ref or HEAD.",
-  workspaceBranchTemplate: "Template for naming derived branches. Supports {{issue.identifier}}, {{issue.title}}, {{agent.name}}, {{project.id}}, {{workspace.repoRef}}, and {{slug}}.",
-  worktreeParentDir: "Directory where derived worktrees should be created. Absolute, ~-prefixed, and repo-relative paths are supported.",
-  runtimeServicesJson: "Optional workspace runtime service definitions. Use this for shared app servers, workers, or other long-lived companion processes attached to the workspace.",
-  maxTurnsPerRun: "Maximum number of agentic turns (tool calls) per heartbeat run.",
-  command: "The command to execute (e.g. node, python).",
-  localCommand: "Override the path to the CLI command you want the adapter to call (e.g. /usr/local/bin/claude, codex, opencode).",
-  args: "Command-line arguments, comma-separated.",
-  extraArgs: "Extra CLI arguments for local adapters, comma-separated.",
-  envVars: "Environment variables injected into the adapter process. Use plain values or secret references.",
-  bootstrapPrompt: "Only sent when Paperclip starts a fresh session. Use this for stable setup guidance that should not be repeated on every heartbeat.",
-  payloadTemplateJson: "Optional JSON merged into remote adapter request payloads before Paperclip adds its standard wake and workspace fields.",
-  webhookUrl: "The URL that receives POST requests when the agent is invoked.",
-  heartbeatInterval: "Run this agent automatically on a timer. Useful for periodic tasks like checking for new work.",
-  intervalSec: "Seconds between automatic heartbeat invocations.",
-  timeoutSec: "Maximum seconds a run can take before being terminated. 0 means no timeout.",
-  graceSec: "Seconds to wait after sending interrupt before force-killing the process.",
-  wakeOnDemand: "Allow this agent to be woken by assignments, API calls, UI actions, or automated systems.",
-  cooldownSec: "Minimum seconds between consecutive heartbeat runs.",
-  maxConcurrentRuns: "Maximum number of heartbeat runs that can execute simultaneously for this agent.",
-  budgetMonthlyCents: "Monthly spending limit in cents. 0 means no limit.",
+  name: "此智能体的显示名称。",
+  title: "在组织架构图中显示的职位。",
+  role: "组织角色，决定职位和能力。",
+  reportsTo: "此智能体在组织层级中汇报的对象。",
+  capabilities: "描述此智能体能做什么。在组织架构图中显示，并用于任务路由。",
+  adapterType: "此智能体的运行方式：本地 CLI（Claude/Codex/OpenCode）、OpenClaw 网关、派生进程或通用 HTTP webhook。",
+  cwd: "已弃用的本地适配器工作目录回退。现有智能体可能仍保留此值，但新配置应改用项目工作区。",
+  promptTemplate: "每次心跳时发送。保持简短和动态。用于当前任务的框架，而非大型静态指令。支持 {{ agent.id }}、{{ agent.name }}、{{ agent.role }} 等模板变量。",
+  model: "覆盖适配器使用的默认模型。",
+  thinkingEffort: "控制模型推理深度。支持的值因适配器/模型而异。",
+  chrome: "通过传递 --chrome 启用 Claude 的 Chrome 集成。",
+  dangerouslySkipPermissions: "通过自动批准适配器权限提示来无人值守运行（在支持时）。",
+  dangerouslyBypassSandbox: "绕过沙箱限制运行 Codex。访问文件系统/网络时需要此选项。",
+  search: "在运行期间启用 Codex 网页搜索功能。",
+  fastMode: "启用 Codex 快速模式。此模式消耗更多积分/令牌，目前仅支持 GPT-5.4 和手动 Codex 模型 ID。",
+  workspaceStrategy: "Paperclip 如何为此智能体实现执行工作区。保持 project_primary 使用普通工作目录执行，或使用 git_worktree 进行基于议题的隔离检出。",
+  workspaceBaseRef: "创建工作树分支时使用的基础 git 引用。留空以使用已解析的工作区引用或 HEAD。",
+  workspaceBranchTemplate: "派生分支的命名模板。支持 {{issue.identifier}}、{{issue.title}}、{{agent.name}}、{{project.id}}、{{workspace.repoRef}} 和 {{slug}}。",
+  worktreeParentDir: "派生工作树的创建目录。支持绝对路径、~ 前缀路径和仓库相对路径。",
+  runtimeServicesJson: "可选的工作区运行时服务定义。用于共享应用服务器、工作器或其他附加到工作区的长期伴随进程。",
+  maxTurnsPerRun: "每次心跳运行的最大智能体轮次（工具调用）数。",
+  command: "要执行的命令（例如 node、python）。",
+  localCommand: "覆盖适配器调用的 CLI 命令路径（例如 /usr/local/bin/claude、codex、opencode）。",
+  args: "命令行参数，逗号分隔。",
+  extraArgs: "本地适配器的额外 CLI 参数，逗号分隔。",
+  envVars: "注入到适配器进程的环境变量。使用纯文本值或密钥引用。",
+  bootstrapPrompt: "仅在 Paperclip 启动新会话时发送。用于不应在每次心跳时重复的稳定设置指导。",
+  payloadTemplateJson: "在 Paperclip 添加标准唤醒和工作区字段之前合并到远程适配器请求负载中的可选 JSON。",
+  webhookUrl: "接收 POST 请求的 URL，在智能体被调用时触发。",
+  heartbeatInterval: "按计时器自动运行此智能体。适用于检查新工作等周期性任务。",
+  intervalSec: "自动心跳调用之间的秒数。",
+  timeoutSec: "运行在被终止前可以花费的最大秒数。0 表示无超时。",
+  graceSec: "发送中断后等待强制终止进程的秒数。",
+  wakeOnDemand: "允许此智能体被分配、API 调用、UI 操作或自动化系统唤醒。",
+  cooldownSec: "连续心跳运行之间的最小秒数。",
+  maxConcurrentRuns: "此智能体可同时执行的最大心跳运行数。",
+  budgetMonthlyCents: "月度消费限额（以美分为单位）。0 表示无限制。",
 };
 
 import { getAdapterLabels } from "../adapters/adapter-display-registry";
@@ -391,54 +391,54 @@ export function ChoosePathButton() {
         className="inline-flex items-center rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground hover:bg-accent/50 transition-colors shrink-0"
         onClick={() => setOpen(true)}
       >
-        Choose
+        选择
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Specify path manually</DialogTitle>
+            <DialogTitle>手动指定路径</DialogTitle>
             <DialogDescription>
-              Browser security blocks apps from reading full local paths via a file picker.
-              Copy the absolute path and paste it into the input.
+              浏览器安全限制阻止应用通过文件选择器读取完整的本地路径。
+              请复制绝对路径并粘贴到输入框中。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 text-sm">
             <section className="space-y-1.5">
               <p className="font-medium">macOS (Finder)</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Find the folder in Finder.</li>
-                <li>Hold <kbd>Option</kbd> and right-click the folder.</li>
-                <li>Click "Copy &lt;folder name&gt; as Pathname".</li>
-                <li>Paste the result into the path input.</li>
+                <li>在 Finder 中找到文件夹。</li>
+                <li>按住 <kbd>Option</kbd> 并右键点击文件夹。</li>
+                <li>点击"将 &lt;文件夹名&gt; 复制为路径名"。</li>
+                <li>将结果粘贴到路径输入框中。</li>
               </ol>
               <p className="rounded-md bg-muted px-2 py-1 font-mono text-xs">
                 /Users/yourname/Documents/project
               </p>
             </section>
             <section className="space-y-1.5">
-              <p className="font-medium">Windows (File Explorer)</p>
+              <p className="font-medium">Windows (文件资源管理器)</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Find the folder in File Explorer.</li>
-                <li>Hold <kbd>Shift</kbd> and right-click the folder.</li>
-                <li>Click "Copy as path".</li>
-                <li>Paste the result into the path input.</li>
+                <li>在文件资源管理器中找到文件夹。</li>
+                <li>按住 <kbd>Shift</kbd> 并右键点击文件夹。</li>
+                <li>点击"复制为路径"。</li>
+                <li>将结果粘贴到路径输入框中。</li>
               </ol>
               <p className="rounded-md bg-muted px-2 py-1 font-mono text-xs">
                 C:\Users\yourname\Documents\project
               </p>
             </section>
             <section className="space-y-1.5">
-              <p className="font-medium">Terminal fallback (macOS/Linux)</p>
+              <p className="font-medium">终端备选方案 (macOS/Linux)</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Run <code>cd /path/to/folder</code>.</li>
-                <li>Run <code>pwd</code>.</li>
-                <li>Copy the output and paste it into the path input.</li>
+                <li>运行 <code>cd /path/to/folder</code>。</li>
+                <li>运行 <code>pwd</code>。</li>
+                <li>复制输出并粘贴到路径输入框中。</li>
               </ol>
             </section>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              OK
+              确定
             </Button>
           </DialogFooter>
         </DialogContent>

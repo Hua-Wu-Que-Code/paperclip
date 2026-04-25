@@ -35,8 +35,8 @@ export function ProfileSettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Instance Settings" },
-      { label: "Profile" },
+      { label: "实例设置" },
+      { label: "个人资料" },
     ]);
   }, [setBreadcrumbs]);
 
@@ -67,7 +67,7 @@ export function ProfileSettings() {
   }
 
   function resolveProfileName() {
-    return name.trim() || sessionQuery.data?.user.name || "Board";
+    return name.trim() || sessionQuery.data?.user.name || "看板";
   }
 
   const updateMutation = useMutation({
@@ -78,14 +78,14 @@ export function ProfileSettings() {
       setImage(profile.image ?? "");
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to update profile.");
+      setActionError(error instanceof Error ? error.message : "更新个人资料失败。");
     },
   });
 
   const uploadAvatarMutation = useMutation({
     mutationFn: async (file: File) => {
       if (!selectedCompanyId) {
-        throw new Error("Select a company before uploading a profile avatar.");
+        throw new Error("请先选择公司再上传头像。");
       }
 
       const asset = await assetsApi.uploadImage(
@@ -101,7 +101,7 @@ export function ProfileSettings() {
       setImage(profile.image ?? "");
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to upload avatar.");
+      setActionError(error instanceof Error ? error.message : "上传头像失败。");
     },
   });
 
@@ -113,39 +113,39 @@ export function ProfileSettings() {
       setImage(profile.image ?? "");
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to remove avatar.");
+      setActionError(error instanceof Error ? error.message : "移除头像失败。");
     },
   });
 
   if (sessionQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading profile...</div>;
+    return <div className="text-sm text-muted-foreground">正在加载个人资料...</div>;
   }
 
   if (sessionQuery.error || !sessionQuery.data) {
     return (
       <div className="text-sm text-destructive">
-        {sessionQuery.error instanceof Error ? sessionQuery.error.message : "Failed to load profile."}
+        {sessionQuery.error instanceof Error ? sessionQuery.error.message : "加载个人资料失败。"}
       </div>
     );
   }
 
-  const currentName = name.trim() || sessionQuery.data.user.name || "Board";
+  const currentName = name.trim() || sessionQuery.data.user.name || "看板";
   const currentImage = image.trim() || null;
   const initials = deriveInitials(currentName);
   const isSavingProfile = updateMutation.isPending || uploadAvatarMutation.isPending || removeAvatarMutation.isPending;
   const uploadHint = selectedCompany
-    ? `Stored in Paperclip file storage for ${selectedCompany.name}.`
-    : "Select a company to upload an avatar into Paperclip storage.";
+    ? `存储在 ${selectedCompany.name} 的 Paperclip 文件存储中。`
+    : "请选择公司以上传头像到 Paperclip 存储。";
 
   return (
     <div className="max-w-4xl space-y-6">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <UserRoundPen className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Profile</h1>
+          <h1 className="text-lg font-semibold">个人资料</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Control how your account appears in the sidebar and other board surfaces.
+          控制您的账户在侧边栏和其他面板界面中的显示方式。
         </p>
       </div>
 
@@ -197,7 +197,7 @@ export function ProfileSettings() {
                     disabled={!selectedCompanyId || isSavingProfile}
                   >
                     {uploadAvatarMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Camera className="size-4" />}
-                    {currentImage ? "Change photo" : "Upload photo"}
+                    {currentImage ? "更换照片" : "上传照片"}
                   </Button>
                   {currentImage ? (
                     <Button
@@ -207,7 +207,7 @@ export function ProfileSettings() {
                       disabled={isSavingProfile}
                     >
                       {removeAvatarMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-                      Remove
+                      移除
                     </Button>
                   ) : null}
                 </div>
@@ -216,10 +216,10 @@ export function ProfileSettings() {
               <div className="min-w-0 flex-1 space-y-2 pb-1">
                 <div>
                   <h2 className="truncate text-2xl font-semibold text-foreground">{currentName}</h2>
-                  <p className="truncate text-sm text-muted-foreground">{sessionQuery.data.user.email ?? "No email"}</p>
+                  <p className="truncate text-sm text-muted-foreground">{sessionQuery.data.user.email ?? "无邮箱"}</p>
                 </div>
                 <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                  Click the avatar to upload a new image. {uploadHint}
+                  点击头像上传新图片。{uploadHint}
                 </p>
               </div>
             </div>
@@ -234,21 +234,21 @@ export function ProfileSettings() {
           }}
         >
           <div className="space-y-2">
-            <Label htmlFor="profile-name">Display name</Label>
+            <Label htmlFor="profile-name">显示名称</Label>
             <Input
               id="profile-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
               maxLength={120}
-              placeholder="Board"
+              placeholder="看板"
             />
             <p className="text-xs text-muted-foreground">
-              Shown in the sidebar account footer and comment author surfaces.
+              显示在侧边栏账户底部和评论作者界面。
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="profile-email">Email</Label>
+            <Label htmlFor="profile-email">邮箱</Label>
             <Input
               id="profile-email"
               value={sessionQuery.data.user.email ?? ""}
@@ -256,14 +256,14 @@ export function ProfileSettings() {
               disabled
             />
             <p className="text-xs text-muted-foreground">
-              Email is managed by your auth session and is read-only here.
+              邮箱由您的认证会话管理，此处为只读。
             </p>
           </div>
 
           <div className="md:col-span-2 flex justify-end">
             <Button type="submit" disabled={isSavingProfile || !name.trim()}>
               {updateMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}
-              {updateMutation.isPending ? "Saving..." : "Save profile"}
+              {updateMutation.isPending ? "保存中..." : "保存个人资料"}
             </Button>
           </div>
         </form>

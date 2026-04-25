@@ -12,37 +12,37 @@ interface ShortcutSection {
 
 const sections: ShortcutSection[] = [
   {
-    title: "Inbox",
+    title: "收件箱",
     shortcuts: [
-      { keys: ["j"], label: "Move down" },
-      { keys: ["↓"], label: "Move down" },
-      { keys: ["k"], label: "Move up" },
-      { keys: ["↑"], label: "Move up" },
-      { keys: ["←"], label: "Collapse selected group" },
-      { keys: ["→"], label: "Expand selected group" },
-      { keys: ["Enter"], label: "Open selected item" },
-      { keys: ["a"], label: "Archive item" },
-      { keys: ["y"], label: "Archive item" },
-      { keys: ["r"], label: "Mark as read" },
-      { keys: ["U"], label: "Mark as unread" },
+      { keys: ["j"], label: "向下移动" },
+      { keys: ["↓"], label: "向下移动" },
+      { keys: ["k"], label: "向上移动" },
+      { keys: ["↑"], label: "向上移动" },
+      { keys: ["←"], label: "折叠所选分组" },
+      { keys: ["→"], label: "展开所选分组" },
+      { keys: ["Enter"], label: "打开所选项" },
+      { keys: ["a"], label: "归档项目" },
+      { keys: ["y"], label: "归档项目" },
+      { keys: ["r"], label: "标记为已读" },
+      { keys: ["U"], label: "标记为未读" },
     ],
   },
   {
-    title: "Issue detail",
+    title: "事务详情",
     shortcuts: [
-      { keys: ["y"], label: "Quick-archive back to inbox" },
-      { keys: ["g", "i"], label: "Go to inbox" },
-      { keys: ["g", "c"], label: "Focus comment composer" },
+      { keys: ["y"], label: "快速归档回到收件箱" },
+      { keys: ["g", "i"], label: "前往收件箱" },
+      { keys: ["g", "c"], label: "聚焦评论输入框" },
     ],
   },
   {
-    title: "Global",
+    title: "全局",
     shortcuts: [
-      { keys: ["/"], label: "Search current page or quick search" },
-      { keys: ["c"], label: "New issue" },
-      { keys: ["["], label: "Toggle sidebar" },
-      { keys: ["]"], label: "Toggle panel" },
-      { keys: ["?"], label: "Show keyboard shortcuts" },
+      { keys: ["/"], label: "搜索当前页面或快速搜索" },
+      { keys: ["c"], label: "新建事务" },
+      { keys: ["["], label: "切换侧边栏" },
+      { keys: ["]"], label: "切换面板" },
+      { keys: ["?"], label: "显示键盘快捷键" },
     ],
   },
 ];
@@ -74,7 +74,7 @@ export function KeyboardShortcutsCheatsheetContent() {
                   <div className="flex items-center gap-1">
                     {shortcut.keys.map((key, i) => (
                       <span key={key} className="flex items-center gap-1">
-                        {i > 0 && <span className="text-xs text-muted-foreground">then</span>}
+                        {i > 0 && <span className="text-xs text-muted-foreground">然后</span>}
                         <KeyCap>{key}</KeyCap>
                       </span>
                     ))}
@@ -105,7 +105,7 @@ export function KeyboardShortcutsCheatsheet({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md gap-0 p-0 overflow-hidden" showCloseButton={false}>
         <DialogHeader className="px-5 pt-5 pb-3">
-          <DialogTitle className="text-base">Keyboard shortcuts</DialogTitle>
+          <DialogTitle className="text-base">键盘快捷键</DialogTitle>
         </DialogHeader>
         <KeyboardShortcutsCheatsheetContent />
       </DialogContent>

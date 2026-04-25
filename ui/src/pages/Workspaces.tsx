@@ -103,7 +103,7 @@ export function Workspaces() {
   });
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Workspaces" }]);
+    setBreadcrumbs([{ label: "工作区" }]);
   }, [setBreadcrumbs]);
 
   const groups = useMemo(
@@ -121,11 +121,11 @@ export function Workspaces() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold">Workspaces</h2>
+        <h2 className="text-xl font-bold">工作区</h2>
       </div>
 
       {groups.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No workspace activity yet.</p>
+        <p className="text-sm text-muted-foreground">暂无工作区活动。</p>
       ) : (
         <div className="space-y-8">
           {groups.map((group) => (
@@ -145,7 +145,7 @@ export function Workspaces() {
                   ) : null}
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {group.summaries.length} workspace{group.summaries.length === 1 ? "" : "s"}
+                  {group.summaries.length} 个工作区
                 </span>
               </div>
               <ProjectWorkspacesContent

@@ -16,7 +16,7 @@ import {
 const inputClass =
   "w-full rounded-md border border-border px-2.5 py-1.5 bg-transparent outline-none text-sm font-mono placeholder:text-muted-foreground/40";
 const instructionsFileHint =
-  "Absolute path to a markdown file (e.g. AGENTS.md) that defines this agent's behavior. Injected into the system prompt at runtime. Note: Codex may still auto-apply repo-scoped AGENTS.md files from the workspace.";
+  "定义此 Agent 行为的 Markdown 文件的绝对路径（例如 AGENTS.md），运行时注入到系统提示中。注意：Codex 仍可能自动应用工作区中仓库范围的 AGENTS.md 文件。";
 
 export function CodexLocalConfigFields({
   mode,
@@ -50,7 +50,7 @@ export function CodexLocalConfigFields({
   return (
     <>
       {!hideInstructionsFile && (
-        <Field label="Agent instructions file" hint={instructionsFileHint}>
+        <Field label="Agent 指令文件" hint={instructionsFileHint}>
           <div className="flex items-center gap-2">
             <DraftInput
               value={
@@ -76,7 +76,7 @@ export function CodexLocalConfigFields({
         </Field>
       )}
       <ToggleField
-        label="Bypass sandbox"
+        label="绕过沙箱"
         hint={help.dangerouslyBypassSandbox}
         checked={
           isCreate
@@ -94,7 +94,7 @@ export function CodexLocalConfigFields({
         }
       />
       <ToggleField
-        label="Enable search"
+        label="启用搜索"
         hint={help.search}
         checked={
           isCreate
@@ -108,7 +108,7 @@ export function CodexLocalConfigFields({
         }
       />
       <ToggleField
-        label="Fast mode"
+        label="快速模式"
         hint={help.fastMode}
         checked={fastModeEnabled}
         onChange={(v) =>
@@ -119,7 +119,11 @@ export function CodexLocalConfigFields({
       />
       {fastModeEnabled && (
         <div className="rounded-md border border-amber-300/70 bg-amber-50/80 px-3 py-2 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
-          {fastModeMessage}
+          {fastModeManualModel
+            ? "快速模式将为此手动模型传递。如果 Codex 拒绝，请关闭开关。"
+            : fastModeSupported
+              ? "快速模式消耗的额度/Token 远快于标准 Codex 运行。"
+              : `快速模式目前仅支持 ${supportedModelsLabel}。Paperclip 将忽略此开关，直到切换到支持的模型。`}
         </div>
       )}
       <LocalWorkspaceRuntimeFields

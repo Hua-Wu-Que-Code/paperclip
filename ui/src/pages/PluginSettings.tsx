@@ -126,7 +126,7 @@ export function PluginSettings() {
   }, [pluginId]);
 
   if (pluginLoading) {
-    return <div className="p-4 text-sm text-muted-foreground">Loading plugin details...</div>;
+    return <div className="p-4 text-sm text-muted-foreground">正在加载插件详情...</div>;
   }
 
   if (!plugin) {
@@ -140,7 +140,7 @@ export function PluginSettings() {
       : plugin.status === "error"
         ? "destructive"
         : "secondary";
-  const pluginDescription = plugin.manifestJson.description || "No description provided.";
+  const pluginDescription = plugin.manifestJson.description || "暂无描述";
   const pluginCapabilities = plugin.manifestJson.capabilities ?? [];
 
   return (
@@ -167,8 +167,8 @@ export function PluginSettings() {
         <PageTabBar
           align="start"
           items={[
-            { value: "configuration", label: "Configuration" },
-            { value: "status", label: "Status" },
+            { value: "configuration", label: "配置" },
+            { value: "status", label: "状态" },
           ]}
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as "configuration" | "status")}
@@ -177,19 +177,19 @@ export function PluginSettings() {
         <TabsContent value="configuration" className="space-y-6">
           <div className="space-y-8">
             <section className="space-y-5">
-              <h2 className="text-base font-semibold">About</h2>
+              <h2 className="text-base font-semibold">关于</h2>
               <div className="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(220px,0.8fr)]">
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground">描述</h3>
                   <p className="text-sm leading-6 text-foreground/90">{pluginDescription}</p>
                 </div>
                 <div className="space-y-4 text-sm">
                   <div className="space-y-1.5">
-                    <h3 className="font-medium text-muted-foreground">Author</h3>
+                    <h3 className="font-medium text-muted-foreground">作者</h3>
                     <p className="text-foreground">{plugin.manifestJson.author}</p>
                   </div>
                   <div className="space-y-2">
-                    <h3 className="font-medium text-muted-foreground">Categories</h3>
+                    <h3 className="font-medium text-muted-foreground">分类</h3>
                     <div className="flex flex-wrap gap-2">
                       {plugin.categories.length > 0 ? (
                         plugin.categories.map((category) => (
@@ -198,7 +198,7 @@ export function PluginSettings() {
                           </Badge>
                         ))
                       ) : (
-                        <span className="text-foreground">None</span>
+                        <span className="text-foreground">无</span>
                       )}
                     </div>
                   </div>
@@ -210,7 +210,7 @@ export function PluginSettings() {
 
             <section className="space-y-4">
               <div className="space-y-1">
-                <h2 className="text-base font-semibold">Settings</h2>
+                <h2 className="text-base font-semibold">设置</h2>
               </div>
               {hasCustomSettingsPage ? (
                 <div className="space-y-3">
@@ -237,7 +237,7 @@ export function PluginSettings() {
                 />
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  This plugin does not require any settings.
+                  此插件不需要任何设置。
                 </p>
               )}
             </section>
@@ -251,10 +251,10 @@ export function PluginSettings() {
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-1.5">
                     <Cpu className="h-4 w-4" />
-                    Runtime Dashboard
+                    运行时面板
                   </CardTitle>
                   <CardDescription>
-                    Worker process, scheduled jobs, and webhook deliveries
+                    工作进程、定时任务和 Webhook 投递
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -263,12 +263,12 @@ export function PluginSettings() {
                       <div>
                         <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
                           <Cpu className="h-3.5 w-3.5 text-muted-foreground" />
-                          Worker Process
+                          工作进程
                         </h3>
                         {dashboardData.worker ? (
                           <div className="grid grid-cols-2 gap-3 text-sm">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Status</span>
+                              <span className="text-muted-foreground">状态</span>
                               <Badge variant={dashboardData.worker.status === "running" ? "default" : "secondary"}>
                                 {dashboardData.worker.status}
                               </Badge>
@@ -278,11 +278,11 @@ export function PluginSettings() {
                               <span className="font-mono text-xs">{dashboardData.worker.pid ?? "—"}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Uptime</span>
+                              <span className="text-muted-foreground">运行时间</span>
                               <span className="text-xs">{formatUptime(dashboardData.worker.uptime)}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Pending RPCs</span>
+                              <span className="text-muted-foreground">待处理 RPC</span>
                               <span className="text-xs">{dashboardData.worker.pendingRequests}</span>
                             </div>
                             {dashboardData.worker.totalCrashes > 0 && (
@@ -290,15 +290,15 @@ export function PluginSettings() {
                                 <div className="flex justify-between col-span-2">
                                   <span className="text-muted-foreground flex items-center gap-1">
                                     <AlertTriangle className="h-3 w-3 text-amber-500" />
-                                    Crashes
+                                    崩溃次数
                                   </span>
                                   <span className="text-xs">
-                                    {dashboardData.worker.consecutiveCrashes} consecutive / {dashboardData.worker.totalCrashes} total
+                                    {dashboardData.worker.consecutiveCrashes} 连续 / {dashboardData.worker.totalCrashes} 总计
                                   </span>
                                 </div>
                                 {dashboardData.worker.lastCrashAt && (
                                   <div className="flex justify-between col-span-2">
-                                    <span className="text-muted-foreground">Last Crash</span>
+                                    <span className="text-muted-foreground">上次崩溃</span>
                                     <span className="text-xs">{formatTimestamp(dashboardData.worker.lastCrashAt)}</span>
                                   </div>
                                 )}
@@ -306,7 +306,7 @@ export function PluginSettings() {
                             )}
                           </div>
                         ) : (
-                          <p className="text-sm text-muted-foreground italic">No worker process registered.</p>
+                          <p className="text-sm text-muted-foreground italic">未注册工作进程。</p>
                         )}
                       </div>
 
@@ -315,7 +315,7 @@ export function PluginSettings() {
                       <div>
                         <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
                           <CalendarClock className="h-3.5 w-3.5 text-muted-foreground" />
-                          Recent Job Runs
+                          最近任务运行
                         </h3>
                         {dashboardData.recentJobRuns.length > 0 ? (
                           <div className="space-y-2">
@@ -341,7 +341,7 @@ export function PluginSettings() {
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-muted-foreground italic">No job runs recorded yet.</p>
+                          <p className="text-sm text-muted-foreground italic">尚无任务运行记录。</p>
                         )}
                       </div>
 
@@ -350,7 +350,7 @@ export function PluginSettings() {
                       <div>
                         <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
                           <Webhook className="h-3.5 w-3.5 text-muted-foreground" />
-                          Recent Webhook Deliveries
+                          最近 Webhook 投递
                         </h3>
                         {dashboardData.recentWebhookDeliveries.length > 0 ? (
                           <div className="space-y-2">
@@ -373,18 +373,18 @@ export function PluginSettings() {
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-muted-foreground italic">No webhook deliveries recorded yet.</p>
+                          <p className="text-sm text-muted-foreground italic">尚无 Webhook 投递记录。</p>
                         )}
                       </div>
 
                       <div className="flex items-center gap-1.5 border-t border-border/50 pt-2 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
-                        Last checked: {new Date(dashboardData.checkedAt).toLocaleTimeString()}
+                        最后检查: {new Date(dashboardData.checkedAt).toLocaleTimeString()}
                       </div>
                     </>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      Runtime diagnostics are unavailable right now.
+                      运行时诊断当前不可用。
                     </p>
                   )}
                 </CardContent>
@@ -395,9 +395,9 @@ export function PluginSettings() {
                   <CardHeader>
                     <CardTitle className="text-base flex items-center gap-1.5">
                       <ActivitySquare className="h-4 w-4" />
-                      Recent Logs
+                      最近日志
                     </CardTitle>
-                    <CardDescription>Last {recentLogs.length} log entries</CardDescription>
+                    <CardDescription>最近 {recentLogs.length} 条日志</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="max-h-64 space-y-1 overflow-y-auto font-mono text-xs">
@@ -430,16 +430,16 @@ export function PluginSettings() {
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-1.5">
                     <ActivitySquare className="h-4 w-4" />
-                    Health Status
+                    健康状态
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {healthLoading ? (
-                    <p className="text-sm text-muted-foreground">Checking health...</p>
+                    <p className="text-sm text-muted-foreground">正在检查健康状态...</p>
                   ) : healthData ? (
                     <div className="space-y-4 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Overall</span>
+                        <span className="text-muted-foreground">总体</span>
                         <Badge variant={healthData.healthy ? "default" : "destructive"}>
                           {healthData.status}
                         </Badge>
@@ -471,10 +471,10 @@ export function PluginSettings() {
                   ) : (
                     <div className="space-y-3 text-sm text-muted-foreground">
                       <div className="flex items-center justify-between">
-                        <span>Lifecycle</span>
+                        <span>生命周期</span>
                         <Badge variant={statusVariant}>{displayStatus}</Badge>
                       </div>
-                      <p>Health checks run once the plugin is ready.</p>
+                      <p>插件就绪后才会运行健康检查。</p>
                       {plugin.lastError ? (
                         <div className="break-words rounded border border-destructive/20 bg-destructive/10 p-2 text-xs text-destructive">
                           {plugin.lastError}
@@ -487,25 +487,25 @@ export function PluginSettings() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Details</CardTitle>
+                  <CardTitle className="text-base">详情</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm text-muted-foreground">
                   <div className="flex justify-between gap-3">
-                    <span>Plugin ID</span>
+                    <span>插件 ID</span>
                     <span className="font-mono text-xs text-right">{plugin.id}</span>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <span>Plugin Key</span>
+                    <span>插件标识</span>
                     <span className="font-mono text-xs text-right">{plugin.pluginKey}</span>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <span>NPM Package</span>
+                    <span>NPM 包名</span>
                     <span className="max-w-[170px] truncate text-right text-xs" title={plugin.packageName}>
                       {plugin.packageName}
                     </span>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <span>Version</span>
+                    <span>版本</span>
                     <span className="text-right text-foreground">v{plugin.manifestJson.version ?? plugin.version}</span>
                   </div>
                 </CardContent>
@@ -515,7 +515,7 @@ export function PluginSettings() {
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-1.5">
                     <ShieldAlert className="h-4 w-4" />
-                    Permissions
+                    权限
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -528,7 +528,7 @@ export function PluginSettings() {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-sm text-muted-foreground italic">No special permissions requested.</p>
+                    <p className="text-sm text-muted-foreground italic">无特殊权限请求。</p>
                   )}
                 </CardContent>
               </Card>
@@ -600,14 +600,14 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
     mutationFn: (configJson: Record<string, unknown>) =>
       pluginsApi.saveConfig(pluginId, configJson),
     onSuccess: () => {
-      setSaveMessage({ type: "success", text: "Configuration saved." });
+      setSaveMessage({ type: "success", text: "配置已保存。" });
       setTestResult(null);
       queryClient.invalidateQueries({ queryKey: queryKeys.plugins.config(pluginId) });
       // Clear success message after 3s
       setTimeout(() => setSaveMessage(null), 3000);
     },
     onError: (err: Error) => {
-      setSaveMessage({ type: "error", text: err.message || "Failed to save configuration." });
+      setSaveMessage({ type: "error", text: err.message || "保存配置失败。" });
     },
   });
 
@@ -617,13 +617,13 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
       pluginsApi.testConfig(pluginId, configJson),
     onSuccess: (result) => {
       if (result.valid) {
-        setTestResult({ type: "success", text: "Configuration test passed." });
+        setTestResult({ type: "success", text: "配置测试通过。" });
       } else {
-        setTestResult({ type: "error", text: result.message || "Configuration test failed." });
+        setTestResult({ type: "error", text: result.message || "配置测试失败。" });
       }
     },
     onError: (err: Error) => {
-      setTestResult({ type: "error", text: err.message || "Configuration test failed." });
+      setTestResult({ type: "error", text: err.message || "配置测试失败。" });
     },
   });
 

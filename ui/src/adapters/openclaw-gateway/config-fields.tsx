@@ -167,8 +167,8 @@ export function OpenClawGatewayConfigFields({
               className={inputClass}
             >
               <option value="fixed">Fixed</option>
-              <option value="issue">Per issue</option>
-              <option value="run">Per run</option>
+              <option value="issue">按任务</option>
+              <option value="run">按运行</option>
             </select>
           </Field>
 
@@ -188,7 +188,7 @@ export function OpenClawGatewayConfigFields({
             label="Gateway auth token (x-openclaw-token)"
             value={effectiveGatewayToken}
             onCommit={commitGatewayToken}
-            placeholder="OpenClaw gateway token"
+            placeholder="OpenClaw 网关令牌"
           />
 
           <Field label="Role">

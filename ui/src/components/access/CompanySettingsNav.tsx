@@ -3,9 +3,9 @@ import { Tabs } from "@/components/ui/tabs";
 import { useLocation, useNavigate } from "@/lib/router";
 
 const items = [
-  { value: "general", label: "General", href: "/company/settings" },
-  { value: "access", label: "Access", href: "/company/settings/access" },
-  { value: "invites", label: "Invites", href: "/company/settings/invites" },
+  { value: "general", label: "通用", href: "/company/settings" },
+  { value: "access", label: "访问权限", href: "/company/settings/access" },
+  { value: "invites", label: "邀请", href: "/company/settings/invites" },
 ] as const;
 
 type CompanySettingsTab = (typeof items)[number]["value"];

@@ -45,7 +45,7 @@ export function ExecutionWorkspaceCloseDialog({
 }: ExecutionWorkspaceCloseDialogProps) {
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
-  const actionLabel = currentStatus === "cleanup_failed" ? "Retry close" : "Close workspace";
+  const actionLabel = currentStatus === "cleanup_failed" ? "重试关闭" : "关闭工作区";
 
   const readinessQuery = useQuery({
     queryKey: queryKeys.executionWorkspaces.closeReadiness(workspaceId),
@@ -59,7 +59,7 @@ export function ExecutionWorkspaceCloseDialog({
       queryClient.setQueryData(queryKeys.executionWorkspaces.detail(workspace.id), workspace);
       queryClient.invalidateQueries({ queryKey: queryKeys.executionWorkspaces.closeReadiness(workspace.id) });
       pushToast({
-        title: currentStatus === "cleanup_failed" ? "Workspace close retried" : "Workspace closed",
+        title: currentStatus === "cleanup_failed" ? "工作区关闭已重试" : "工作区已关闭",
         tone: "success",
       });
       onOpenChange(false);
@@ -67,8 +67,8 @@ export function ExecutionWorkspaceCloseDialog({
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to close workspace",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: "关闭工作区失败",
+        body: error instanceof Error ? error.message : "未知错误",
         tone: "error",
       });
     },
@@ -92,44 +92,44 @@ export function ExecutionWorkspaceCloseDialog({
         <DialogHeader>
           <DialogTitle>{actionLabel}</DialogTitle>
           <DialogDescription className="break-words">
-            Archive <span className="font-medium text-foreground">{workspaceName}</span> and clean up any owned workspace
-            artifacts. Paperclip keeps the workspace record and issue history, but removes it from active workspace views.
+            归档 <span className="font-medium text-foreground">{workspaceName}</span> 并清理所有拥有的工作区
+            制品。Paperclip 会保留工作区记录和事务历史，但会从活动工作区视图中移除。
           </DialogDescription>
         </DialogHeader>
 
         {readinessQuery.isLoading ? (
           <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Checking whether this workspace is safe to close...
+            正在检查工作区是否可以安全关闭...
           </div>
         ) : readinessQuery.error ? (
           <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-            {readinessQuery.error instanceof Error ? readinessQuery.error.message : "Failed to inspect workspace close readiness."}
+            {readinessQuery.error instanceof Error ? readinessQuery.error.message : "检查工作区关闭就绪状态失败。"}
           </div>
         ) : readiness ? (
           <div className="space-y-4">
             <div className={`rounded-xl border px-4 py-3 text-sm ${readinessTone(readiness.state)}`}>
               <div className="font-medium">
                 {readiness.state === "blocked"
-                  ? "Close is blocked"
+                  ? "关闭被阻止"
                   : readiness.state === "ready_with_warnings"
-                    ? "Close is allowed with warnings"
-                    : "Close is ready"}
+                    ? "关闭允许，但有警告"
+                    : "关闭就绪"}
               </div>
               <div className="mt-1 text-xs opacity-80">
                 {readiness.isSharedWorkspace
-                  ? "This is a shared workspace session. Archiving it removes this session record but keeps the underlying project workspace."
+                  ? "这是一个共享工作区会话。归档它会移除此会话记录，但保留底层项目工作区。"
                   : readiness.git?.workspacePath && readiness.git.repoRoot && readiness.git.workspacePath !== readiness.git.repoRoot
-                    ? "This execution workspace has its own checkout path and can be archived independently."
+                    ? "此执行工作区有独立的检出路径，可以独立归档。"
                     : readiness.isProjectPrimaryWorkspace
-                      ? "This execution workspace currently points at the project's primary workspace path."
-                      : "This workspace is disposable and can be archived."}
+                      ? "此执行工作区当前指向项目的主工作区路径。"
+                      : "此工作区是一次性的，可以归档。"}
               </div>
             </div>
 
             {blockingIssues.length > 0 ? (
               <section className="space-y-2">
-                <h3 className="text-sm font-medium">Blocking issues</h3>
+                <h3 className="text-sm font-medium">阻塞任务</h3>
                 <div className="space-y-2">
                   {blockingIssues.map((issue) => (
                     <div key={issue.id} className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm">
@@ -147,7 +147,7 @@ export function ExecutionWorkspaceCloseDialog({
 
             {readiness.blockingReasons.length > 0 ? (
               <section className="space-y-2">
-                <h3 className="text-sm font-medium">Blocking reasons</h3>
+                <h3 className="text-sm font-medium">阻塞原因</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   {readiness.blockingReasons.map((reason) => (
                     <li key={reason} className="break-words rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-destructive">
@@ -173,7 +173,7 @@ export function ExecutionWorkspaceCloseDialog({
 
             {readiness.git ? (
               <section className="space-y-2">
-                <h3 className="text-sm font-medium">Git status</h3>
+                <h3 className="text-sm font-medium">Git 状态</h3>
                 <div className="rounded-xl border border-border bg-background px-4 py-3 text-sm">
                   <div className="grid gap-2 sm:grid-cols-2">
                     <div>
@@ -181,11 +181,11 @@ export function ExecutionWorkspaceCloseDialog({
                       <div className="font-mono text-xs">{readiness.git.branchName ?? "Unknown"}</div>
                     </div>
                     <div>
-                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Base ref</div>
+                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">基础引用</div>
                       <div className="font-mono text-xs">{readiness.git.baseRef ?? "Not set"}</div>
                     </div>
                     <div>
-                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Merged into base</div>
+                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">已合并到基础分支</div>
                       <div>{readiness.git.isMergedIntoBase == null ? "Unknown" : readiness.git.isMergedIntoBase ? "Yes" : "No"}</div>
                     </div>
                     <div>
@@ -195,11 +195,11 @@ export function ExecutionWorkspaceCloseDialog({
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Dirty tracked files</div>
+                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">已修改的跟踪文件</div>
                       <div>{readiness.git.dirtyEntryCount}</div>
                     </div>
                     <div>
-                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Untracked files</div>
+                      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">未跟踪文件</div>
                       <div>{readiness.git.untrackedEntryCount}</div>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ export function ExecutionWorkspaceCloseDialog({
 
             {otherLinkedIssues.length > 0 ? (
               <section className="space-y-2">
-                <h3 className="text-sm font-medium">Other linked issues</h3>
+                <h3 className="text-sm font-medium">其他关联任务</h3>
                 <div className="space-y-2">
                   {otherLinkedIssues.map((issue) => (
                     <div key={issue.id} className="rounded-xl border border-border bg-background px-4 py-3 text-sm">
@@ -227,7 +227,7 @@ export function ExecutionWorkspaceCloseDialog({
 
             {readiness.runtimeServices.length > 0 ? (
               <section className="space-y-2">
-                <h3 className="text-sm font-medium">Attached runtime services</h3>
+                <h3 className="text-sm font-medium">关联的运行时服务</h3>
                 <div className="space-y-2">
                   {readiness.runtimeServices.map((service) => (
                     <div key={service.id} className="rounded-xl border border-border bg-background px-4 py-3 text-sm">
@@ -245,7 +245,7 @@ export function ExecutionWorkspaceCloseDialog({
             ) : null}
 
             <section className="space-y-2">
-              <h3 className="text-sm font-medium">Cleanup actions</h3>
+              <h3 className="text-sm font-medium">清理操作</h3>
               <div className="space-y-2">
                 {readiness.plannedActions.map((action, index) => (
                   <div key={`${action.kind}-${index}`} className="rounded-xl border border-border bg-background px-4 py-3 text-sm">

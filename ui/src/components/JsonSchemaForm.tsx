@@ -160,7 +160,7 @@ export function validateField(
 
   // Required check
   if (isRequired && (value === undefined || value === null || value === "")) {
-    return "This field is required";
+    return "此字段为必填项";
   }
 
   // Skip further validation if empty and not required
@@ -169,10 +169,10 @@ export function validateField(
   if (type === "string" || type === "secret-ref") {
     const str = String(value);
     if (schema.minLength != null && str.length < schema.minLength) {
-      return `Must be at least ${schema.minLength} characters`;
+      return `至少为 ${schema.minLength} 个字符`;
     }
     if (schema.maxLength != null && str.length > schema.maxLength) {
-      return `Must be at most ${schema.maxLength} characters`;
+      return `最多为 ${schema.maxLength} 个字符`;
     }
     if (schema.pattern) {
       // Guard against ReDoS: reject overly complex patterns from plugin JSON Schemas.
@@ -182,7 +182,7 @@ export function validateField(
         try {
           const re = new RegExp(schema.pattern);
           if (!re.test(str)) {
-            return `Must match pattern: ${schema.pattern}`;
+            return `必须匹配模式: ${schema.pattern}`;
           }
         } catch {
           // Invalid regex in schema — skip
@@ -193,34 +193,34 @@ export function validateField(
 
   if (type === "number" || type === "integer") {
     const num = Number(value);
-    if (isNaN(num)) return "Must be a valid number";
+    if (isNaN(num)) return "必须是有效数字";
     if (schema.minimum != null && num < schema.minimum) {
-      return `Must be at least ${schema.minimum}`;
+      return `至少为 ${schema.minimum}`;
     }
     if (schema.maximum != null && num > schema.maximum) {
-      return `Must be at most ${schema.maximum}`;
+      return `最多为 ${schema.maximum}`;
     }
     if (schema.exclusiveMinimum != null && num <= schema.exclusiveMinimum) {
-      return `Must be greater than ${schema.exclusiveMinimum}`;
+      return `必须大于 ${schema.exclusiveMinimum}`;
     }
     if (schema.exclusiveMaximum != null && num >= schema.exclusiveMaximum) {
-      return `Must be less than ${schema.exclusiveMaximum}`;
+      return `必须小于 ${schema.exclusiveMaximum}`;
     }
     if (type === "integer" && !Number.isInteger(num)) {
-      return "Must be a whole number";
+      return "必须是整数";
     }
     if (schema.multipleOf != null && num % schema.multipleOf !== 0) {
-      return `Must be a multiple of ${schema.multipleOf}`;
+      return `必须是 ${schema.multipleOf} 的倍数`;
     }
   }
 
   if (type === "array") {
     const arr = value as unknown[];
     if (schema.minItems != null && arr.length < schema.minItems) {
-      return `Must have at least ${schema.minItems} items`;
+      return `至少需要 ${schema.minItems} 项`;
     }
     if (schema.maxItems != null && arr.length > schema.maxItems) {
-      return `Must have at most ${schema.maxItems} items`;
+      return `最多需要 ${schema.maxItems} 项`;
     }
   }
 
@@ -451,7 +451,7 @@ const EnumField = React.memo(({
       disabled={disabled}
     >
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select an option" />
+        <SelectValue placeholder="请选择一个选项" />
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
@@ -494,7 +494,7 @@ const SecretField = React.memo(({
       label={label}
       description={
         description ||
-        "This secret is stored securely via the Paperclip secret provider."
+        "此密钥通过 Paperclip 密钥管理器安全存储。"
       }
       required={isRequired}
       error={error}
@@ -524,7 +524,7 @@ const SecretField = React.memo(({
             <Eye className="h-4 w-4 text-muted-foreground" />
           )}
           <span className="sr-only">
-            {isVisible ? "Hide secret" : "Show secret"}
+            {isVisible ? "隐藏密钥" : "显示密钥"}
           </span>
         </Button>
       </div>
@@ -694,7 +694,7 @@ const ArrayField = React.memo(({
           }}
         >
           <Plus className="mr-2 h-4 w-4" />
-          {isComplex ? "Add item" : "Add"}
+          {isComplex ? "添加项" : "添加"}
         </Button>
       </div>
 
@@ -706,7 +706,7 @@ const ArrayField = React.memo(({
           >
             <div className="flex-1">
               <div className="mb-2 text-xs font-medium text-muted-foreground">
-                Item {index + 1}
+                第 {index + 1} 项
               </div>
               <FormField
                 propSchema={itemSchema}
@@ -739,13 +739,13 @@ const ArrayField = React.memo(({
               }}
             >
               <Trash2 className="h-4 w-4" />
-              <span className="sr-only">Remove item</span>
+              <span className="sr-only">移除项</span>
             </Button>
           </div>
         ))}
         {items.length === 0 && (
           <div className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">
-            No items added yet.
+            暂未添加任何项。
           </div>
         )}
       </div>
@@ -1014,7 +1014,7 @@ export function JsonSchemaForm({
           className,
         )}
       >
-        No configuration options available.
+        暂无可用的配置选项。
       </div>
     );
   }

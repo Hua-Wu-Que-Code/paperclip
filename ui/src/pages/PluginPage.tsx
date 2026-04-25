@@ -92,7 +92,7 @@ export function PluginPage() {
   useEffect(() => {
     if (pageSlot) {
       setBreadcrumbs([
-        { label: "Plugins", href: "/instance/settings/plugins" },
+        { label: "插件", href: "/instance/settings/plugins" },
         { label: pageSlot.pluginDisplayName },
       ]);
     }
@@ -104,7 +104,7 @@ export function PluginPage() {
     }
     return (
       <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">Select a company to view this page.</p>
+        <p className="text-sm text-muted-foreground">请选择一个公司查看此页面。</p>
       </div>
     );
   }

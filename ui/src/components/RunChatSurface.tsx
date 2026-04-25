@@ -60,7 +60,7 @@ export const RunChatSurface = memo(function RunChatSurface({
       showComposer={false}
       showJumpToLatest={false}
       variant="embedded"
-      emptyMessage={active ? "Waiting for run output..." : "No run output captured."}
+      emptyMessage={active ? "等待运行输出..." : "未捕获到运行输出。"}
       enableLiveTranscriptPolling={false}
       transcriptsByRunId={transcriptsByRunId}
       hasOutputForRun={(runId) => runId === run.id && hasOutput}

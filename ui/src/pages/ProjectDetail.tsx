@@ -73,21 +73,21 @@ function OverviewContent({
         nullable
         as="p"
         className="text-sm text-muted-foreground"
-        placeholder="Add a description..."
+        placeholder="添加描述..."
         multiline
         imageUploadHandler={imageUploadHandler}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
         <div>
-          <span className="text-muted-foreground">Status</span>
+          <span className="text-muted-foreground">状态</span>
           <div className="mt-1">
             <StatusBadge status={project.status} />
           </div>
         </div>
         {project.targetDate && (
           <div>
-            <span className="text-muted-foreground">Target Date</span>
+            <span className="text-muted-foreground">目标日期</span>
             <p>{project.targetDate}</p>
           </div>
         )}
@@ -333,17 +333,17 @@ export function ProjectDetail() {
       ),
     onSuccess: (updatedProject, archived) => {
       invalidateProject();
-      const name = updatedProject?.name ?? project?.name ?? "Project";
+      const name = updatedProject?.name ?? project?.name ?? "项目";
       if (archived) {
-        pushToast({ title: `"${name}" has been archived`, tone: "success" });
+        pushToast({ title: `"${name}" 已归档`, tone: "success" });
         navigate("/dashboard");
       } else {
-        pushToast({ title: `"${name}" has been unarchived`, tone: "success" });
+        pushToast({ title: `"${name}" 已取消归档`, tone: "success" });
       }
     },
     onError: (_, archived) => {
       pushToast({
-        title: archived ? "Failed to archive project" : "Failed to unarchive project",
+        title: archived ? "归档项目失败" : "取消归档项目失败",
         tone: "error",
       });
     },
@@ -366,8 +366,8 @@ export function ProjectDetail() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Projects", href: "/projects" },
-      { label: project?.name ?? routeProjectRef ?? "Project" },
+      { label: "项目", href: "/projects" },
+      { label: project?.name ?? routeProjectRef ?? "项目" },
     ]);
   }, [setBreadcrumbs, project, routeProjectRef]);
 
@@ -580,7 +580,7 @@ export function ProjectDetail() {
           {project.pauseReason === "budget" ? (
             <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-red-200">
               <span className="h-2 w-2 rounded-full bg-red-400" />
-              Paused by budget hard stop
+              因预算硬停而暂停
             </div>
           ) : null}
         </div>
@@ -620,11 +620,11 @@ export function ProjectDetail() {
       <Tabs value={activeTab ?? "list"} onValueChange={(value) => handleTabChange(value as ProjectTab)}>
         <PageTabBar
           items={[
-            { value: "list", label: "Issues" },
-            { value: "overview", label: "Overview" },
-            ...(showWorkspacesTab ? [{ value: "workspaces", label: "Workspaces" }] : []),
-            { value: "configuration", label: "Configuration" },
-            { value: "budget", label: "Budget" },
+            { value: "list", label: "任务" },
+            { value: "overview", label: "概览" },
+            ...(showWorkspacesTab ? [{ value: "workspaces", label: "工作区" }] : []),
+            { value: "configuration", label: "配置" },
+            { value: "budget", label: "预算" },
             ...pluginTabItems.map((item) => ({
               value: item.value,
               label: item.label,
@@ -664,7 +664,7 @@ export function ProjectDetail() {
             />
           )
         ) : (
-          <p className="text-sm text-muted-foreground">Loading workspaces...</p>
+          <p className="text-sm text-muted-foreground">加载工作区...</p>
         )
       ) : null}
 

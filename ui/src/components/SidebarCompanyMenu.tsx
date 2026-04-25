@@ -54,7 +54,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
         <Button
           variant="ghost"
           className="h-auto flex-1 justify-start gap-1 px-2 py-1.5 text-left"
-          aria-label={selectedCompany ? `Open ${selectedCompany.name} menu` : "Open company menu"}
+          aria-label={selectedCompany ? `打开 ${selectedCompany.name} 菜单` : "打开公司菜单"}
           disabled={!selectedCompany}
         >
           <span className="flex min-w-0 flex-1 items-center gap-2">
@@ -65,7 +65,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               />
             ) : null}
             <span className="truncate text-sm font-bold text-foreground">
-              {selectedCompany?.name ?? "Select company"}
+              {selectedCompany?.name ?? "选择公司"}
             </span>
           </span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
@@ -73,21 +73,21 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
         <DropdownMenuLabel className="truncate">
-          {selectedCompany?.name ?? "Company"}
+          {selectedCompany?.name ?? "公司"}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/company/settings/invites" onClick={closeNavigationChrome}>
             <UserPlus className="size-4" />
             <span className="truncate">
-              {selectedCompany ? `Invite people to ${selectedCompany.name}` : "Invite people"}
+              {selectedCompany ? `邀请成员加入 ${selectedCompany.name}` : "邀请成员"}
             </span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/company/settings" onClick={closeNavigationChrome}>
             <Settings className="size-4" />
-            <span>Company settings</span>
+            <span>公司设置</span>
           </Link>
         </DropdownMenuItem>
         {session?.session ? (
@@ -99,7 +99,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               disabled={signOutMutation.isPending}
             >
               <LogOut className="size-4" />
-              <span>{signOutMutation.isPending ? "Signing out..." : "Sign out"}</span>
+              <span>{signOutMutation.isPending ? "退出中..." : "退出登录"}</span>
             </DropdownMenuItem>
           </>
         ) : null}

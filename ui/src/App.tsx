@@ -149,7 +149,7 @@ function OnboardingRoutePage() {
     ? `Add another agent to ${matchedCompany.name}`
     : companies.length > 0
       ? "Create another company"
-      : "Create your first company";
+      : "创建您的第一个公司";
   const description = matchedCompany
     ? "Run onboarding again to add an agent and a starter task for this company."
     : companies.length > 0
@@ -236,7 +236,7 @@ function NoCompaniesStartPage() {
   return (
     <div className="mx-auto max-w-xl py-10">
       <div className="rounded-lg border border-border bg-card p-6">
-        <h1 className="text-xl font-semibold">Create your first company</h1>
+        <h1 className="text-xl font-semibold">创建您的第一个公司</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Get started by creating a company.
         </p>

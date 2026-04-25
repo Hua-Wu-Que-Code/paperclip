@@ -21,8 +21,8 @@ export function JoinRequestQueue() {
   useEffect(() => {
     setBreadcrumbs([
       { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Inbox", href: "/inbox" },
-      { label: "Join Requests" },
+      { label: "收件箱", href: "/inbox" },
+      { label: "加入请求" },
     ]);
   }, [selectedCompany?.name, setBreadcrumbs]);
 
@@ -43,7 +43,7 @@ export function JoinRequestQueue() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.access.joinRequests(selectedCompanyId!, `${status}:${requestType}`) });
       await queryClient.invalidateQueries({ queryKey: queryKeys.access.companyMembers(selectedCompanyId!) });
       await queryClient.invalidateQueries({ queryKey: queryKeys.access.companyUserDirectory(selectedCompanyId!) });
-      pushToast({ title: "Join request approved", tone: "success" });
+      pushToast({ title: "加入请求已批准", tone: "success" });
     },
   });
 
@@ -51,25 +51,25 @@ export function JoinRequestQueue() {
     mutationFn: (requestId: string) => accessApi.rejectJoinRequest(selectedCompanyId!, requestId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.access.joinRequests(selectedCompanyId!, `${status}:${requestType}`) });
-      pushToast({ title: "Join request rejected", tone: "success" });
+      pushToast({ title: "加入请求已拒绝", tone: "success" });
     },
   });
 
   if (!selectedCompanyId) {
-    return <div className="text-sm text-muted-foreground">Select a company to review join requests.</div>;
+    return <div className="text-sm text-muted-foreground">请选择一个公司以查看加入请求。</div>;
   }
 
   if (requestsQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading join requests…</div>;
+    return <div className="text-sm text-muted-foreground">正在加载加入请求…</div>;
   }
 
   if (requestsQuery.error) {
     const message =
       requestsQuery.error instanceof ApiError && requestsQuery.error.status === 403
-        ? "You do not have permission to review join requests for this company."
+        ? "您没有权限审核该公司的加入请求。"
         : requestsQuery.error instanceof Error
           ? requestsQuery.error.message
-          : "Failed to load join requests.";
+          : "加载加入请求失败。";
     return <div className="text-sm text-destructive">{message}</div>;
   }
 
@@ -78,16 +78,16 @@ export function JoinRequestQueue() {
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <UserPlus2 className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Join Request Queue</h1>
+          <h1 className="text-lg font-semibold">加入请求队列</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Review human and agent join requests outside the mixed inbox feed. This queue uses the same approval mutations as the inline inbox cards.
+          审核人类和智能体的加入请求（独立于混合收件箱视图）。此队列使用与收件箱内联卡片相同的批准操作。
         </p>
       </div>
 
       <div className="flex flex-wrap gap-3 rounded-xl border border-border bg-card p-4">
         <label className="space-y-2 text-sm">
-          <span className="font-medium">Status</span>
+          <span className="font-medium">状态</span>
           <select
             className="rounded-md border border-border bg-background px-3 py-2"
             value={status}
@@ -95,13 +95,13 @@ export function JoinRequestQueue() {
               setStatus(event.target.value as "pending_approval" | "approved" | "rejected")
             }
           >
-            <option value="pending_approval">Pending approval</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
+            <option value="pending_approval">待批准</option>
+            <option value="approved">已批准</option>
+            <option value="rejected">已拒绝</option>
           </select>
         </label>
         <label className="space-y-2 text-sm">
-          <span className="font-medium">Request type</span>
+          <span className="font-medium">请求类型</span>
           <select
             className="rounded-md border border-border bg-background px-3 py-2"
             value={requestType}
@@ -109,9 +109,9 @@ export function JoinRequestQueue() {
               setRequestType(event.target.value as "all" | "human" | "agent")
             }
           >
-            <option value="all">All</option>
-            <option value="human">Human</option>
-            <option value="agent">Agent</option>
+            <option value="all">全部</option>
+            <option value="human">人类</option>
+            <option value="agent">智能体</option>
           </select>
         </label>
       </div>
@@ -119,7 +119,7 @@ export function JoinRequestQueue() {
       <div className="space-y-4">
         {(requestsQuery.data ?? []).length === 0 ? (
           <div className="rounded-xl border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
-            No join requests match the current filters.
+            没有匹配当前筛选条件的加入请求。
           </div>
         ) : (
           requestsQuery.data!.map((request) => (
@@ -128,16 +128,16 @@ export function JoinRequestQueue() {
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant={request.status === "pending_approval" ? "secondary" : request.status === "approved" ? "outline" : "destructive"}>
-                      {request.status.replace("_", " ")}
+                      {request.status === "pending_approval" ? "待批准" : request.status === "approved" ? "已批准" : "已拒绝"}
                     </Badge>
-                    <Badge variant="outline">{request.requestType}</Badge>
+                    <Badge variant="outline">{request.requestType === "human" ? "人类" : "智能体"}</Badge>
                     {request.adapterType ? <Badge variant="outline">{request.adapterType}</Badge> : null}
                   </div>
                   <div>
                     <div className="text-base font-medium">
                       {request.requestType === "human"
-                        ? request.requesterUser?.name || request.requestEmailSnapshot || request.requestingUserId || "Unknown human requester"
-                        : request.agentName || "Unknown agent requester"}
+                        ? request.requesterUser?.name || request.requestEmailSnapshot || request.requestingUserId || "未知的人类请求者"
+                        : request.agentName || "未知的智能体请求者"}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {request.requestType === "human"
@@ -154,13 +154,13 @@ export function JoinRequestQueue() {
                       onClick={() => rejectMutation.mutate(request.id)}
                       disabled={rejectMutation.isPending}
                     >
-                      Reject
+                      拒绝
                     </Button>
                     <Button
                       onClick={() => approveMutation.mutate(request.id)}
                       disabled={approveMutation.isPending}
                     >
-                      Approve
+                      批准
                     </Button>
                   </div>
                 ) : null}
@@ -168,20 +168,20 @@ export function JoinRequestQueue() {
 
               <div className="mt-4 grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
                 <div className="rounded-lg border border-border bg-background px-3 py-2">
-                  <div className="text-xs font-medium uppercase tracking-wide">Invite context</div>
+                  <div className="text-xs font-medium uppercase tracking-wide">邀请上下文</div>
                   <div className="mt-2">
                     {request.invite
                       ? `${request.invite.allowedJoinTypes} join invite${request.invite.humanRole ? ` • default role ${request.invite.humanRole}` : ""}`
-                      : "Invite metadata unavailable"}
+                      : "邀请元数据不可用"}
                   </div>
                   {request.invite?.inviteMessage ? (
                     <div className="mt-2 text-foreground">{request.invite.inviteMessage}</div>
                   ) : null}
                 </div>
                 <div className="rounded-lg border border-border bg-background px-3 py-2">
-                  <div className="text-xs font-medium uppercase tracking-wide">Request details</div>
-                  <div className="mt-2">Submitted {new Date(request.createdAt).toLocaleString()}</div>
-                  <div>Source IP {request.requestIp}</div>
+                  <div className="text-xs font-medium uppercase tracking-wide">请求详情</div>
+                  <div className="mt-2">提交于 {new Date(request.createdAt).toLocaleString()}</div>
+                  <div>来源 IP {request.requestIp}</div>
                   {request.requestType === "agent" && request.capabilities ? <div>{request.capabilities}</div> : null}
                 </div>
               </div>

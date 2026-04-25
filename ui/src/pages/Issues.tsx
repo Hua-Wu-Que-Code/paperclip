@@ -71,7 +71,7 @@ export function Issues() {
   const issueLinkState = useMemo(
     () =>
       createIssueDetailLocationState(
-        "Issues",
+        "任务列表",
         `${location.pathname}${location.search}${location.hash}`,
         "issues",
       ),
@@ -79,7 +79,7 @@ export function Issues() {
   );
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Issues" }]);
+    setBreadcrumbs([{ label: "任务列表" }]);
   }, [setBreadcrumbs]);
 
   const { data: issues, isLoading, error } = useQuery({
@@ -109,7 +109,7 @@ export function Issues() {
   });
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={CircleDot} message="Select a company to view issues." />;
+    return <EmptyState icon={CircleDot} message="请先选择一个公司以查看任务列表。" />;
   }
 
   return (

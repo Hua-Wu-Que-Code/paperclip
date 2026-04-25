@@ -84,8 +84,8 @@ export function NewAgentDialog() {
     closeNewAgent();
     openNewIssue({
       assigneeAgentId: ceoAgent?.id,
-      title: "Create a new agent",
-      description: "(type in what kind of agent you want here)",
+      title: "创建新智能体",
+      description: "（在此输入你想要的智能体类型）",
     });
   }
 
@@ -115,7 +115,7 @@ export function NewAgentDialog() {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
-          <span className="text-sm text-muted-foreground">Add a new agent</span>
+          <span className="text-sm text-muted-foreground">添加新智能体</span>
           <Button
             variant="ghost"
             size="icon-xs"
@@ -138,15 +138,13 @@ export function NewAgentDialog() {
                   <Bot className="h-6 w-6 text-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  We recommend letting your CEO handle agent setup — they know the
-                  org structure and can configure reporting, permissions, and
-                  adapters.
+                  我们建议让 CEO 来处理智能体设置——他们了解组织架构，可以配置汇报关系、权限和适配器。
                 </p>
               </div>
 
               <Button className="w-full" size="lg" onClick={handleAskCeo}>
                 <Bot className="h-4 w-4 mr-2" />
-                Ask the CEO to create a new agent
+                让 CEO 创建新智能体
               </Button>
 
               {/* Advanced link */}
@@ -155,7 +153,7 @@ export function NewAgentDialog() {
                   className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
                   onClick={handleAdvancedConfig}
                 >
-                  I want advanced configuration myself
+                  我想要自行进行高级配置
                 </button>
               </div>
             </>
@@ -167,10 +165,10 @@ export function NewAgentDialog() {
                   onClick={() => setShowAdvancedCards(false)}
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
-                  Back
+                  返回
                 </button>
                 <p className="text-sm text-muted-foreground">
-                  Choose your adapter type for advanced setup.
+                  选择适配器类型进行高级设置。
                 </p>
               </div>
 
@@ -190,7 +188,7 @@ export function NewAgentDialog() {
                   >
                     {opt.recommended && (
                       <span className="absolute -top-1.5 right-1.5 bg-green-500 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
-                        Recommended
+                        推荐
                       </span>
                     )}
                     <opt.icon className="h-4 w-4" />

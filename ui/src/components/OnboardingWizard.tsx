@@ -61,11 +61,11 @@ import {
 type Step = 1 | 2 | 3 | 4;
 type AdapterType = string;
 
-const DEFAULT_TASK_DESCRIPTION = `You are the CEO. You set the direction for the company.
+const DEFAULT_TASK_DESCRIPTION = `你是 CEO。你为公司设定方向。
 
-- hire a founding engineer
-- write a hiring plan
-- break the roadmap into concrete tasks and start delegating work`;
+- 招聘一位创始工程师
+- 编写招聘计划
+- 将路线图分解为具体任务并开始委派工作`;
 
 export function OnboardingWizard() {
   const { onboardingOpen, onboardingOptions, closeOnboarding } = useDialog();
@@ -124,7 +124,7 @@ export function OnboardingWizard() {
 
   // Step 3
   const [taskTitle, setTaskTitle] = useState(
-    "Hire your first engineer and create a hiring plan"
+    "招聘第一位工程师并制定招聘计划"
   );
   const [taskDescription, setTaskDescription] = useState(
     DEFAULT_TASK_DESCRIPTION
@@ -298,7 +298,7 @@ export function OnboardingWizard() {
     setAdapterEnvLoading(false);
     setForceUnsetAnthropicApiKey(false);
     setUnsetAnthropicLoading(false);
-    setTaskTitle("Hire your first engineer and create a hiring plan");
+    setTaskTitle("招聘第一位工程师并制定招聘计划");
     setTaskDescription(DEFAULT_TASK_DESCRIPTION);
     setCreatedCompanyId(null);
     setCreatedCompanyPrefix(null);
@@ -354,7 +354,7 @@ export function OnboardingWizard() {
   ): Promise<AdapterEnvironmentTestResult | null> {
     if (!createdCompanyId) {
       setAdapterEnvError(
-        "Create or select a company before testing adapter environment."
+        "在测试适配器环境之前，请先创建或选择一个公司。"
       );
       return null;
     }
@@ -372,7 +372,7 @@ export function OnboardingWizard() {
       return result;
     } catch (err) {
       setAdapterEnvError(
-        err instanceof Error ? err.message : "Adapter environment test failed"
+        err instanceof Error ? err.message : "适配器环境测试失败"
       );
       return null;
     } finally {
@@ -410,7 +410,7 @@ export function OnboardingWizard() {
 
       setStep(2);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create company");
+      setError(err instanceof Error ? err.message : "创建公司失败");
     } finally {
       setLoading(false);
     }
@@ -425,7 +425,7 @@ export function OnboardingWizard() {
         const selectedModelId = model.trim();
         if (!selectedModelId) {
           setError(
-            "OpenCode requires an explicit model in provider/model format."
+            "OpenCode 需要以 provider/model 格式指定模型。"
           );
           return;
         }
@@ -433,13 +433,13 @@ export function OnboardingWizard() {
           setError(
             adapterModelsError instanceof Error
               ? adapterModelsError.message
-              : "Failed to load OpenCode models."
+              : "加载 OpenCode 模型失败。"
           );
           return;
         }
         if (adapterModelsLoading || adapterModelsFetching) {
           setError(
-            "OpenCode models are still loading. Please wait and try again."
+            "OpenCode 模型仍在加载中，请稍后重试。"
           );
           return;
         }
@@ -447,8 +447,8 @@ export function OnboardingWizard() {
         if (!discoveredModels.some((entry) => entry.id === selectedModelId)) {
           setError(
             discoveredModels.length === 0
-              ? "No OpenCode models discovered. Run `opencode models` and authenticate providers."
-              : `Configured OpenCode model is unavailable: ${selectedModelId}`
+              ? "未发现 OpenCode 模型。请运行 `opencode models` 并认证提供商。"
+              : `配置的 OpenCode 模型不可用: ${selectedModelId}`
           );
           return;
         }
@@ -469,7 +469,7 @@ export function OnboardingWizard() {
       if (hire.approval) {
         await approvalsApi.approve(
           hire.approval.id,
-          "Approved during onboarding first-agent setup."
+          "引导过程中自动批准首次智能体设置。"
         );
         queryClient.invalidateQueries({
           queryKey: queryKeys.approvals.list(createdCompanyId)
@@ -482,7 +482,7 @@ export function OnboardingWizard() {
       });
       setStep(3);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create agent");
+      setError(err instanceof Error ? err.message : "创建智能体失败");
     } finally {
       setLoading(false);
     }
@@ -523,14 +523,14 @@ export function OnboardingWizard() {
       const result = await runAdapterEnvironmentTest(configWithUnset);
       if (result?.status === "fail") {
         setError(
-          "Retried with ANTHROPIC_API_KEY unset in adapter config, but the environment test is still failing."
+          "已尝试在适配器配置中清除 ANTHROPIC_API_KEY 并重试，但环境测试仍然失败。"
         );
       }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to unset ANTHROPIC_API_KEY and retry."
+          : "清除 ANTHROPIC_API_KEY 并重试失败。"
       );
     } finally {
       setUnsetAnthropicLoading(false);
@@ -596,7 +596,7 @@ export function OnboardingWizard() {
           : `/issues/${issueRef}`
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create task");
+      setError(err instanceof Error ? err.message : "创建任务失败");
     } finally {
       setLoading(false);
     }
@@ -636,7 +636,7 @@ export function OnboardingWizard() {
             className="absolute top-4 left-4 z-10 rounded-sm p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors"
           >
             <X className="h-5 w-5" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">关闭</span>
           </button>
 
           {/* Left half — form */}
@@ -651,10 +651,10 @@ export function OnboardingWizard() {
               <div className="flex items-center gap-0 mb-8 border-b border-border">
                 {(
                   [
-                    { step: 1 as Step, label: "Company", icon: Building2 },
-                    { step: 2 as Step, label: "Agent", icon: Bot },
-                    { step: 3 as Step, label: "Task", icon: ListTodo },
-                    { step: 4 as Step, label: "Launch", icon: Rocket }
+                    { step: 1 as Step, label: "公司", icon: Building2 },
+                    { step: 2 as Step, label: "智能体", icon: Bot },
+                    { step: 3 as Step, label: "任务", icon: ListTodo },
+                    { step: 4 as Step, label: "启动", icon: Rocket }
                   ] as const
                 ).map(({ step: s, label, icon: Icon }) => (
                   <button
@@ -682,9 +682,9 @@ export function OnboardingWizard() {
                       <Building2 className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Name your company</h3>
+                      <h3 className="font-medium">命名你的公司</h3>
                       <p className="text-xs text-muted-foreground">
-                        This is the organization your agents will work for.
+                        这是你的智能体将为之工作的组织。
                       </p>
                     </div>
                   </div>
@@ -697,11 +697,11 @@ export function OnboardingWizard() {
                           : "text-muted-foreground group-focus-within:text-foreground"
                       )}
                     >
-                      Company name
+                      公司名称
                     </label>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
-                      placeholder="Acme Corp"
+                      placeholder="示例公司"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       autoFocus
@@ -716,11 +716,11 @@ export function OnboardingWizard() {
                           : "text-muted-foreground group-focus-within:text-foreground"
                       )}
                     >
-                      Mission / goal (optional)
+                      使命 / 目标（可选）
                     </label>
                     <textarea
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50 resize-none min-h-[60px]"
-                      placeholder="What is this company trying to achieve?"
+                      placeholder="这家公司想要实现什么？"
                       value={companyGoal}
                       onChange={(e) => setCompanyGoal(e.target.value)}
                     />
@@ -735,15 +735,15 @@ export function OnboardingWizard() {
                       <Bot className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Create your first agent</h3>
+                      <h3 className="font-medium">创建你的第一个智能体</h3>
                       <p className="text-xs text-muted-foreground">
-                        Choose how this agent will run tasks.
+                        选择此智能体运行任务的方式。
                       </p>
                     </div>
                   </div>
                   <div>
                     <label className="text-xs text-muted-foreground mb-1 block">
-                      Agent name
+                      智能体名称
                     </label>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
@@ -757,7 +757,7 @@ export function OnboardingWizard() {
                   {/* Adapter type radio cards */}
                   <div>
                     <label className="text-xs text-muted-foreground mb-2 block">
-                      Adapter type
+                      适配器类型
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       {recommendedAdapters.map((opt) => (
@@ -782,7 +782,7 @@ export function OnboardingWizard() {
                         >
                           {opt.recommended && (
                             <span className="absolute -top-1.5 right-1.5 bg-green-500 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
-                              Recommended
+                              推荐
                             </span>
                           )}
                           <opt.icon className="h-4 w-4" />
@@ -804,7 +804,7 @@ export function OnboardingWizard() {
                           showMoreAdapters ? "rotate-0" : "-rotate-90"
                         )}
                       />
-                      More Agent Adapter Types
+                      更多适配器类型
                     </button>
 
                     {showMoreAdapters && (
@@ -846,7 +846,7 @@ export function OnboardingWizard() {
                             <span className="font-medium">{opt.label}</span>
                             <span className="text-muted-foreground text-[10px]">
                               {opt.comingSoon
-                                ? opt.disabledLabel ?? "Coming soon"
+                                ? opt.disabledLabel ?? "即将推出"
                                 : opt.description}
                             </span>
                           </button>
@@ -860,7 +860,7 @@ export function OnboardingWizard() {
                     <div className="space-y-3">
                       <div>
                         <label className="text-xs text-muted-foreground mb-1 block">
-                          Model
+                          模型
                         </label>
                         <Popover
                           open={modelOpen}
@@ -880,8 +880,8 @@ export function OnboardingWizard() {
                                   ? selectedModel.label
                                   : model ||
                                     (adapterType === "opencode_local"
-                                      ? "Select model (required)"
-                                      : "Default")}
+                                      ? "选择模型（必填）"
+                                      : "默认")}
                               </span>
                               <ChevronDown className="h-3 w-3 text-muted-foreground" />
                             </button>
@@ -892,7 +892,7 @@ export function OnboardingWizard() {
                           >
                             <input
                               className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-                              placeholder="Search models..."
+                              placeholder="搜索模型..."
                               value={modelSearch}
                               onChange={(e) => setModelSearch(e.target.value)}
                               autoFocus
@@ -908,7 +908,7 @@ export function OnboardingWizard() {
                                   setModelOpen(false);
                                 }}
                               >
-                                Default
+                                默认
                               </button>
                             )}
                             <div className="max-h-[240px] overflow-y-auto">
@@ -949,7 +949,7 @@ export function OnboardingWizard() {
                             </div>
                             {filteredModels.length === 0 && (
                               <p className="px-2 py-1.5 text-xs text-muted-foreground">
-                                No models discovered.
+                                未发现模型。
                               </p>
                             )}
                           </PopoverContent>
@@ -963,11 +963,10 @@ export function OnboardingWizard() {
                       <div className="flex items-center justify-between gap-2">
                         <div>
                           <p className="text-xs font-medium">
-                            Adapter environment check
+                            适配器环境检查
                           </p>
                           <p className="text-[11px] text-muted-foreground">
-                            Runs a live probe that asks the adapter CLI to
-                            respond with hello.
+                            运行一个实时探测，让适配器 CLI 回复 hello。
                           </p>
                         </div>
                         <Button
@@ -977,7 +976,7 @@ export function OnboardingWizard() {
                           disabled={adapterEnvLoading}
                           onClick={() => void runAdapterEnvironmentTest()}
                         >
-                          {adapterEnvLoading ? "Testing..." : "Test now"}
+                          {adapterEnvLoading ? "测试中..." : "立即测试"}
                         </Button>
                       </div>
 
@@ -991,7 +990,7 @@ export function OnboardingWizard() {
                       adapterEnvResult.status === "pass" ? (
                         <div className="flex items-center gap-2 rounded-md border border-green-300 dark:border-green-500/40 bg-green-50 dark:bg-green-500/10 px-3 py-2 text-xs text-green-700 dark:text-green-300 animate-in fade-in slide-in-from-bottom-1 duration-300">
                           <Check className="h-3.5 w-3.5 shrink-0" />
-                          <span className="font-medium">Passed</span>
+                          <span className="font-medium">通过</span>
                         </div>
                       ) : adapterEnvResult ? (
                         <AdapterEnvironmentResult result={adapterEnvResult} />
@@ -1000,10 +999,9 @@ export function OnboardingWizard() {
                       {shouldSuggestUnsetAnthropicApiKey && (
                         <div className="rounded-md border border-amber-300/60 bg-amber-50/40 px-2.5 py-2 space-y-2">
                           <p className="text-[11px] text-amber-900/90 leading-relaxed">
-                            Claude failed while{" "}
+                            Claude 在设置了{" "}
                             <span className="font-mono">ANTHROPIC_API_KEY</span>{" "}
-                            is set. You can clear it in this CEO adapter config
-                            and retry the probe.
+                            的情况下运行失败。你可以在 CEO 适配器配置中清除它并重试探测。
                           </p>
                           <Button
                             size="sm"
@@ -1015,15 +1013,15 @@ export function OnboardingWizard() {
                             onClick={() => void handleUnsetAnthropicApiKey()}
                           >
                             {unsetAnthropicLoading
-                              ? "Retrying..."
-                              : "Unset ANTHROPIC_API_KEY"}
+                              ? "重试中..."
+                              : "清除 ANTHROPIC_API_KEY"}
                           </Button>
                         </div>
                       )}
 
                       {adapterEnvResult && adapterEnvResult.status === "fail" && (
                         <div className="rounded-md border border-border/70 bg-muted/20 px-2.5 py-2 text-[11px] space-y-1.5">
-                          <p className="font-medium">Manual debug</p>
+                          <p className="font-medium">手动调试</p>
                           <p className="text-muted-foreground font-mono break-all">
                             {adapterType === "cursor"
                               ? `${effectiveAdapterCommand} -p --mode ask --output-format json \"Respond with hello.\"`
@@ -1036,7 +1034,7 @@ export function OnboardingWizard() {
                               : `${effectiveAdapterCommand} --print - --output-format stream-json --verbose`}
                           </p>
                           <p className="text-muted-foreground">
-                            Prompt:{" "}
+                            提示：{" "}
                             <span className="font-mono">Respond with hello.</span>
                           </p>
                           {adapterType === "cursor" ||
@@ -1044,7 +1042,7 @@ export function OnboardingWizard() {
                           adapterType === "gemini_local" ||
                           adapterType === "opencode_local" ? (
                             <p className="text-muted-foreground">
-                              If auth fails, set{" "}
+                              如果认证失败，请设置{" "}
                               <span className="font-mono">
                                 {adapterType === "cursor"
                                   ? "CURSOR_API_KEY"
@@ -1052,7 +1050,7 @@ export function OnboardingWizard() {
                                     ? "GEMINI_API_KEY"
                                     : "OPENAI_API_KEY"}
                               </span>{" "}
-                              in env or run{" "}
+                              环境变量或运行{" "}
                               <span className="font-mono">
                                 {adapterType === "cursor"
                                   ? "agent login"
@@ -1062,13 +1060,13 @@ export function OnboardingWizard() {
                                       ? "gemini auth"
                                       : "opencode auth login"}
                               </span>
-                              .
+                              。
                             </p>
                           ) : (
                             <p className="text-muted-foreground">
-                              If login is required, run{" "}
+                              如果需要登录，请运行{" "}
                               <span className="font-mono">claude login</span>{" "}
-                              and retry.
+                              然后重试。
                             </p>
                           )}
                         </div>
@@ -1081,7 +1079,7 @@ export function OnboardingWizard() {
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">
                         {adapterType === "openclaw_gateway"
-                          ? "Gateway URL"
+                          ? "网关 URL"
                           : "Webhook URL"}
                       </label>
                       <input
@@ -1106,20 +1104,20 @@ export function OnboardingWizard() {
                       <ListTodo className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Give it something to do</h3>
+                      <h3 className="font-medium">给它一些事情做</h3>
                       <p className="text-xs text-muted-foreground">
-                        Give your agent a small task to start with — a bug fix,
-                        a research question, writing a script.
+                        给你的智能体一个小任务来开始 — 修复一个 Bug、
+                        研究一个问题、编写一个脚本。
                       </p>
                     </div>
                   </div>
                   <div>
                     <label className="text-xs text-muted-foreground mb-1 block">
-                      Task title
+                      任务标题
                     </label>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
-                      placeholder="e.g. Research competitor pricing"
+                      placeholder="例如：研究竞品定价"
                       value={taskTitle}
                       onChange={(e) => setTaskTitle(e.target.value)}
                       autoFocus
@@ -1127,12 +1125,12 @@ export function OnboardingWizard() {
                   </div>
                   <div>
                     <label className="text-xs text-muted-foreground mb-1 block">
-                      Description (optional)
+                      描述（可选）
                     </label>
                     <textarea
                       ref={textareaRef}
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50 resize-none min-h-[120px] max-h-[300px] overflow-y-auto"
-                      placeholder="Add more detail about what the agent should do..."
+                      placeholder="添加更多关于智能体应该做什么的细节..."
                       value={taskDescription}
                       onChange={(e) => setTaskDescription(e.target.value)}
                     />
@@ -1147,10 +1145,9 @@ export function OnboardingWizard() {
                       <Rocket className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Ready to launch</h3>
+                      <h3 className="font-medium">准备启动</h3>
                       <p className="text-xs text-muted-foreground">
-                        Everything is set up. Launching now will create the
-                        starter task, wake the agent, and open the issue.
+                        一切就绪。现在启动将创建初始任务、唤醒智能体并打开任务。
                       </p>
                     </div>
                   </div>
@@ -1161,7 +1158,7 @@ export function OnboardingWizard() {
                         <p className="text-sm font-medium truncate">
                           {companyName}
                         </p>
-                        <p className="text-xs text-muted-foreground">Company</p>
+                        <p className="text-xs text-muted-foreground">公司</p>
                       </div>
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                     </div>
@@ -1183,7 +1180,7 @@ export function OnboardingWizard() {
                         <p className="text-sm font-medium truncate">
                           {taskTitle}
                         </p>
-                        <p className="text-xs text-muted-foreground">Task</p>
+                        <p className="text-xs text-muted-foreground">任务</p>
                       </div>
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                     </div>
@@ -1209,7 +1206,7 @@ export function OnboardingWizard() {
                       disabled={loading}
                     >
                       <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-                      Back
+                      上一步
                     </Button>
                   )}
                 </div>
@@ -1225,7 +1222,7 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Next"}
+                      {loading ? "创建中..." : "下一步"}
                     </Button>
                   )}
                   {step === 2 && (
@@ -1241,7 +1238,7 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Next"}
+                      {loading ? "创建中..." : "下一步"}
                     </Button>
                   )}
                   {step === 3 && (
@@ -1255,7 +1252,7 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Next"}
+                      {loading ? "创建中..." : "下一步"}
                     </Button>
                   )}
                   {step === 4 && (
@@ -1265,7 +1262,7 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Create & Open Issue"}
+                      {loading ? "创建中..." : "创建并打开任务"}
                     </Button>
                   )}
                 </div>
@@ -1295,10 +1292,10 @@ function AdapterEnvironmentResult({
 }) {
   const statusLabel =
     result.status === "pass"
-      ? "Passed"
+      ? "通过"
       : result.status === "warn"
-      ? "Warnings"
-      : "Failed";
+      ? "警告"
+      : "失败";
   const statusClass =
     result.status === "pass"
       ? "text-green-700 dark:text-green-300 border-green-300 dark:border-green-500/40 bg-green-50 dark:bg-green-500/10"
@@ -1332,7 +1329,7 @@ function AdapterEnvironmentResult({
             )}
             {check.hint && (
               <span className="block opacity-90 break-words">
-                Hint: {check.hint}
+                提示： {check.hint}
               </span>
             )}
           </div>

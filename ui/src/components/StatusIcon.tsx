@@ -7,8 +7,18 @@ import { Button } from "@/components/ui/button";
 
 const allStatuses = ["backlog", "todo", "in_progress", "in_review", "done", "cancelled", "blocked"];
 
+const STATUS_LABEL_MAP: Record<string, string> = {
+  backlog: "待办",
+  todo: "待办",
+  in_progress: "进行中",
+  in_review: "审核中",
+  done: "已完成",
+  cancelled: "已取消",
+  blocked: "已阻塞",
+};
+
 function statusLabel(status: string): string {
-  return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return STATUS_LABEL_MAP[status] ?? status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 interface StatusIconProps {

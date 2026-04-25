@@ -14,8 +14,8 @@ export function InstanceExperimentalSettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Instance Settings" },
-      { label: "Experimental" },
+      { label: "实例设置" },
+      { label: "实验性" },
     ]);
   }, [setBreadcrumbs]);
 
@@ -35,12 +35,12 @@ export function InstanceExperimentalSettings() {
       ]);
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to update experimental settings.");
+      setActionError(error instanceof Error ? error.message : "更新实验性设置失败。");
     },
   });
 
   if (experimentalQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading experimental settings...</div>;
+    return <div className="text-sm text-muted-foreground">加载实验性设置中...</div>;
   }
 
   if (experimentalQuery.error) {
@@ -48,7 +48,7 @@ export function InstanceExperimentalSettings() {
       <div className="text-sm text-destructive">
         {experimentalQuery.error instanceof Error
           ? experimentalQuery.error.message
-          : "Failed to load experimental settings."}
+          : "加载实验性设置失败。"}
       </div>
     );
   }
@@ -64,10 +64,10 @@ export function InstanceExperimentalSettings() {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <FlaskConical className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Experimental</h1>
+          <h1 className="text-lg font-semibold">实验性</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Opt into features that are still being evaluated before they become default behavior.
+          选择仍在评估中的功能，这些功能在成为默认行为之前可以抢先体验。
         </p>
       </div>
 
@@ -80,10 +80,9 @@ export function InstanceExperimentalSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Enable Environments</h2>
+            <h2 className="text-sm font-semibold">启用环境</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Show environment management in company settings and allow project and agent environment assignment
-              controls.
+              在公司设置中显示环境管理，并允许项目和智能体的环境分配控制。
             </p>
           </div>
           <ToggleSwitch
@@ -98,10 +97,9 @@ export function InstanceExperimentalSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Enable Isolated Workspaces</h2>
+            <h2 className="text-sm font-semibold">启用隔离工作区</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Show execution workspace controls in project configuration and allow isolated workspace behavior for new
-              and existing issue runs.
+              在项目配置中显示执行工作区控制，并允许新的和现有任务运行使用隔离工作区行为。
             </p>
           </div>
           <ToggleSwitch
@@ -116,10 +114,9 @@ export function InstanceExperimentalSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Auto-Restart Dev Server When Idle</h2>
+            <h2 className="text-sm font-semibold">空闲时自动重启开发服务器</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              In `pnpm dev:once`, wait for all queued and running local agent runs to finish, then restart the server
-              automatically when backend changes or migrations make the current boot stale.
+              在 `pnpm dev:once` 中，等待所有排队中和运行中的本地智能体运行完成后，当后端更改或迁移使当前启动过期时自动重启服务器。
             </p>
           </div>
           <ToggleSwitch
