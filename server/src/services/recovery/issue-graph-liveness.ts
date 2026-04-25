@@ -318,13 +318,13 @@ export function classifyIssueGraphLiveness(input: IssueGraphLivenessInput): Issu
           findings.push(finding({
             issue,
             state: "blocked_by_cancelled_issue",
-            reason: `${issueLabel(issue)} is still blocked by cancelled issue ${issueLabel(blocker)}.`,
+            reason: `${issueLabel(issue)} 仍被已取消的问题 ${issueLabel(blocker)} 阻塞。`,
             dependencyPath: [issue, blocker],
             recoveryIssue: blocker,
             recommendedOwnerCandidateAgentIds: ownerCandidates.map((candidate) => candidate.agentId),
             recommendedOwnerCandidates: ownerCandidates,
             recommendedAction:
-              `Inspect ${issueLabel(blocker)} and either remove it from ${issueLabel(issue)}'s blockers or replace it with an actionable unblock issue.`,
+              `检查 ${issueLabel(blocker)}，将其从 ${issueLabel(issue)} 的阻塞项中移除，或替换为可执行的解除阻塞问题。`,
             blockerIssueId: blocker.id,
           }));
           continue;
@@ -335,13 +335,13 @@ export function classifyIssueGraphLiveness(input: IssueGraphLivenessInput): Issu
           findings.push(finding({
             issue,
             state: "blocked_by_unassigned_issue",
-            reason: `${issueLabel(issue)} is blocked by unassigned issue ${issueLabel(blocker)} with no user owner.`,
+            reason: `${issueLabel(issue)} 被未分配的 ${issueLabel(blocker)} 阻塞，且无用户负责人。`,
             dependencyPath: [issue, blocker],
             recoveryIssue: blocker,
             recommendedOwnerCandidateAgentIds: ownerCandidates.map((candidate) => candidate.agentId),
             recommendedOwnerCandidates: ownerCandidates,
             recommendedAction:
-              `Assign ${issueLabel(blocker)} to an owner who can complete it, or remove it from ${issueLabel(issue)}'s blockers if it is no longer required.`,
+              `将 ${issueLabel(blocker)} 分配给能完成它的负责人，或如果不再需要则将其从 ${issueLabel(issue)} 的阻塞项中移除。`,
             blockerIssueId: blocker.id,
           }));
           continue;
@@ -356,14 +356,14 @@ export function classifyIssueGraphLiveness(input: IssueGraphLivenessInput): Issu
             issue,
             state: "blocked_by_uninvokable_assignee",
             reason: blockerAgent
-              ? `${issueLabel(issue)} is blocked by ${issueLabel(blocker)}, but its assignee is ${blockerAgent.status}.`
-              : `${issueLabel(issue)} is blocked by ${issueLabel(blocker)}, but its assignee no longer exists.`,
+              ? `${issueLabel(issue)} 被 ${issueLabel(blocker)} 阻塞，但其负责人状态为 ${blockerAgent.status}。`
+              : `${issueLabel(issue)} 被 ${issueLabel(blocker)} 阻塞，但其负责人已不存在。`,
             dependencyPath: [issue, blocker],
             recoveryIssue: blocker,
             recommendedOwnerCandidateAgentIds: ownerCandidates.map((candidate) => candidate.agentId),
             recommendedOwnerCandidates: ownerCandidates,
             recommendedAction:
-              `Review ${issueLabel(blocker)} and assign it to an active owner or replace the blocker with an actionable issue.`,
+              `审查 ${issueLabel(blocker)}，将其分配给活跃的负责人，或将阻塞项替换为可执行的问题。`,
             blockerIssueId: blocker.id,
           }));
         }
@@ -381,14 +381,14 @@ export function classifyIssueGraphLiveness(input: IssueGraphLivenessInput): Issu
           issue,
           state: "invalid_review_participant",
           reason: participantAgent
-            ? `${issueLabel(issue)} is in review, but current participant agent is ${participantAgent.status}.`
-            : `${issueLabel(issue)} is in review, but current participant agent cannot be resolved.`,
+            ? `${issueLabel(issue)} 正在审核中，但当前参与者代理状态为 ${participantAgent.status}。`
+            : `${issueLabel(issue)} 正在审核中，但当前参与者代理无法解析。`,
           dependencyPath: [issue],
           recoveryIssue: issue,
           recommendedOwnerCandidateAgentIds: ownerCandidates.map((candidate) => candidate.agentId),
           recommendedOwnerCandidates: ownerCandidates,
           recommendedAction:
-            `Repair ${issueLabel(issue)}'s review participant or return the issue to an active assignee with a clear change request.`,
+            `修复 ${issueLabel(issue)} 的审核参与者，或将问题返回给活跃的负责人并附上明确的变更请求。`,
           participantAgentId,
         }));
       }
@@ -399,13 +399,13 @@ export function classifyIssueGraphLiveness(input: IssueGraphLivenessInput): Issu
       findings.push(finding({
         issue,
         state: "invalid_review_participant",
-        reason: `${issueLabel(issue)} is in review, but its current participant cannot be resolved.`,
+        reason: `${issueLabel(issue)} 正在审核中，但其当前参与者无法解析。`,
         dependencyPath: [issue],
         recoveryIssue: issue,
         recommendedOwnerCandidateAgentIds: ownerCandidates.map((candidate) => candidate.agentId),
         recommendedOwnerCandidates: ownerCandidates,
         recommendedAction:
-          `Repair ${issueLabel(issue)}'s review participant or return the issue to an active assignee with a clear change request.`,
+          `修复 ${issueLabel(issue)} 的审核参与者，或将问题返回给活跃的负责人并附上明确的变更请求。`,
       }));
     }
   }

@@ -506,7 +506,7 @@ export function issueRoutes(
     assertCompanyAccess(req, companyId);
     if (req.actor.type === "board") return true;
     if (!req.actor.agentId) {
-      res.status(403).json({ error: "Agent authentication required" });
+      res.status(403).json({ error: "需要智能体认证" });
       return false;
     }
     const actorAgent = await agentsSvc.getById(req.actor.agentId);
@@ -541,7 +541,7 @@ export function issueRoutes(
       return;
     }
     if (req.actor.type === "agent") {
-      if (!req.actor.agentId) throw forbidden("Agent authentication required");
+      if (!req.actor.agentId) throw forbidden("需要智能体认证");
       const allowedByGrant = await access.hasPermission(companyId, "agent", req.actor.agentId, "tasks:assign");
       if (allowedByGrant) return;
       const actorAgent = await agentsSvc.getById(req.actor.agentId);
@@ -599,7 +599,7 @@ export function issueRoutes(
     if (req.actor.type !== "agent") return true;
     const actorAgentId = req.actor.agentId;
     if (!actorAgentId) {
-      res.status(403).json({ error: "Agent authentication required" });
+      res.status(403).json({ error: "需要智能体认证" });
       return false;
     }
     if (issue.status !== "in_progress" || issue.assigneeAgentId === null) {
@@ -701,7 +701,7 @@ export function issueRoutes(
 
     const actorAgentId = req.actor.agentId;
     if (!actorAgentId) {
-      res.status(403).json({ error: "Agent authentication required" });
+      res.status(403).json({ error: "需要智能体认证" });
       return false;
     }
     if (!issue.assigneeAgentId) {
@@ -1013,7 +1013,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1122,7 +1122,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1164,7 +1164,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1176,7 +1176,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1190,7 +1190,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1211,7 +1211,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1293,7 +1293,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1314,7 +1314,7 @@ export function issueRoutes(
       const revisionId = req.params.revisionId as string;
       const issue = await svc.getById(id);
       if (!issue) {
-        res.status(404).json({ error: "Issue not found" });
+        res.status(404).json({ error: "未找到任务" });
         return;
       }
       assertCompanyAccess(req, issue.companyId);
@@ -1391,7 +1391,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1460,7 +1460,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1498,7 +1498,7 @@ export function issueRoutes(
     assertCompanyAccess(req, existing.companyId);
     const issue = await svc.getById(existing.issueId);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     if (!(await assertAgentIssueMutationAllowed(req, res, issue))) return;
@@ -1532,7 +1532,7 @@ export function issueRoutes(
     assertCompanyAccess(req, existing.companyId);
     const issue = await svc.getById(existing.issueId);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     if (!(await assertAgentIssueMutationAllowed(req, res, issue))) return;
@@ -1560,7 +1560,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1592,7 +1592,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1624,7 +1624,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1656,7 +1656,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1688,7 +1688,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1700,7 +1700,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1734,7 +1734,7 @@ export function issueRoutes(
     const approvalId = req.params.approvalId as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -1882,7 +1882,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, existing.companyId);
@@ -2137,7 +2137,7 @@ export function issueRoutes(
       throw err;
     }
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
 
@@ -2650,7 +2650,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, existing.companyId);
@@ -2659,7 +2659,7 @@ export function issueRoutes(
 
     const issue = await svc.remove(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
 
@@ -2690,7 +2690,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -2764,7 +2764,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, existing.companyId);
@@ -2778,7 +2778,7 @@ export function issueRoutes(
       actorRunId,
     );
     if (!released) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
 
@@ -2809,7 +2809,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, existing.companyId);
@@ -2817,7 +2817,7 @@ export function issueRoutes(
     const clearAssignee = req.query.clearAssignee === "true";
     const result = await svc.adminForceRelease(id, { clearAssignee });
     if (!result) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
 
@@ -2847,7 +2847,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -2881,7 +2881,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -2893,7 +2893,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -2943,7 +2943,7 @@ export function issueRoutes(
       const interactionId = req.params.interactionId as string;
       const issue = await svc.getById(id);
       if (!issue) {
-        res.status(404).json({ error: "Issue not found" });
+        res.status(404).json({ error: "未找到任务" });
         return;
       }
       assertCompanyAccess(req, issue.companyId);
@@ -3040,7 +3040,7 @@ export function issueRoutes(
       const interactionId = req.params.interactionId as string;
       const issue = await svc.getById(id);
       if (!issue) {
-        res.status(404).json({ error: "Issue not found" });
+        res.status(404).json({ error: "未找到任务" });
         return;
       }
       assertCompanyAccess(req, issue.companyId);
@@ -3096,7 +3096,7 @@ export function issueRoutes(
       const interactionId = req.params.interactionId as string;
       const issue = await svc.getById(id);
       if (!issue) {
-        res.status(404).json({ error: "Issue not found" });
+        res.status(404).json({ error: "未找到任务" });
         return;
       }
       assertCompanyAccess(req, issue.companyId);
@@ -3145,7 +3145,7 @@ export function issueRoutes(
     const commentId = req.params.commentId as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3162,7 +3162,7 @@ export function issueRoutes(
     const commentId = req.params.commentId as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3180,7 +3180,7 @@ export function issueRoutes(
         ? comment.authorAgentId === actor.agentId
         : comment.authorUserId === actor.actorId;
     if (!actorOwnsComment) {
-      res.status(403).json({ error: "Only the comment author can cancel queued comments" });
+      res.status(403).json({ error: "仅评论作者可以取消排队的评论" });
       return;
     }
 
@@ -3227,7 +3227,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3244,7 +3244,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3307,7 +3307,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3354,7 +3354,7 @@ export function issueRoutes(
     if (effectiveMoveToTodoRequested && (isClosed || (isBlocked && !hasUnresolvedFirstClassBlockers))) {
       const reopenedIssue = await svc.update(id, { status: "todo" });
       if (!reopenedIssue) {
-        res.status(404).json({ error: "Issue not found" });
+        res.status(404).json({ error: "未找到任务" });
         return;
       }
       reopened = true;
@@ -3569,7 +3569,7 @@ export function issueRoutes(
     const id = req.params.id as string;
     const issue = await svc.getById(id);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3668,7 +3668,7 @@ export function issueRoutes(
     const issueId = req.params.id as string;
     const issue = await svc.getById(issueId);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     assertCompanyAccess(req, issue.companyId);
@@ -3682,7 +3682,7 @@ export function issueRoutes(
     assertCompanyAccess(req, companyId);
     const issue = await svc.getById(issueId);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     if (issue.companyId !== companyId) {
@@ -3802,7 +3802,7 @@ export function issueRoutes(
     assertCompanyAccess(req, attachment.companyId);
     const issue = await svc.getById(attachment.issueId);
     if (!issue) {
-      res.status(404).json({ error: "Issue not found" });
+      res.status(404).json({ error: "未找到任务" });
       return;
     }
     if (!(await assertAgentIssueMutationAllowed(req, res, issue))) return;

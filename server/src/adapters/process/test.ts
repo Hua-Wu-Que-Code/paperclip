@@ -29,14 +29,14 @@ export async function testEnvironment(
     checks.push({
       code: "process_command_missing",
       level: "error",
-      message: "Process adapter requires a command.",
-      hint: "Set adapterConfig.command to an executable command.",
+      message: "进程适配器需要一个命令。",
+      hint: "请将 adapterConfig.command 设置为可执行命令。",
     });
   } else {
     checks.push({
       code: "process_command_present",
       level: "info",
-      message: `Configured command: ${command}`,
+      message: `已配置的命令：${command}`,
     });
   }
 
@@ -45,13 +45,13 @@ export async function testEnvironment(
     checks.push({
       code: "process_cwd_valid",
       level: "info",
-      message: `Working directory is valid: ${cwd}`,
+      message: `工作目录有效：${cwd}`,
     });
   } catch (err) {
     checks.push({
       code: "process_cwd_invalid",
       level: "error",
-      message: err instanceof Error ? err.message : "Invalid working directory",
+      message: err instanceof Error ? err.message : "无效的工作目录",
       detail: cwd,
     });
   }
@@ -68,13 +68,13 @@ export async function testEnvironment(
       checks.push({
         code: "process_command_resolvable",
         level: "info",
-        message: `Command is executable: ${command}`,
+        message: `命令可执行：${command}`,
       });
     } catch (err) {
       checks.push({
         code: "process_command_unresolvable",
         level: "error",
-        message: err instanceof Error ? err.message : "Command is not executable",
+        message: err instanceof Error ? err.message : "命令不可执行",
         detail: command,
       });
     }

@@ -145,7 +145,7 @@ export function InstanceGeneralSettings() {
             checked={censorUsernameInLogs}
             onCheckedChange={() => updateGeneralMutation.mutate({ censorUsernameInLogs: !censorUsernameInLogs })}
             disabled={updateGeneralMutation.isPending}
-            aria-label="Toggle username log censoring"
+            aria-label="切换日志用户名脱敏"
           />
         </div>
       </section>
@@ -162,7 +162,7 @@ export function InstanceGeneralSettings() {
             checked={keyboardShortcuts}
             onCheckedChange={() => updateGeneralMutation.mutate({ keyboardShortcuts: !keyboardShortcuts })}
             disabled={updateGeneralMutation.isPending}
-            aria-label="Toggle keyboard shortcuts"
+            aria-label="切换键盘快捷键"
           />
         </div>
       </section>

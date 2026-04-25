@@ -28,8 +28,8 @@ export async function testEnvironment(
     checks.push({
       code: "http_url_missing",
       level: "error",
-      message: "HTTP adapter requires a URL.",
-      hint: "Set adapterConfig.url to an absolute http(s) endpoint.",
+      message: "HTTP 适配器需要一个 URL。",
+      hint: "请将 adapterConfig.url 设置为绝对 http(s) 端点。",
     });
     return {
       adapterType: ctx.adapterType,
@@ -46,7 +46,7 @@ export async function testEnvironment(
     checks.push({
       code: "http_url_invalid",
       level: "error",
-      message: `Invalid URL: ${urlValue}`,
+      message: `无效的 URL：${urlValue}`,
     });
   }
 
@@ -54,8 +54,8 @@ export async function testEnvironment(
     checks.push({
       code: "http_url_protocol_invalid",
       level: "error",
-      message: `Unsupported URL protocol: ${url.protocol}`,
-      hint: "Use an http:// or https:// endpoint.",
+      message: `不支持的 URL 协议：${url.protocol}`,
+      hint: "请使用 http:// 或 https:// 端点。",
     });
   }
 
@@ -63,14 +63,14 @@ export async function testEnvironment(
     checks.push({
       code: "http_url_valid",
       level: "info",
-      message: `Configured endpoint: ${url.toString()}`,
+      message: `已配置的端点：${url.toString()}`,
     });
   }
 
   checks.push({
     code: "http_method_configured",
     level: "info",
-    message: `Configured method: ${method}`,
+    message: `已配置的方法：${method}`,
   });
 
   if (url && (url.protocol === "http:" || url.protocol === "https:")) {
@@ -85,22 +85,22 @@ export async function testEnvironment(
         checks.push({
           code: "http_endpoint_probe_unexpected_status",
           level: "warn",
-          message: `Endpoint probe returned HTTP ${response.status}.`,
-          hint: "Verify the endpoint is reachable from the Paperclip server host.",
+          message: `端点探测返回 HTTP ${response.status}。`,
+          hint: "请验证该端点可从 Paperclip 服务器主机访问。",
         });
       } else {
         checks.push({
           code: "http_endpoint_probe_ok",
           level: "info",
-          message: "Endpoint responded to a HEAD probe.",
+          message: "端点已响应 HEAD 探测。",
         });
       }
     } catch (err) {
       checks.push({
         code: "http_endpoint_probe_failed",
         level: "warn",
-        message: err instanceof Error ? err.message : "Endpoint probe failed",
-        hint: "This may be expected in restricted networks; verify connectivity when invoking runs.",
+        message: err instanceof Error ? err.message : "端点探测失败",
+        hint: "在受限网络中可能是正常现象；请在调用运行时验证连接。",
       });
     } finally {
       clearTimeout(timeout);

@@ -655,9 +655,9 @@ export function normalizeAgentDefaultsForJoin(input: {
       code: "openclaw_gateway_defaults_missing",
       level: "warn",
       message:
-        "No OpenClaw gateway config was provided in agentDefaultsPayload.",
+        "未提供 OpenClaw 网关配置（agentDefaultsPayload 中缺少配置）。",
       hint:
-        "Include agentDefaultsPayload.url and headers.x-openclaw-token for OpenClaw gateway joins."
+        "请在 agentDefaultsPayload 中包含 url 和 headers.x-openclaw-token 以完成 OpenClaw 网关注册。"
     });
     fatalErrors.push(
       "agentDefaultsPayload is required for adapterType=openclaw_gateway"
@@ -678,8 +678,8 @@ export function normalizeAgentDefaultsForJoin(input: {
     diagnostics.push({
       code: "openclaw_gateway_url_missing",
       level: "warn",
-      message: "OpenClaw gateway URL is missing.",
-      hint: "Set agentDefaultsPayload.url to ws:// or wss:// gateway URL."
+      message: "OpenClaw 网关 URL 缺失。",
+      hint: "请将 agentDefaultsPayload.url 设置为 ws:// 或 wss:// 网关 URL。"
     });
     fatalErrors.push("agentDefaultsPayload.url is required");
   } else {
@@ -689,7 +689,7 @@ export function normalizeAgentDefaultsForJoin(input: {
         diagnostics.push({
           code: "openclaw_gateway_url_protocol",
           level: "warn",
-          message: `OpenClaw gateway URL must use ws:// or wss:// (got ${gatewayUrl.protocol}).`
+          message: `OpenClaw 网关 URL 必须使用 ws:// 或 wss:// 协议（当前为 ${gatewayUrl.protocol}）。`
         });
         fatalErrors.push(
           "agentDefaultsPayload.url must use ws:// or wss:// for openclaw_gateway"
@@ -699,14 +699,14 @@ export function normalizeAgentDefaultsForJoin(input: {
         diagnostics.push({
           code: "openclaw_gateway_url_configured",
           level: "info",
-          message: `Gateway endpoint set to ${gatewayUrl.toString()}`
+          message: `网关端点已设置为 ${gatewayUrl.toString()}`
         });
       }
     } catch {
       diagnostics.push({
         code: "openclaw_gateway_url_invalid",
         level: "warn",
-        message: `Invalid OpenClaw gateway URL: ${rawGatewayUrl}`
+        message: `无效的 OpenClaw 网关 URL：${rawGatewayUrl}`
       });
       fatalErrors.push("agentDefaultsPayload.url is not a valid URL");
     }
@@ -728,9 +728,9 @@ export function normalizeAgentDefaultsForJoin(input: {
     diagnostics.push({
       code: "openclaw_gateway_auth_header_missing",
       level: "warn",
-      message: "Gateway auth token is missing from agent defaults.",
+      message: "代理默认配置中缺少网关认证令牌。",
       hint:
-        "Set agentDefaultsPayload.headers.x-openclaw-token (or legacy x-openclaw-auth)."
+        "请设置 agentDefaultsPayload.headers.x-openclaw-token（或旧版 x-openclaw-auth）。"
     });
     fatalErrors.push(
       "agentDefaultsPayload.headers.x-openclaw-token (or x-openclaw-auth) is required"
@@ -739,9 +739,9 @@ export function normalizeAgentDefaultsForJoin(input: {
     diagnostics.push({
       code: "openclaw_gateway_auth_header_too_short",
       level: "warn",
-      message: `Gateway auth token appears too short (${gatewayToken.trim().length} chars).`,
+      message: `网关认证令牌似乎过短（${gatewayToken.trim().length} 个字符）。`,
       hint:
-        "Use the full gateway auth token from ~/.openclaw/openclaw.json (typically long random string)."
+        "请使用 ~/.openclaw/openclaw.json 中的完整网关认证令牌（通常为长随机字符串）。"
     });
     fatalErrors.push(
       "agentDefaultsPayload.headers.x-openclaw-token is too short; expected a full gateway token"
@@ -750,7 +750,7 @@ export function normalizeAgentDefaultsForJoin(input: {
     diagnostics.push({
       code: "openclaw_gateway_auth_header_configured",
       level: "info",
-      message: "Gateway auth token configured."
+      message: "网关认证令牌已配置。"
     });
   }
 
@@ -773,7 +773,7 @@ export function normalizeAgentDefaultsForJoin(input: {
       code: "openclaw_gateway_device_key_configured",
       level: "info",
       message:
-        "Gateway device key configured. Pairing approvals should persist for this agent."
+        "网关设备密钥已配置。配对审批将持续保留给此代理。"
     });
   } else if (!disableDeviceAuth) {
     try {
@@ -782,17 +782,17 @@ export function normalizeAgentDefaultsForJoin(input: {
         code: "openclaw_gateway_device_key_generated",
         level: "info",
         message:
-          "Generated persistent gateway device key for this join. Pairing approvals should persist for this agent."
+          "已为此注册生成持久化网关设备密钥。配对审批将持续保留给此代理。"
       });
     } catch (err) {
       diagnostics.push({
         code: "openclaw_gateway_device_key_generate_failed",
         level: "warn",
-        message: `Failed to generate gateway device key: ${
+        message: `网关设备密钥生成失败：${
           err instanceof Error ? err.message : String(err)
         }`,
         hint:
-          "Set agentDefaultsPayload.devicePrivateKeyPem explicitly or set disableDeviceAuth=true."
+          "请显式设置 agentDefaultsPayload.devicePrivateKeyPem 或设置 disableDeviceAuth=true。"
       });
       fatalErrors.push(
         "Failed to generate gateway device key. Set devicePrivateKeyPem or disableDeviceAuth=true."
@@ -864,14 +864,14 @@ export function normalizeAgentDefaultsForJoin(input: {
         diagnostics.push({
           code: "openclaw_gateway_paperclip_api_url_protocol",
           level: "warn",
-          message: `paperclipApiUrl must use http:// or https:// (got ${parsedPaperclipApiUrl.protocol}).`
+          message: `paperclipApiUrl 必须使用 http:// 或 https:// 协议（当前为 ${parsedPaperclipApiUrl.protocol}）。`
         });
       } else {
         normalized.paperclipApiUrl = parsedPaperclipApiUrl.toString();
         diagnostics.push({
           code: "openclaw_gateway_paperclip_api_url_configured",
           level: "info",
-          message: `paperclipApiUrl set to ${parsedPaperclipApiUrl.toString()}`
+          message: `paperclipApiUrl 已设置为 ${parsedPaperclipApiUrl.toString()}`
         });
       }
     } catch {
@@ -1425,8 +1425,8 @@ function buildOnboardingDiscoveryDiagnostics(input: {
       code: "openclaw_onboarding_api_loopback",
       level: "warn",
       message:
-        "Onboarding URL resolves to loopback hostname. Remote OpenClaw agents cannot reach localhost on your Paperclip host.",
-      hint: "Use a reachable hostname/IP (for example Tailscale hostname, Docker host alias, or public domain)."
+        "引导 URL 解析为环回主机名。远程 OpenClaw 智能体无法访问您 Paperclip 主机上的 localhost。",
+      hint: "请使用可达的主机名/IP（例如 Tailscale 主机名、Docker 宿主别名或公网域名）。"
     });
   }
 
@@ -1438,8 +1438,8 @@ function buildOnboardingDiscoveryDiagnostics(input: {
     diagnostics.push({
       code: "openclaw_onboarding_private_loopback_bind",
       level: "warn",
-      message: "Paperclip is bound to loopback in authenticated/private mode.",
-      hint: "Use a reachable private bind mode such as `pnpm dev --bind lan` or `pnpm dev --bind tailnet` for private-network onboarding."
+      message: "Paperclip 在认证/私有模式下绑定到环回地址。",
+      hint: "请使用可达的私有绑定模式，如 `pnpm dev --bind lan` 或 `pnpm dev --bind tailnet`，用于私有网络引导。"
     });
   }
 
@@ -1454,7 +1454,7 @@ function buildOnboardingDiscoveryDiagnostics(input: {
     diagnostics.push({
       code: "openclaw_onboarding_private_host_not_allowed",
       level: "warn",
-      message: `Onboarding host "${apiHost}" is not in allowed hostnames for authenticated/private mode.`,
+      message: `引导主机 "${apiHost}" 不在认证/私有模式的允许主机名列表中。`,
       hint: `Run pnpm paperclipai allowed-hostname ${apiHost}`
     });
   }
@@ -2686,10 +2686,10 @@ export function accessRoutes(
   ) {
     assertCompanyAccess(req, companyId);
     if (req.actor.type === "agent") {
-      if (!req.actor.agentId) throw forbidden("Agent authentication required");
+      if (!req.actor.agentId) throw forbidden("需要智能体认证");
       const actorAgent = await agents.getById(req.actor.agentId);
       if (!actorAgent || actorAgent.companyId !== companyId) {
-        throw forbidden("Agent key cannot access another company");
+        throw forbidden("智能体密钥无法访问其他公司");
       }
       if (actorAgent.role !== "ceo") {
         throw forbidden("Only CEO agents can generate OpenClaw invite prompts");

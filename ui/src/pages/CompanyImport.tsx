@@ -1161,7 +1161,7 @@ export function CompanyImport() {
           </div>
         ) : (
           <Field
-            label="GitHub URL"
+            label="GitHub 仓库 URL"
             hint="仓库 tree 路径或指向 COMPANY.md 的 blob URL（例如 github.com/owner/repo/tree/main/company）。"
           >
             <input

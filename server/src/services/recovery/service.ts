@@ -105,9 +105,9 @@ function summarizeRunFailureForIssueComment(run: LatestIssueRun) {
       ? `${summarySource.slice(0, 237)}...`
       : summarySource;
 
-  if (errorCode && summary) return ` Latest retry failure: \`${errorCode}\` - ${summary}.`;
-  if (errorCode) return ` Latest retry failure: \`${errorCode}\`.`;
-  if (summary) return ` Latest retry failure: ${summary}.`;
+  if (errorCode && summary) return ` 最近重试失败: \`${errorCode}\` - ${summary}.`;
+  if (errorCode) return ` 最近重试失败: \`${errorCode}\`.`;
+  if (summary) return ` 最近重试失败: ${summary}.`;
   return null;
 }
 
@@ -148,7 +148,7 @@ function runUiLink(run: { id: string; agentId: string }, prefix: string) {
 }
 
 function formatDuration(ms: number | null) {
-  if (ms === null) return "unknown";
+  if (ms === null) return "未知";
   const minutes = Math.floor(ms / 60_000);
   if (minutes < 60) return `${minutes}m`;
   const hours = Math.floor(minutes / 60);
@@ -164,7 +164,7 @@ function formatIssueLinksForComment(relations: Array<{ identifier?: string | nul
         .filter((identifier): identifier is string => Boolean(identifier)),
     ),
   ];
-  if (identifiers.length === 0) return "another open issue";
+  if (identifiers.length === 0) return "另一个未解决的问题";
   return identifiers
     .slice(0, 5)
     .map((identifier) => {
@@ -226,42 +226,42 @@ function buildLivenessEscalationDescription(finding: IssueLivenessFinding) {
   const selectedOwner = finding.recommendedOwnerAgentId ?? "none";
 
   return [
-    "Paperclip detected a harness-level issue graph liveness incident.",
+    "Paperclip 检测到任务依赖图中出现活跃度异常事件。",
     "",
-    "## Source",
+    "## 来源",
     "",
-    `- Source issue: ${source?.identifier ?? source?.issueId ?? finding.issueId}`,
-    `- Recovery target issue: ${recovery?.identifier ?? recovery?.issueId ?? finding.recoveryIssueId}`,
-    `- Incident key: \`${finding.incidentKey}\``,
-    `- Detected invariant: \`${finding.state}\``,
-    `- Dependency path: ${formatDependencyPath(finding)}`,
-    `- Reason: ${finding.reason}`,
+    `- 来源任务: ${source?.identifier ?? source?.issueId ?? finding.issueId}`,
+    `- 恢复目标任务: ${recovery?.identifier ?? recovery?.issueId ?? finding.recoveryIssueId}`,
+    `- 事件标识: \`${finding.incidentKey}\``,
+    `- 检测到的不变量: \`${finding.state}\``,
+    `- 依赖路径: ${formatDependencyPath(finding)}`,
+    `- 原因: ${finding.reason}`,
     "",
-    "## Ownership",
+    "## 负责人",
     "",
-    `- Selected owner agent: \`${selectedOwner}\``,
-    `- Candidate owner agents: ${finding.recommendedOwnerCandidateAgentIds.length > 0 ? finding.recommendedOwnerCandidateAgentIds.map((id) => `\`${id}\``).join(", ") : "none"}`,
+    `- 选定的负责智能体: \`${selectedOwner}\``,
+    `- 候选负责智能体: ${finding.recommendedOwnerCandidateAgentIds.length > 0 ? finding.recommendedOwnerCandidateAgentIds.map((id) => `\`${id}\``).join(", ") : "无"}`,
     "",
-    "## Next Action",
+    "## 下一步操作",
     "",
     finding.recommendedAction,
     "",
-    "Resolve the blocked chain, then mark this escalation issue done so the original issue can resume when all blockers are cleared.",
+    "解决阻塞链后，请将此升级任务标记为已完成，以便原始任务在所有阻塞清除后恢复执行。",
   ].join("\n");
 }
 
 function buildLivenessOriginalIssueComment(finding: IssueLivenessFinding, escalation: typeof issues.$inferSelect) {
   return [
-    "Paperclip detected a harness-level liveness incident in this issue's dependency graph.",
+    "Paperclip 检测到此任务的依赖图中存在活跃度异常事件。",
     "",
-    `- Escalation issue: ${escalation.identifier ?? escalation.id}`,
-    `- Incident key: \`${finding.incidentKey}\``,
-    `- Finding: \`${finding.state}\``,
-    `- Dependency path: ${formatDependencyPath(finding)}`,
-    `- Reason: ${finding.reason}`,
-    `- Manager action requested: ${finding.recommendedAction}`,
+    `- 升级任务: ${escalation.identifier ?? escalation.id}`,
+    `- 事件标识: \`${finding.incidentKey}\``,
+    `- 发现: \`${finding.state}\``,
+    `- 依赖路径: ${formatDependencyPath(finding)}`,
+    `- 原因: ${finding.reason}`,
+    `- 请求的管理者操作: ${finding.recommendedAction}`,
     "",
-    "This issue now keeps its existing blockers and is also blocked by the escalation issue so dependency wakeups remain explicit.",
+    "此任务保留其现有的阻塞项，同时也被升级任务阻塞，以确保依赖唤醒保持显式。",
   ].join("\n");
 }
 
@@ -438,12 +438,12 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
       await issuesSvc.addComment(
         candidate.id,
         [
-          "## Assigned Orphan Blocker",
+          "## 已分配孤立阻塞项",
           "",
-          `Paperclip found this issue is blocking ${blockingLinks} but had no assignee, so no heartbeat could pick it up.`,
+          `Paperclip 发现此任务正在阻塞 ${blockingLinks}，但没有负责人，因此无法被心跳检测到。`,
           "",
-          "- Assigned it back to the agent that created the blocker.",
-          "- Next action: resolve this blocker or reassign it to the right owner.",
+          "- 已将其重新分配给创建此阻塞项的智能体。",
+          "- 下一步操作：解决此阻塞项，或将其重新分配给正确的负责人。",
         ].join("\n"),
         {},
       );
@@ -601,7 +601,7 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
 
   function truncateEvidenceText(value: string, maxChars = 4000) {
     if (value.length <= maxChars) return value;
-    return `${value.slice(value.length - maxChars)}\n[truncated earlier evidence]`;
+    return `${value.slice(value.length - maxChars)}\n[早期证据已截断]`;
   }
 
   async function readRunLogTailForEvidence(run: typeof heartbeatRuns.$inferSelect) {
@@ -735,62 +735,62 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
   }) {
     const sourceIssue = input.sourceIssue
       ? issueUiLink({ identifier: input.sourceIssue.identifier, id: input.sourceIssue.id }, input.prefix)
-      : "none";
+      : "无";
     const recentEvents = input.evidence.recentEvents.length > 0
       ? input.evidence.recentEvents.map((event) =>
-        `- ${event.createdAt} \`${event.eventType}\`${event.level ? ` ${event.level}` : ""}: ${event.message ?? "(no message)"}`,
+        `- ${event.createdAt} \`${event.eventType}\`${event.level ? ` ${event.level}` : ""}: ${event.message ?? "(无消息)"}`,
       ).join("\n")
-      : "- none";
+      : "- 无";
     const childIssues = input.evidence.childIssues.length > 0
       ? input.evidence.childIssues.map((issue) =>
         `- ${issueUiLink({ identifier: issue.identifier, id: issue.id }, input.prefix)} \`${issue.status}\`: ${issue.title}`,
       ).join("\n")
-      : "- none detected";
+      : "- 未检测到";
     const blockers = input.evidence.blockers.length > 0
       ? input.evidence.blockers.map((issue) =>
         `- ${issueUiLink({ identifier: issue.identifier, id: issue.id }, input.prefix)} \`${issue.status}\`: ${issue.title}`,
       ).join("\n")
-      : "- none detected";
+      : "- 未检测到";
     return [
-      `Paperclip detected ${input.level} output silence on an active heartbeat run.`,
+      `Paperclip 检测到活跃心跳运行出现 ${input.level} 级别的输出静默。`,
       "",
-      "## Run",
+      "## 运行",
       "",
-      `- Run: ${runUiLink(input.run, input.prefix)}`,
-      `- Agent: ${input.runningAgent.name} (${input.runningAgent.adapterType})`,
-      `- Invocation: ${input.run.invocationSource}${input.run.triggerDetail ? ` / ${input.run.triggerDetail}` : ""}`,
-      `- Source issue: ${sourceIssue}`,
-      `- Started at: ${input.run.startedAt?.toISOString() ?? "unknown"}`,
-      `- Process started at: ${input.run.processStartedAt?.toISOString() ?? "unknown"}`,
-      `- Last output at: ${input.run.lastOutputAt?.toISOString() ?? "none recorded"}`,
-      `- Last output sequence: ${input.run.lastOutputSeq ?? 0}`,
-      `- Silent for: ${formatDuration(input.evidence.silenceAgeMs)}`,
-      `- Thresholds: suspicious after ${formatDuration(ACTIVE_RUN_OUTPUT_SUSPICION_THRESHOLD_MS)}, critical after ${formatDuration(ACTIVE_RUN_OUTPUT_CRITICAL_THRESHOLD_MS)}`,
-      `- Process metadata: pid \`${input.run.processPid ?? "unknown"}\`, process group \`${input.run.processGroupId ?? "unknown"}\`, in-memory handle \`${runningProcesses.has(input.run.id) ? "yes" : "no"}\``,
+      `- 运行: ${runUiLink(input.run, input.prefix)}`,
+      `- 智能体: ${input.runningAgent.name} (${input.runningAgent.adapterType})`,
+      `- 调用来源: ${input.run.invocationSource}${input.run.triggerDetail ? ` / ${input.run.triggerDetail}` : ""}`,
+      `- 来源任务: ${sourceIssue}`,
+      `- 启动时间: ${input.run.startedAt?.toISOString() ?? "未知"}`,
+      `- 进程启动时间: ${input.run.processStartedAt?.toISOString() ?? "未知"}`,
+      `- 最后输出时间: ${input.run.lastOutputAt?.toISOString() ?? "无记录"}`,
+      `- 最后输出序号: ${input.run.lastOutputSeq ?? 0}`,
+      `- 静默时长: ${formatDuration(input.evidence.silenceAgeMs)}`,
+      `- 阈值: 可疑 ${formatDuration(ACTIVE_RUN_OUTPUT_SUSPICION_THRESHOLD_MS)}，严重 ${formatDuration(ACTIVE_RUN_OUTPUT_CRITICAL_THRESHOLD_MS)}`,
+      `- 进程元数据: pid \`${input.run.processPid ?? "未知"}\`，进程组 \`${input.run.processGroupId ?? "未知"}\`，内存句柄 \`${runningProcesses.has(input.run.id) ? "是" : "否"}\``,
       "",
-      "## Last Output Excerpt",
+      "## 最后输出摘录",
       "",
-      input.evidence.safeTail ? `\`\`\`text\n${input.evidence.safeTail}\n\`\`\`` : "_No run-log tail was available._",
+      input.evidence.safeTail ? `\`\`\`text\n${input.evidence.safeTail}\n\`\`\`` : "_无可用的运行日志尾部。_",
       "",
-      "## Recent Run Events",
+      "## 最近的运行事件",
       "",
       recentEvents,
       "",
-      "## Related Work",
+      "## 相关工作",
       "",
-      "Active child issues:",
+      "活跃的子任务:",
       childIssues,
       "",
-      "Current source blockers:",
+      "当前的来源阻塞项:",
       blockers,
       "",
-      "## Decision Checklist",
+      "## 决策清单",
       "",
-      "- Continue or snooze if the run is intentionally quiet.",
-      "- Ask the run owner for context if work may be delegated outside the transcript.",
-      "- Preserve artifacts, branch state, and useful output before cancellation.",
-      "- Cancel or recover through the explicit run recovery controls when authorized.",
-      "- Close this issue as a false positive only after recording the reason.",
+      "- 如果运行是有意静默的，请选择继续或暂停监控。",
+      "- 如果工作可能委托在转录之外，请向运行负责人了解上下文。",
+      "- 在取消之前，请保留工件、分支状态和有用的输出。",
+      "- 在获得授权时，通过显式的运行恢复控件取消或恢复。",
+      "- 仅在记录原因后，才将此任务标记为误报并关闭。",
     ].join("\n");
   }
 
@@ -818,12 +818,12 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
       blockedByIssueIds: nextBlockerIds,
     });
     await issuesSvc.addComment(input.sourceIssue.id, [
-      "Paperclip detected critical output silence on this issue's active run.",
+      "Paperclip 检测到此任务的活跃运行出现了严重的输出静默。",
       "",
-      `- Evaluation issue: ${input.evaluationIssue.identifier ?? input.evaluationIssue.id}`,
-      `- Run: \`${input.run.id}\``,
+      `- 评估任务: ${input.evaluationIssue.identifier ?? input.evaluationIssue.id}`,
+      `- 运行: \`${input.run.id}\``,
       "",
-      "This blocks the source issue on the explicit review task without cancelling the active process.",
+      "这将来源任务阻塞在显式审核任务上，而不会取消活跃进程。",
     ].join("\n"), { runId: input.run.id });
     await logActivity(db, {
       companyId: input.sourceIssue.companyId,
@@ -866,11 +866,11 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
           priority: "high",
         });
         await issuesSvc.addComment(existing.id, [
-          "Critical output silence threshold crossed.",
+          "严重输出静默阈值已超出。",
           "",
-          `- Run: \`${input.run.id}\``,
-          `- Silent for: ${formatDuration(evidence.silenceAgeMs)}`,
-          `- Last output at: ${input.run.lastOutputAt?.toISOString() ?? "none recorded"}`,
+          `- 运行: \`${input.run.id}\``,
+          `- 静默时长: ${formatDuration(evidence.silenceAgeMs)}`,
+          `- 最后输出时间: ${input.run.lastOutputAt?.toISOString() ?? "无记录"}`,
         ].join("\n"), { runId: input.run.id });
         await ensureSourceIssueBlockedByStaleEvaluation({
           sourceIssue,
@@ -902,7 +902,7 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
     let evaluation: Awaited<ReturnType<typeof issuesSvc.create>>;
     try {
       evaluation = await issuesSvc.create(input.run.companyId, {
-        title: `Review silent active run for ${runningAgent.name}`,
+        title: `审核 ${runningAgent.name} 的静默活跃运行`,
         description,
         status: "todo",
         priority: level === "critical" ? "high" : "medium",
@@ -1219,27 +1219,27 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
     const failureSummary = summarizeRunFailureForIssueComment(input.latestRun);
 
     return [
-      "Paperclip exhausted automatic recovery for an assigned issue and created this explicit recovery task.",
+      "Paperclip 已耗尽对已分配任务的自动恢复尝试，因此创建了此显式恢复任务。",
       "",
-      "## Source",
+      "## 来源",
       "",
-      `- Source issue: ${sourceIssue}`,
-      `- Previous source status: \`${input.previousStatus}\``,
-      `- Latest retry run: ${runLink}`,
-      `- Latest retry status: \`${input.latestRun?.status ?? "unknown"}\``,
-      `- Detected invariant: \`stranded_assigned_issue\``,
-      `- Retry reason: \`${retryReason}\``,
-      failureSummary ? `- Failure: ${failureSummary.trim()}` : "- Failure: none recorded",
+      `- 来源任务: ${sourceIssue}`,
+      `- 原状态: \`${input.previousStatus}\``,
+      `- 最近重试运行: ${runLink}`,
+      `- 最近重试状态: \`${input.latestRun?.status ?? "未知"}\``,
+      `- 检测到的不变量: \`stranded_assigned_issue\``,
+      `- 重试原因: \`${retryReason}\``,
+      failureSummary ? `- 失败信息: ${failureSummary.trim()}` : "- 失败信息: 无记录",
       "",
-      "## Ownership",
+      "## 负责人",
       "",
-      "- Selected owner: the first invokable manager/creator/executive candidate with budget available.",
+      "- 选定负责人: 第一个可调用的、具有可用预算的管理者/创建者/执行者候选智能体。",
       "",
-      "## Required Action",
+      "## 需要执行的操作",
       "",
-      "- Inspect the latest run and source issue state.",
-      "- Fix the runtime/adapter problem, reassign the source issue, or convert the source issue into a clear manual-review state.",
-      "- When the source issue has a live execution path or has been intentionally resolved, mark this recovery issue done.",
+      "- 检查最近的运行和来源任务状态。",
+      "- 修复运行时/适配器问题，重新分配来源任务，或将来源任务转换为明确的人工审核状态。",
+      "- 当来源任务有活跃的执行路径或已被有意解决时，请将此恢复任务标记为已完成。",
     ].join("\n");
   }
 
@@ -1256,7 +1256,7 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
 
     const prefix = await getCompanyIssuePrefix(input.issue.companyId);
     const recovery = await issuesSvc.create(input.issue.companyId, {
-      title: `Recover stalled issue ${input.issue.identifier ?? input.issue.title}`,
+      title: `恢复停滞的任务 ${input.issue.identifier ?? input.issue.title}`,
       description: buildStrandedIssueRecoveryDescription({
         issue: input.issue,
         latestRun: input.latestRun,
@@ -1367,13 +1367,13 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
     const recoveryLine = recoveryIssue
       ? [
         "",
-        `- Recovery issue: ${issueUiLink({ identifier: recoveryIssue.identifier, id: recoveryIssue.id }, prefix)}`,
-        "- Next action: the recovery owner should either restore a live execution path or record the manual resolution, then mark the recovery issue done.",
+        `- 恢复任务: ${issueUiLink({ identifier: recoveryIssue.identifier, id: recoveryIssue.id }, prefix)}`,
+        "- 下一步操作：恢复负责人应恢复活跃的执行路径或记录手动解决方案，然后将恢复任务标记为已完成。",
       ].join("\n")
       : [
         "",
-        "- Recovery issue: none created because Paperclip could not find an invokable manager, creator, or executive owner with budget available.",
-        "- Next action: a board operator should assign an invokable recovery owner, fix the agent/runtime state, or record an intentional manual resolution.",
+        "- 恢复任务：未创建，因为 Paperclip 无法找到具有可用预算的可调用管理者、创建者或执行负责人。",
+        "- 下一步操作：管理面板操作员应分配一个可调用的恢复负责人，修复智能体/运行时状态，或记录有意的解决方案。",
       ].join("\n");
 
     await issuesSvc.addComment(input.issue.id, `${input.comment}${recoveryLine}`, {});
@@ -1461,9 +1461,9 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
             previousStatus: "todo",
             latestRun,
             comment:
-              "Paperclip automatically retried dispatch for this assigned `todo` issue after a lost wake/run, " +
-              `but it still has no live execution path.${failureSummary ?? ""} ` +
-              "Moving it to `blocked` so it is visible for intervention.",
+              "Paperclip 在丢失唤醒/运行后自动重试了此已分配的 `todo` 任务的调度，" +
+              `但它仍然没有活跃的执行路径。${failureSummary ?? ""} ` +
+              "已将其移至 `blocked` 状态，以便进行干预。",
           });
           if (updated) {
             result.escalated += 1;
@@ -1502,9 +1502,9 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
           previousStatus: "in_progress",
           latestRun,
           comment:
-            "Paperclip automatically retried continuation for this assigned `in_progress` issue after its live " +
-            `execution disappeared, but it still has no live execution path.${failureSummary ?? ""} ` +
-            "Moving it to `blocked` so it is visible for intervention.",
+            "Paperclip 在活跃执行消失后自动重试了此已分配的 `in_progress` 任务的续接，" +
+            `但它仍然没有活跃的执行路径。${failureSummary ?? ""} ` +
+            "已将其移至 `blocked` 状态，以便进行干预。",
         });
         if (updated) {
           result.escalated += 1;
@@ -1952,7 +1952,7 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
     let escalation: Awaited<ReturnType<typeof issuesSvc.create>>;
     try {
       escalation = await issuesSvc.create(issue.companyId, {
-        title: `Unblock liveness incident for ${recoveryIssue.identifier ?? recoveryIssue.title}`,
+        title: `解除活跃度异常事件 ${recoveryIssue.identifier ?? recoveryIssue.title}`,
         description: buildLivenessEscalationDescription(input.finding),
         status: "todo",
         priority: "high",

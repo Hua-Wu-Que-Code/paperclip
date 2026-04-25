@@ -212,7 +212,7 @@ export function UserProfile() {
 
   const allTime = data?.stats.find((entry) => entry.key === "all");
   const last7 = data?.stats.find((entry) => entry.key === "last7");
-  const displayName = data?.user.name?.trim() || data?.user.email?.split("@")[0] || "User";
+  const displayName = data?.user.name?.trim() || data?.user.email?.split("@")[0] || "用户";
 
   const agentUsageRows = useMemo<UsageRow[]>(
     () =>

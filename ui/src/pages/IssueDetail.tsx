@@ -2077,8 +2077,8 @@ export function IssueDetail() {
       if (cancelledCommentBody) {
         restoreQueuedCommentDraft(cancelledCommentBody);
         pushToast({
-          title: "Queued comment canceled",
-          body: "The queued message was restored to the composer.",
+          title: "已取消排队的评论",
+          body: "排队的消息已恢复到编辑器中。",
           tone: "success",
         });
       }
@@ -3142,7 +3142,7 @@ export function IssueDetail() {
       {showRichSubIssuesSection ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Sub-issues</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">子任务</h3>
           </div>
           <IssuesList
             issues={childIssues}
@@ -3158,7 +3158,7 @@ export function IssueDetail() {
             searchFilters={{ descendantOf: issue.id }}
             searchWithinLoadedIssues
             baseCreateIssueDefaults={buildSubIssueDefaultsForViewer(issue, currentUserId)}
-            createIssueLabel="Sub-issue"
+            createIssueLabel="子任务"
             onUpdateIssue={handleChildIssueUpdate}
           />
         </div>
@@ -3166,7 +3166,7 @@ export function IssueDetail() {
         <div className="flex flex-wrap items-center justify-end gap-2 min-w-0">
           <Button variant="outline" size="sm" onClick={openNewSubIssue} className="shrink-0 shadow-none">
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            New Sub-issue
+            新建子任务
           </Button>
         </div>
       )}
@@ -3350,11 +3350,11 @@ export function IssueDetail() {
           </TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5">
             <ActivityIcon className="h-3.5 w-3.5" />
-            Activity
+            活动日志
           </TabsTrigger>
           <TabsTrigger value="related-work" className="gap-1.5">
             <ListTree className="h-3.5 w-3.5" />
-            Related work
+            关联工作
           </TabsTrigger>
           {issuePluginTabItems.map((item) => (
             <TabsTrigger key={item.value} value={item.value}>

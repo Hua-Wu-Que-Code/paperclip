@@ -1191,7 +1191,7 @@ function buildLegacyRoutineTriggerFromRecurrence(
   return {
     trigger: {
       kind: "schedule",
-      label: "Migrated legacy recurrence",
+      label: "迁移的旧版循环规则",
       enabled: true,
       cronExpression,
       timezone,
@@ -2375,7 +2375,7 @@ function buildManifestFromPackageFiles(
   const companyName =
     asString(companyFrontmatter.name)
     ?? opts?.sourceLabel?.companyName
-    ?? "Imported Company";
+    ?? "导入的公司";
   const companySlug =
     asString(companyFrontmatter.slug)
     ?? normalizeAgentUrlKey(companyName)
@@ -3980,7 +3980,7 @@ export function companyPortabilityService(db: Db, storage?: StorageService) {
         asString(input.target.newCompanyName) ??
         sourceManifest.company?.name ??
         sourceManifest.source?.companyName ??
-        "Imported Company";
+        "导入的公司";
       const created = await companies.create({
         name: companyName,
         description: include.company ? (sourceManifest.company?.description ?? null) : null,

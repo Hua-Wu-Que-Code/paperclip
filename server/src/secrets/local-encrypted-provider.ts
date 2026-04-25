@@ -117,7 +117,7 @@ export const localEncryptedProvider: SecretProviderModule = {
   id: "local_encrypted",
   descriptor: {
     id: "local_encrypted",
-    label: "Local encrypted (default)",
+    label: "本地加密（默认）",
     requiresExternalRef: false,
   },
   async createVersion(input) {

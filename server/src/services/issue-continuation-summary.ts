@@ -5,7 +5,7 @@ import { ISSUE_CONTINUATION_SUMMARY_DOCUMENT_KEY } from "@paperclipai/shared";
 import { documentService } from "./documents.js";
 
 export { ISSUE_CONTINUATION_SUMMARY_DOCUMENT_KEY };
-export const ISSUE_CONTINUATION_SUMMARY_TITLE = "Continuation Summary";
+export const ISSUE_CONTINUATION_SUMMARY_TITLE = "续接摘要";
 export const ISSUE_CONTINUATION_SUMMARY_MAX_BODY_CHARS = 8_000;
 const SUMMARY_SECTION_MAX_CHARS = 1_200;
 const PATH_CANDIDATE_RE = /(?:^|[\s`"'(])((?:server|ui|packages|doc|scripts|\.github)\/[A-Za-z0-9._/-]+)/g;
@@ -48,7 +48,7 @@ export type IssueContinuationSummaryDocument = {
 function truncateText(value: string, maxChars: number) {
   const trimmed = value.trim();
   if (trimmed.length <= maxChars) return trimmed;
-  return `${trimmed.slice(0, Math.max(0, maxChars - 20)).trimEnd()}\n[truncated]`;
+  return `${trimmed.slice(0, Math.max(0, maxChars - 20)).trimEnd()}\n[已截断]`;
 }
 
 function asNonEmptyString(value: unknown) {
@@ -97,13 +97,13 @@ function inferMode(issue: IssueSummaryInput, run: RunSummaryInput) {
 }
 
 function inferNextAction(issue: IssueSummaryInput, run: RunSummaryInput, previousNextAction: string | null) {
-  if (issue.status === "done") return "Review the completed issue output and close any remaining follow-up comments.";
-  if (issue.status === "in_review") return "Wait for reviewer feedback or approval before continuing executor work.";
+  if (issue.status === "done") return "审查已完成的问题输出并关闭所有剩余的后续评论。";
+  if (issue.status === "in_review") return "等待审阅者反馈或批准后再继续执行器工作。";
   if (run.status === "failed" || run.status === "timed_out") {
-    return "Inspect the failed run, fix the cause, and resume from the most recent concrete action above.";
+    return "检查失败的运行，修复原因，并从上述最近的具体操作恢复。";
   }
-  if (run.status === "cancelled") return "Confirm the cancellation reason before starting another run.";
-  return previousNextAction ?? "Resume implementation from the acceptance criteria, latest comments, and this summary.";
+  if (run.status === "cancelled") return "在启动另一次运行之前确认取消原因。";
+  return previousNextAction ?? "从验收标准、最新评论和此摘要恢复实施。";
 }
 
 function bulletList(items: string[], empty: string) {
@@ -112,7 +112,7 @@ function bulletList(items: string[], empty: string) {
 }
 
 function extractPreviousNextAction(previousBody: string | null | undefined) {
-  const section = extractMarkdownSection(previousBody, "Next Action");
+  const section = extractMarkdownSection(previousBody, "下一步行动");
   if (!section) return null;
   return section
     .split(/\r?\n/)
@@ -129,65 +129,65 @@ export function buildContinuationSummaryMarkdown(input: {
   const { issue, run, agent } = input;
   const resultSummary = readResultSummary(run.resultJson);
   const recentActions = [
-    `Run \`${run.id}\` finished with status \`${run.status}\`${run.finishedAt ? ` at ${run.finishedAt.toISOString()}` : ""}.`,
-    resultSummary ? truncateText(resultSummary, SUMMARY_SECTION_MAX_CHARS) : "No adapter-provided result summary was captured for this run.",
+    `运行 \`${run.id}\` 已完成，状态为 \`${run.status}\`${run.finishedAt ? `（${run.finishedAt.toISOString()}）` : ""}。`,
+    resultSummary ? truncateText(resultSummary, SUMMARY_SECTION_MAX_CHARS) : "此运行未捕获适配器提供的结果摘要。",
   ];
   if (run.error) {
-    recentActions.push(`Latest run error${run.errorCode ? ` (${run.errorCode})` : ""}: ${truncateText(run.error, 500)}`);
+    recentActions.push(`最新运行错误${run.errorCode ? `（${run.errorCode}）` : ""}：${truncateText(run.error, 500)}`);
   }
 
   const paths = extractPathCandidates(resultSummary, run.stdoutExcerpt, run.stderrExcerpt, input.previousSummaryBody);
-  const objective = extractMarkdownSection(issue.description, "Objective") ?? issue.description?.trim() ?? "No objective captured.";
-  const acceptanceCriteria = extractMarkdownSection(issue.description, "Acceptance Criteria") ?? "No explicit acceptance criteria captured.";
+  const objective = extractMarkdownSection(issue.description, "Objective") ?? issue.description?.trim() ?? "未捕获目标。";
+  const acceptanceCriteria = extractMarkdownSection(issue.description, "Acceptance Criteria") ?? "未捕获明确的验收标准。";
   const mode = inferMode(issue, run);
   const nextAction = inferNextAction(issue, run, extractPreviousNextAction(input.previousSummaryBody));
 
   const body = [
-    "# Continuation Summary",
+    "# 续接摘要",
     "",
-    `- Issue: ${issue.identifier ?? issue.id} — ${issue.title}`,
-    `- Status: ${issue.status}`,
-    `- Priority: ${issue.priority}`,
-    `- Current mode: ${mode}`,
-    `- Last updated by run: ${run.id}`,
-    `- Agent: ${agent.name} (${agent.adapterType ?? "unknown"})`,
+    `- 问题：${issue.identifier ?? issue.id} — ${issue.title}`,
+    `- 状态：${issue.status}`,
+    `- 优先级：${issue.priority}`,
+    `- 当前模式：${mode}`,
+    `- 最后更新运行：${run.id}`,
+    `- 代理：${agent.name}（${agent.adapterType ?? "未知"}）`,
     "",
-    "## Objective",
+    "## 目标",
     "",
     truncateText(objective, SUMMARY_SECTION_MAX_CHARS),
     "",
-    "## Acceptance Criteria",
+    "## 验收标准",
     "",
     acceptanceCriteria,
     "",
-    "## Recent Concrete Actions",
+    "## 最近具体操作",
     "",
-    bulletList(recentActions, "No recent actions captured."),
+    bulletList(recentActions, "未捕获最近操作。"),
     "",
-    "## Files / Routes Touched",
+    "## 涉及的文件/路由",
     "",
-    bulletList(paths.map((path) => `\`${path}\``), "No file or route paths were detected in the captured run summary."),
+    bulletList(paths.map((path) => `\`${path}\``), "在捕获的运行摘要中未检测到文件或路由路径。"),
     "",
-    "## Commands Run",
+    "## 已执行命令",
     "",
     bulletList(
       [
-        `Heartbeat run \`${run.id}\` invoked adapter \`${agent.adapterType ?? "unknown"}\`.`,
-        "Detailed shell/tool commands remain in the run log and transcript.",
+        `心跳运行 \`${run.id}\` 调用了适配器 \`${agent.adapterType ?? "未知"}\`。`,
+        "详细的 shell/工具命令保留在运行日志和记录中。",
       ],
-      "No command metadata captured.",
+      "未捕获命令元数据。",
     ),
     "",
-    "## Blockers / Decisions",
+    "## 阻塞项/决策",
     "",
     bulletList(
       run.error
-        ? [`Latest run ended with \`${run.status}\`; inspect the error before continuing.`]
-        : ["No new blocker was recorded by the latest run."],
-      "No blockers or decisions captured.",
+        ? [`最新运行以 \`${run.status}\` 结束；请在继续之前检查错误。`]
+        : ["最新运行未记录新的阻塞项。"],
+      "未捕获阻塞项或决策。",
     ),
     "",
-    "## Next Action",
+    "## 下一步行动",
     "",
     `- ${nextAction}`,
   ].join("\n");
@@ -261,7 +261,7 @@ export async function refreshIssueContinuationSummary(input: {
     format: "markdown",
     body,
     baseRevisionId: existing?.latestRevisionId ?? null,
-    changeSummary: `Refresh continuation summary after run ${run.id}`,
+    changeSummary: `在运行 ${run.id} 后刷新续接摘要`,
     createdByAgentId: agent.id,
     createdByRunId: run.id,
   });

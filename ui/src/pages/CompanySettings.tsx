@@ -666,7 +666,7 @@ export function CompanySettings() {
             </div>
             <div className="flex-1 space-y-3">
               <Field
-                label="Logo"
+                label="Logo 图片"
                 hint="上传 PNG、JPEG、WEBP、GIF 或 SVG 格式的 Logo 图片。"
               >
                 <div className="space-y-2">

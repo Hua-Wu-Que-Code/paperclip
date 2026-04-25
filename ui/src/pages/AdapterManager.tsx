@@ -97,7 +97,7 @@ function AdapterRow({
             )}
             {adapter.disabled && (
               <Badge variant="secondary" className="text-amber-600 border-amber-400">
-                {disabledBadgeLabel ?? "Hidden from menus"}
+                {disabledBadgeLabel ?? "已从菜单隐藏"}
               </Badge>
             )}
           </div>

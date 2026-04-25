@@ -172,7 +172,7 @@ export function CommandPalette() {
           </CommandItem>
           <CommandItem onSelect={() => go("/activity")}>
             <History className="mr-2 h-4 w-4" />
-            活动
+            活动日志
           </CommandItem>
         </CommandGroup>
 
