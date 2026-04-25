@@ -63,7 +63,7 @@ export function ProjectWorkspaceSummaryCard({
                 {workspaceKindLabel(summary.kind)}
               </span>
               <span className="inline-flex items-center rounded-full border border-border/70 bg-background px-2.5 py-1 text-xs text-muted-foreground">
-                {timeAgo(summary.lastUpdatedAt)}前更新
+                更新于 {timeAgo(summary.lastUpdatedAt)}
               </span>
               {summary.serviceCount > 0 ? (
                 <span

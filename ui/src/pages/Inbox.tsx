@@ -473,7 +473,7 @@ function ApprovalInboxRow({
             <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
               <span className="capitalize">{approvalStatusLabel(approval.status)}</span>
               {requesterName ? <span>由 {requesterName} 发起</span> : null}
-              <span>{timeAgo(approval.updatedAt)} 更新</span>
+              <span>{timeAgo(approval.updatedAt)}</span>
             </span>
           </span>
         </Link>

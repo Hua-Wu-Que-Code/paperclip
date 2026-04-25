@@ -11,7 +11,7 @@ export function StatusBadge({ status }: { status: string }) {
     >
       {(() => {
         const map: Record<string, string> = {
-          backlog: "待办", todo: "待办", in_progress: "进行中",
+          backlog: "待办", todo: "待处理", in_progress: "进行中",
           in_review: "审核中", done: "已完成", cancelled: "已取消", blocked: "已阻塞",
         };
         return map[status] ?? status.replace(/_/g, " ");

@@ -100,7 +100,7 @@ function humanizeValue(value: unknown): string {
   if (typeof value !== "string") return String(value ?? "无");
   // Translate known status values
   const statusMap: Record<string, string> = {
-    "todo": "待办",
+    "todo": "待处理",
     "in_progress": "进行中",
     "in_review": "审核中",
     "done": "已完成",

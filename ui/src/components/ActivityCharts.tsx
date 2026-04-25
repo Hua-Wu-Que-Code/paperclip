@@ -185,7 +185,7 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  todo: "待办",
+  todo: "待处理",
   in_progress: "进行中",
   in_review: "审核中",
   done: "已完成",

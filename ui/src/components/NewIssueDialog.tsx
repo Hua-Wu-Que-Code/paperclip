@@ -230,7 +230,7 @@ function formatFileSize(file: File) {
 
 const statuses = [
   { value: "backlog", label: "待办", color: issueStatusText.backlog ?? issueStatusTextDefault },
-  { value: "todo", label: "待办", color: issueStatusText.todo ?? issueStatusTextDefault },
+  { value: "todo", label: "待处理", color: issueStatusText.todo ?? issueStatusTextDefault },
   { value: "in_progress", label: "进行中", color: issueStatusText.in_progress ?? issueStatusTextDefault },
   { value: "in_review", label: "审核中", color: issueStatusText.in_review ?? issueStatusTextDefault },
   { value: "done", label: "已完成", color: issueStatusText.done ?? issueStatusTextDefault },
