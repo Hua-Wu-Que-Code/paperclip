@@ -283,10 +283,10 @@ function authorNameForComment(
     return agentMap?.get(comment.authorAgentId)?.name ?? comment.authorAgentId.slice(0, 8);
   }
   const authorUserId = comment.authorUserId ?? null;
-  if (!authorUserId) return "You";
+  if (!authorUserId) return "你";
   const userLabel = userLabelMap?.get(authorUserId)?.trim();
   if (userLabel) return userLabel;
-  return formatAssigneeUserLabel(authorUserId, currentUserId, userLabelMap) ?? "You";
+  return formatAssigneeUserLabel(authorUserId, currentUserId, userLabelMap) ?? "你";
 }
 
 function formatStatusLabel(status: string) {
@@ -356,25 +356,25 @@ function createTimelineEventMessage(args: {
   const actorName = event.actorType === "agent"
     ? (agentMap?.get(event.actorId)?.name ?? event.actorId.slice(0, 8))
     : event.actorType === "system"
-      ? "System"
-      : (formatAssigneeUserLabel(event.actorId, currentUserId, userLabelMap) ?? "Board");
+      ? "系统"
+      : (formatAssigneeUserLabel(event.actorId, currentUserId, userLabelMap) ?? "董事会");
 
   const lines: string[] = [
-    event.followUpRequested ? `${actorName} requested follow-up` : `${actorName} updated this issue`,
+    event.followUpRequested ? `${actorName} 请求了跟进` : `${actorName} 更新了此议题`,
   ];
   if (event.statusChange) {
     lines.push(
-      `Status: ${event.statusChange.from ?? "none"} -> ${event.statusChange.to ?? "none"}`,
+      `状态: ${event.statusChange.from ?? "无"} -> ${event.statusChange.to ?? "无"}`,
     );
   }
   if (event.assigneeChange) {
     const from = event.assigneeChange.from.agentId
       ? (agentMap?.get(event.assigneeChange.from.agentId)?.name ?? event.assigneeChange.from.agentId.slice(0, 8))
-      : (formatAssigneeUserLabel(event.assigneeChange.from.userId, currentUserId, userLabelMap) ?? "Unassigned");
+      : (formatAssigneeUserLabel(event.assigneeChange.from.userId, currentUserId, userLabelMap) ?? "未指派");
     const to = event.assigneeChange.to.agentId
       ? (agentMap?.get(event.assigneeChange.to.agentId)?.name ?? event.assigneeChange.to.agentId.slice(0, 8))
-      : (formatAssigneeUserLabel(event.assigneeChange.to.userId, currentUserId, userLabelMap) ?? "Unassigned");
-    lines.push(`Assignee: ${from} -> ${to}`);
+      : (formatAssigneeUserLabel(event.assigneeChange.to.userId, currentUserId, userLabelMap) ?? "未指派");
+    lines.push(`指派: ${from} -> ${to}`);
   }
 
   const message: ThreadSystemMessage = {
@@ -465,18 +465,18 @@ export function formatDurationWords(ms: number | null) {
   if (ms === null || !Number.isFinite(ms) || ms <= 0) return null;
   const totalSeconds = Math.max(1, Math.round(ms / 1000));
   if (totalSeconds < 60) {
-    return `${totalSeconds} second${totalSeconds === 1 ? "" : "s"}`;
+    return `${totalSeconds} 秒`;
   }
   const totalMinutes = Math.round(totalSeconds / 60);
   if (totalMinutes < 60) {
-    return `${totalMinutes} minute${totalMinutes === 1 ? "" : "s"}`;
+    return `${totalMinutes} 分钟`;
   }
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   if (minutes === 0) {
-    return `${hours} hour${hours === 1 ? "" : "s"}`;
+    return `${hours} 小时`;
   }
-  return `${hours} hour${hours === 1 ? "" : "s"} ${minutes} minute${minutes === 1 ? "" : "s"}`;
+  return `${hours} 小时 ${minutes} 分钟`;
 }
 
 function runDurationLabel(run: {
@@ -491,18 +491,18 @@ function runDurationLabel(run: {
   const durationText = formatDurationWords(durationMs);
   switch (run.status) {
     case "succeeded":
-      return durationText ? `Worked for ${durationText}` : "Finished work";
+      return durationText ? `工作了 ${durationText}` : "已完成工作";
     case "failed":
     case "error":
-      return durationText ? `Failed after ${durationText}` : "Run failed";
+      return durationText ? `运行 ${durationText} 后失败` : "运行失败";
     case "timed_out":
-      return durationText ? `Timed out after ${durationText}` : "Run timed out";
+      return durationText ? `运行 ${durationText} 后超时` : "运行超时";
     case "cancelled":
-      return durationText ? `Cancelled after ${durationText}` : "Run cancelled";
+      return durationText ? `运行 ${durationText} 后取消` : "运行已取消";
     case "queued":
-      return "Queued";
+      return "排队中";
     case "running":
-      return "Working...";
+      return "工作中...";
     default:
       return formatStatusLabel(run.status);
   }
@@ -514,7 +514,7 @@ function createHistoricalRunMessage(run: IssueChatLinkedRun, agentMap?: Map<stri
     id: `run:${run.runId}`,
     role: "system",
     createdAt: toDate(runTimestamp(run)),
-    content: [{ type: "text", text: `${agentName} run ${run.runId.slice(0, 8)} ${formatStatusLabel(run.status)}` }],
+    content: [{ type: "text", text: `${agentName} 运行 ${run.runId.slice(0, 8)} ${formatStatusLabel(run.status)}` }],
     metadata: {
       custom: {
         kind: "run",
@@ -539,7 +539,7 @@ function createHistoricalTranscriptMessage(args: {
   const agentName = run.agentName ?? agentMap?.get(run.agentId)?.name ?? run.agentId.slice(0, 8);
   const compactedTranscript = compactIssueChatTranscript(transcript);
   const { parts, notices, segments } = buildAssistantPartsFromTranscript(compactedTranscript);
-  const waitingText = hasOutput ? "" : "Run finished";
+  const waitingText = hasOutput ? "" : "运行已完成";
   const content = parts.length > 0
     ? parts
     : waitingText
@@ -660,13 +660,13 @@ export function buildAssistantPartsFromTranscript(entries: readonly IssueChatTra
     if (entry.kind === "result") {
       if (entry.isError && entry.errors?.length) {
         for (const error of entry.errors) {
-          orderedParts.push({ type: "reasoning", text: `Run error: ${summarizeNotice(error)}` });
+          orderedParts.push({ type: "reasoning", text: `运行错误: ${summarizeNotice(error)}` });
         }
       } else if (entry.text) {
         orderedParts.push({
           type: "reasoning",
           text: entry.isError
-            ? `Run error: ${summarizeNotice(entry.text)}`
+            ? `运行错误: ${summarizeNotice(entry.text)}`
             : summarizeNotice(entry.text),
         });
       }
@@ -736,10 +736,10 @@ function createLiveRunMessage(args: {
   const { parts, notices, segments } = buildAssistantPartsFromTranscript(compactedTranscript);
   const waitingText =
     run.status === "queued"
-      ? "Queued..."
+      ? "排队中..."
       : parts.length > 0
         ? ""
-        : "Working...";
+        : "工作中...";
 
   const content = parts;
 

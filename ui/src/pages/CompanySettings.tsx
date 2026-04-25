@@ -3,12 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AGENT_ADAPTER_TYPES,
   DEFAULT_FEEDBACK_DATA_SHARING_TERMS_VERSION,
-  FEEDBACK_TERMS_URL,
   getAdapterEnvironmentSupport,
   type Environment,
   type EnvironmentProbeResult,
   type JsonSchema,
 } from "@paperclipai/shared";
+
+const FEEDBACK_TERMS_URL = import.meta.env.VITE_FEEDBACK_TERMS_URL?.trim() || "https://paperclip.ing/tos";
 import { useCompany } from "../context/CompanyContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { useToast } from "../context/ToastContext";
