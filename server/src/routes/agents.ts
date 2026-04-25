@@ -293,7 +293,7 @@ export function agentRoutes(
   async function getAccessibleAgent(req: Request, res: Response, id: string) {
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return null;
     }
     assertCompanyAccess(req, agent.companyId);
@@ -325,7 +325,7 @@ export function agentRoutes(
       return {
         status: "skipped" as const,
         reason: "wakeup_skipped",
-        message: "Wakeup was skipped.",
+        message: "唤醒已跳过。",
         issueId: null,
         executionRunId: null,
         executionAgentId: null,
@@ -346,7 +346,7 @@ export function agentRoutes(
       return {
         status: "skipped" as const,
         reason: "wakeup_skipped",
-        message: "Wakeup was skipped.",
+        message: "唤醒已跳过。",
         issueId,
         executionRunId: null,
         executionAgentId: null,
@@ -359,7 +359,7 @@ export function agentRoutes(
       return {
         status: "skipped" as const,
         reason: "wakeup_skipped",
-        message: "Wakeup was skipped.",
+        message: "唤醒已跳过。",
         issueId,
         executionRunId: issue.executionRunId,
         executionAgentId: null,
@@ -374,8 +374,8 @@ export function agentRoutes(
       status: "skipped" as const,
       reason: "issue_execution_deferred",
       message: executionAgentName
-        ? `Wakeup was deferred because this issue is already being executed by ${executionAgentName}.`
-        : "Wakeup was deferred because this issue already has an active execution run.",
+        ? `唤醒已延迟，因为此任务正由 ${executionAgentName} 执行。`
+        : "唤醒已延迟，因为此任务已有一个活跃的执行运行。",
       issueId,
       executionRunId: executionRun.id,
       executionAgentId: executionRun.agentId,
@@ -405,7 +405,7 @@ export function agentRoutes(
       "agents:create",
     );
     if (allowedByGrant || canCreateAgents(actorAgent)) return;
-    throw forbidden("Only CEO or agent creators can modify other agents");
+    throw forbidden("仅 CEO 或智能体创建者可以修改其他智能体");
   }
 
   async function assertCanReadAgent(req: Request, targetAgent: { companyId: string }) {
@@ -498,15 +498,15 @@ export function agentRoutes(
 
     const companyId = await resolveCompanyIdForAgentReference(req);
     if (!companyId) {
-      throw unprocessable("Agent shortname lookup requires companyId query parameter");
+      throw unprocessable("智能体短名查询需要 companyId 查询参数");
     }
 
     const resolved = await svc.resolveByReference(companyId, raw);
     if (resolved.ambiguous) {
-      throw conflict("Agent shortname is ambiguous in this company. Use the agent ID.");
+      throw conflict("智能体短名在此公司中存在歧义。请使用智能体 ID。");
     }
     if (!resolved.agent) {
-      throw notFound("Agent not found");
+      throw notFound("未找到智能体");
     }
     return resolved.agent.id;
   }
@@ -728,7 +728,7 @@ export function agentRoutes(
     assertCompanyAccess(req, targetAgent.companyId);
     if (req.actor.type !== "board") {
       throw forbidden(
-        "Only board-authenticated callers can manage instructions path or bundle configuration",
+        "仅限董事会认证的调用者管理指令路径或捆绑配置",
       );
     }
     await assertBoardCanManageAgentsForCompany(req, targetAgent.companyId);
@@ -980,7 +980,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanReadConfigurations(req, agent.companyId);
@@ -1023,7 +1023,7 @@ export function agentRoutes(
       const id = req.params.id as string;
       const agent = await svc.getById(id);
       if (!agent) {
-        res.status(404).json({ error: "Agent not found" });
+        res.status(404).json({ error: "未找到智能体" });
         return;
       }
       await assertCanUpdateAgent(req, agent);
@@ -1059,7 +1059,7 @@ export function agentRoutes(
         },
       });
       if (!updated) {
-        res.status(404).json({ error: "Agent not found" });
+        res.status(404).json({ error: "未找到智能体" });
         return;
       }
 
@@ -1239,7 +1239,7 @@ export function agentRoutes(
     }
     const agent = await svc.getById(req.actor.agentId);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     res.json(await buildAgentDetail(agent));
@@ -1304,7 +1304,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     assertCompanyAccess(req, agent.companyId);
@@ -1323,7 +1323,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanReadConfigurations(req, agent.companyId);
@@ -1334,7 +1334,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanReadConfigurations(req, agent.companyId);
@@ -1347,7 +1347,7 @@ export function agentRoutes(
     const revisionId = req.params.revisionId as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanReadConfigurations(req, agent.companyId);
@@ -1364,7 +1364,7 @@ export function agentRoutes(
     const revisionId = req.params.revisionId as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanUpdateAgent(req, existing);
@@ -1399,7 +1399,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertBoardCanManageAgentsForCompany(req, agent.companyId);
@@ -1414,7 +1414,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertBoardCanManageAgentsForCompany(req, agent.companyId);
@@ -1434,7 +1434,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertBoardCanManageAgentsForCompany(req, agent.companyId);
@@ -1746,7 +1746,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     assertCompanyAccess(req, existing.companyId);
@@ -1758,7 +1758,7 @@ export function agentRoutes(
         return;
       }
       if (actorAgent.role !== "ceo") {
-        res.status(403).json({ error: "Only CEO can manage permissions" });
+        res.status(403).json({ error: "仅 CEO 可以管理权限" });
         return;
       }
     } else {
@@ -1767,7 +1767,7 @@ export function agentRoutes(
 
     const agent = await svc.updatePermissions(id, req.body);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -1804,13 +1804,13 @@ export function agentRoutes(
 
   router.patch("/agents/:id/instructions-path", validate(updateAgentInstructionsPathSchema), async (req, res) => {
     if (req.actor.type !== "board") {
-      throw forbidden("Only board-authenticated callers can manage instructions path or bundle configuration");
+      throw forbidden("仅限董事会认证的调用者管理指令路径或捆绑配置");
     }
 
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -1853,7 +1853,7 @@ export function agentRoutes(
       },
     );
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -1888,7 +1888,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanReadAgent(req, existing);
@@ -1899,7 +1899,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanManageInstructionsPath(req, existing);
@@ -1947,7 +1947,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanReadAgent(req, existing);
@@ -1965,7 +1965,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanManageInstructionsPath(req, existing);
@@ -2014,7 +2014,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanManageInstructionsPath(req, existing);
@@ -2048,7 +2048,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const existing = await svc.getById(id);
     if (!existing) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertCanUpdateAgent(req, existing);
@@ -2166,7 +2166,7 @@ export function agentRoutes(
       },
     });
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -2193,7 +2193,7 @@ export function agentRoutes(
     }
     const agent = await svc.pause(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -2219,7 +2219,7 @@ export function agentRoutes(
     }
     const agent = await svc.resume(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -2243,16 +2243,16 @@ export function agentRoutes(
       return;
     }
     if (existing.status !== "pending_approval") {
-      res.status(409).json({ error: "Only pending approval agents can be approved" });
+      res.status(409).json({ error: "仅待审批的智能体可以被批准" });
       return;
     }
     const approval = await svc.activatePendingApproval(id);
     if (!approval) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     if (!approval.activated) {
-      res.status(409).json({ error: "Only pending approval agents can be approved" });
+      res.status(409).json({ error: "仅待审批的智能体可以被批准" });
       return;
     }
     const { agent } = approval;
@@ -2278,7 +2278,7 @@ export function agentRoutes(
     }
     const agent = await svc.terminate(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -2304,7 +2304,7 @@ export function agentRoutes(
     }
     const agent = await svc.remove(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
 
@@ -2391,7 +2391,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     assertCompanyAccess(req, agent.companyId);
@@ -2445,7 +2445,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     assertCompanyAccess(req, agent.companyId);
@@ -2499,7 +2499,7 @@ export function agentRoutes(
     const id = req.params.id as string;
     const agent = await svc.getById(id);
     if (!agent) {
-      res.status(404).json({ error: "Agent not found" });
+      res.status(404).json({ error: "未找到智能体" });
       return;
     }
     await assertBoardCanManageAgentsForCompany(req, agent.companyId);

@@ -96,7 +96,7 @@ function assertProviderConfig<T extends SandboxEnvironmentConfig>(
   config: SandboxEnvironmentConfig,
 ): asserts config is T {
   if (config.provider !== provider) {
-    throw new Error(`Sandbox provider "${provider}" received config for provider "${config.provider}".`);
+    throw new Error(`沙盒提供者 "${provider}" 收到了提供者 "${config.provider}" 的配置。`);
   }
 }
 
@@ -104,7 +104,7 @@ function buildFakeSandboxProbe(config: FakeSandboxEnvironmentConfig): Environmen
   return {
     ok: true,
     driver: "sandbox",
-    summary: `Fake sandbox provider is ready for image ${config.image}.`,
+    summary: `模拟沙盒提供者已就绪，镜像：${config.image}。`,
     details: {
       provider: config.provider,
       image: config.image,
@@ -120,7 +120,7 @@ class FakeSandboxProvider implements SandboxProvider {
     assertProviderConfig<FakeSandboxEnvironmentConfig>(this.provider, config);
     return {
       ok: true,
-      summary: `Fake sandbox provider config is valid for image ${config.image}.`,
+      summary: `模拟沙盒提供者配置有效，镜像：${config.image}。`,
       details: {
         provider: config.provider,
         image: config.image,
@@ -219,7 +219,7 @@ export function getSandboxProvider(provider: string): SandboxProvider | null {
 export function requireSandboxProvider(provider: string): SandboxProvider {
   const sandboxProvider = getSandboxProvider(provider);
   if (!sandboxProvider) {
-    throw new Error(`Sandbox provider "${provider}" is not registered as a built-in provider.`);
+    throw new Error(`沙盒提供者 "${provider}" 未注册为内置提供者。`);
   }
   return sandboxProvider;
 }

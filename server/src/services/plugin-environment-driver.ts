@@ -27,16 +27,16 @@ export async function resolvePluginEnvironmentDriver(input: {
   const pluginRegistry = pluginRegistryService(input.db);
   const plugin = await pluginRegistry.getByKey(input.config.pluginKey);
   if (!plugin || plugin.status !== "ready") {
-    throw new Error(`Plugin environment driver "${pluginDriverProviderKey(input.config)}" is not ready.`);
+    throw new Error(`插件环境驱动 "${pluginDriverProviderKey(input.config)}" 未就绪。`);
   }
   const driver = plugin.manifestJson.environmentDrivers?.find(
     (candidate) => candidate.driverKey === input.config.driverKey,
   );
   if (!driver) {
-    throw new Error(`Plugin "${input.config.pluginKey}" does not declare environment driver "${input.config.driverKey}".`);
+    throw new Error(`插件 "${input.config.pluginKey}" 未声明环境驱动 "${input.config.driverKey}"。`);
   }
   if (!input.workerManager.isRunning(plugin.id)) {
-    throw new Error(`Plugin environment driver "${pluginDriverProviderKey(input.config)}" has no running worker.`);
+    throw new Error(`插件环境驱动 "${pluginDriverProviderKey(input.config)}" 没有运行中的工作器。`);
   }
   return { plugin, driver };
 }
@@ -116,7 +116,7 @@ export async function validatePluginSandboxProviderConfig(input: {
     requireRunning: true,
   });
   if (!resolved) {
-    throw unprocessable(`Sandbox provider "${input.provider}" is not installed or its plugin worker is not running.`);
+    throw unprocessable(`沙盒提供者 "${input.provider}" 未安装或其插件工作器未运行。`);
   }
 
   const result = await input.workerManager.call(resolved.plugin.id, "environmentValidateConfig", {
@@ -126,7 +126,7 @@ export async function validatePluginSandboxProviderConfig(input: {
 
   if (!result.ok) {
     throw unprocessable(
-      result.errors?.[0] ?? `Sandbox provider "${input.provider}" rejected its config.`,
+      result.errors?.[0] ?? `沙盒提供者 "${input.provider}" 拒绝了其配置。`,
       {
         errors: result.errors ?? [],
         warnings: result.warnings ?? [],
@@ -155,7 +155,7 @@ export async function validatePluginEnvironmentDriverConfig(input: {
 
   if (!result.ok) {
     throw unprocessable(
-      result.errors?.[0] ?? `Plugin environment driver "${pluginDriverProviderKey(input.config)}" rejected its config.`,
+      result.errors?.[0] ?? `插件环境驱动 "${pluginDriverProviderKey(input.config)}" 拒绝了其配置。`,
       {
         errors: result.errors ?? [],
         warnings: result.warnings ?? [],
@@ -187,7 +187,7 @@ export async function probePluginEnvironmentDriver(input: {
   return {
     ok: result.ok,
     driver: "plugin",
-    summary: result.summary ?? `Plugin environment driver "${pluginDriverProviderKey(input.config)}" probe ${result.ok ? "passed" : "failed"}.`,
+    summary: result.summary ?? `插件环境驱动 "${pluginDriverProviderKey(input.config)}" 探测${result.ok ? "通过" : "失败"}。`,
     details: {
       pluginKey: input.config.pluginKey,
       driverKey: input.config.driverKey,
@@ -214,7 +214,7 @@ export async function probePluginSandboxProviderDriver(input: {
     return {
       ok: false,
       driver: "sandbox",
-      summary: `Sandbox provider "${input.provider}" is not installed or its plugin worker is not running.`,
+      summary: `沙盒提供者 "${input.provider}" 未安装或其插件工作器未运行。`,
       details: {
         provider: input.provider,
       },
@@ -232,7 +232,7 @@ export async function probePluginSandboxProviderDriver(input: {
   return {
     ok: result.ok,
     driver: "sandbox",
-    summary: result.summary ?? `Sandbox provider "${input.provider}" probe ${result.ok ? "passed" : "failed"}.`,
+    summary: result.summary ?? `沙盒提供者 "${input.provider}" 探测${result.ok ? "通过" : "失败"}。`,
     details: {
       provider: input.provider,
       pluginKey: resolved.plugin.pluginKey,

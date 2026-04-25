@@ -135,12 +135,12 @@ export function decideRunLivenessContinuation(input: {
       attempt: currentAttempt,
       maxAttempts,
       comment: [
-        "Bounded liveness continuation exhausted",
+        "有界活跃度延续已耗尽",
         "",
-        `- Last liveness state: \`${livenessState}\``,
-        `- Attempts used: ${currentAttempt}/${maxAttempts}`,
-        `- Reason: ${livenessReason ?? "Run ended without concrete progress"}`,
-        "- Next action: a human or manager should inspect the run and either clarify the task, mark it blocked, or assign a concrete follow-up.",
+        `- 最近活跃状态：\`${livenessState}\``,
+        `- 已用尝试次数：${currentAttempt}/${maxAttempts}`,
+        `- 原因：${livenessReason ?? "运行未取得实质性进展"}`,
+        "- 下一步操作：人工或管理者应检查该运行，明确任务、标记为阻塞或分配具体的后续操作。",
       ].join("\n"),
     };
   }
@@ -165,7 +165,7 @@ export function decideRunLivenessContinuation(input: {
     maxContinuationAttempts: maxAttempts,
     instruction:
       nextAction ??
-      "The previous run ended without concrete progress. Take the first concrete action now or mark the issue blocked with a specific unblock request.",
+      "上一次运行未取得实质性进展。请立即采取第一个具体行动，或标记问题为阻塞并附上具体的解除阻塞请求。";
   };
 
   return {

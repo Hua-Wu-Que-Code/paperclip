@@ -38,13 +38,13 @@ interface ActiveAgentsPanelProps {
 
 export function ActiveAgentsPanel({
   companyId,
-  title = "Agents",
+  title = "智能体",
   minRunCount = MIN_DASHBOARD_RUNS,
   fetchLimit,
   cardLimit = DASHBOARD_RUN_CARD_LIMIT,
   gridClassName,
   cardClassName,
-  emptyMessage = "No recent agent runs.",
+  emptyMessage = "暂无最近的智能体运行记录。",
   queryScope = "dashboard",
   showMoreLink = true,
 }: ActiveAgentsPanelProps) {

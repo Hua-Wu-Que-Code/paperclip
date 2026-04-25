@@ -89,25 +89,25 @@ export function generateReadme(
 
   // Org chart image (generated during export as images/org-chart.png)
   if (manifest.agents.length > 0) {
-    lines.push("![Org Chart](images/org-chart.png)");
+    lines.push("![组织架构图](images/org-chart.png)");
     lines.push("");
   }
 
   // What's Inside table
-  lines.push("## What's Inside");
+  lines.push("## 内容概览");
   lines.push("");
-  lines.push("> This is an [Agent Company](https://agentcompanies.io) package from [Paperclip](https://paperclip.ing)");
+  lines.push("> 这是一个来自 [Paperclip](https://paperclip.ing) 的 [Agent Company](https://agentcompanies.io) 包");
   lines.push("");
 
   const counts: Array<[string, number]> = [];
-  if (manifest.agents.length > 0) counts.push(["Agents", manifest.agents.length]);
-  if (manifest.projects.length > 0) counts.push(["Projects", manifest.projects.length]);
-  if (manifest.skills.length > 0) counts.push(["Skills", manifest.skills.length]);
-  if (manifest.issues.length > 0) counts.push(["Tasks", manifest.issues.length]);
+  if (manifest.agents.length > 0) counts.push(["智能体", manifest.agents.length]);
+  if (manifest.projects.length > 0) counts.push(["项目", manifest.projects.length]);
+  if (manifest.skills.length > 0) counts.push(["技能", manifest.skills.length]);
+  if (manifest.issues.length > 0) counts.push(["任务", manifest.issues.length]);
 
   if (counts.length > 0) {
-    lines.push("| Content | Count |");
-    lines.push("|---------|-------|");
+    lines.push("| 内容 | 数量 |");
+    lines.push("|------|------|");
     for (const [label, count] of counts) {
       lines.push(`| ${label} | ${count} |`);
     }
@@ -116,10 +116,10 @@ export function generateReadme(
 
   // Agents table
   if (manifest.agents.length > 0) {
-    lines.push("### Agents");
+    lines.push("### 智能体");
     lines.push("");
-    lines.push("| Agent | Role | Reports To |");
-    lines.push("|-------|------|------------|");
+    lines.push("| 智能体 | 角色 | 汇报给 |");
+    lines.push("|--------|------|--------|");
     for (const agent of manifest.agents) {
       const roleLabel = ROLE_LABELS[agent.role] ?? agent.role;
       const reportsTo = agent.reportsToSlug ?? "\u2014";
@@ -130,7 +130,7 @@ export function generateReadme(
 
   // Projects list
   if (manifest.projects.length > 0) {
-    lines.push("### Projects");
+    lines.push("### 项目");
     lines.push("");
     for (const project of manifest.projects) {
       const desc = project.description ? ` \u2014 ${project.description}` : "";
@@ -141,10 +141,10 @@ export function generateReadme(
 
   // Skills list
   if (manifest.skills.length > 0) {
-    lines.push("### Skills");
+    lines.push("### 技能");
     lines.push("");
-    lines.push("| Skill | Description | Source |");
-    lines.push("|-------|-------------|--------|");
+    lines.push("| 技能 | 描述 | 来源 |");
+    lines.push("|------|------|------|");
     for (const skill of manifest.skills) {
       const desc = skill.description ?? "\u2014";
       const source = skillSourceLabel(skill);
@@ -154,18 +154,18 @@ export function generateReadme(
   }
 
   // Getting Started
-  lines.push("## Getting Started");
+  lines.push("## 快速开始");
   lines.push("");
   lines.push("```bash");
   lines.push("pnpm paperclipai company import this-github-url-or-folder");
   lines.push("```");
   lines.push("");
-  lines.push("See [Paperclip](https://paperclip.ing) for more information.");
+  lines.push("详见 [Paperclip](https://paperclip.ing) 获取更多信息。");
   lines.push("");
 
   // Footer
   lines.push("---");
-  lines.push(`Exported from [Paperclip](https://paperclip.ing) on ${new Date().toISOString().split("T")[0]}`);
+  lines.push(`由 [Paperclip](https://paperclip.ing) 导出于 ${new Date().toISOString().split("T")[0]}`);
   lines.push("");
 
   return lines.join("\n");

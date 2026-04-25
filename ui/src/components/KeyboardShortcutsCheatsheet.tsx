@@ -87,7 +87,7 @@ export function KeyboardShortcutsCheatsheetContent() {
       </div>
       <div className="border-t border-border px-5 py-3">
         <p className="text-xs text-muted-foreground">
-          Press <KeyCap>Esc</KeyCap> to close &middot; Shortcuts are disabled in text fields
+          按 <KeyCap>Esc</KeyCap> 关闭 · 在文本输入框中快捷键已禁用
         </p>
       </div>
     </>

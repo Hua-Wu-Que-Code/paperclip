@@ -1118,7 +1118,7 @@ export function CompanySkills() {
                   onClick={() => deleteSkill.mutate()}
                   disabled={deleteSkill.isPending || !deleteTargetSkillId}
                 >
-                  {deleteSkill.isPending ? "Removing..." : "Remove skill"}
+                  {deleteSkill.isPending ? "正在移除..." : "移除技能"}
                 </Button>
               </>
             )}
@@ -1131,7 +1131,7 @@ export function CompanySkills() {
           <DialogHeader>
             <DialogTitle>添加技能来源</DialogTitle>
             <DialogDescription>
-              Paste a local path, GitHub URL, or `skills.sh` command into the field first.
+              请先将本地路径、GitHub URL 或 `skills.sh` 命令粘贴到输入框中。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm">
@@ -1184,7 +1184,7 @@ export function CompanySkills() {
                   size="icon-sm"
                   onClick={() => scanProjects.mutate()}
                   disabled={scanProjects.isPending}
-                  title="Scan project workspaces for skills"
+                  title="扫描项目工作区中的技能"
                 >
                   <RefreshCw className={cn("h-4 w-4", scanProjects.isPending && "animate-spin")} />
                 </Button>

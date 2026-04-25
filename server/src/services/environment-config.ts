@@ -34,14 +34,14 @@ const secretRefSchema = z.object({
 }).strict();
 
 const sshEnvironmentConfigSchema = z.object({
-  host: z.string({ required_error: "SSH environments require a host." }).trim().min(1, "SSH environments require a host."),
+  host: z.string({ required_error: "SSH 环境需要一个主机地址。" }).trim().min(1, "SSH 环境需要一个主机地址。"),
   port: z.coerce.number().int().min(1).max(65535).default(22),
-  username: z.string({ required_error: "SSH environments require a username." }).trim().min(1, "SSH environments require a username."),
+  username: z.string({ required_error: "SSH 环境需要一个用户名。" }).trim().min(1, "SSH 环境需要一个用户名。"),
   remoteWorkspacePath: z
-    .string({ required_error: "SSH environments require a remote workspace path." })
+    .string({ required_error: "SSH 环境需要一个远程工作区路径。" })
     .trim()
-    .min(1, "SSH environments require a remote workspace path.")
-    .refine((value) => value.startsWith("/"), "SSH remote workspace path must be absolute."),
+    .min(1, "SSH 环境需要一个远程工作区路径。")
+    .refine((value) => value.startsWith("/"), "SSH 远程工作区路径必须是绝对路径。"),
   privateKey: z.null().optional().default(null),
   privateKeySecretRef: secretRefSchema.optional().nullable().default(null),
   knownHosts: z
@@ -69,17 +69,17 @@ const fakeSandboxEnvironmentConfigSchema = z.object({
   image: z
     .string()
     .trim()
-    .min(1, "Fake sandbox environments require an image.")
+    .min(1, "模拟沙盒环境需要一个镜像。")
     .default("ubuntu:24.04"),
   reuseLease: z.boolean().optional().default(false),
 }).strict();
 
 const pluginSandboxProviderKeySchema = z.string()
   .trim()
-  .min(1, "Sandbox provider is required.")
+  .min(1, "沙盒提供者是必填项。")
   .regex(
     /^[a-z0-9][a-z0-9._-]*$/,
-    "Sandbox provider key must start with a lowercase alphanumeric and contain only lowercase letters, digits, dots, hyphens, or underscores",
+    "沙盒提供者键必须以小写字母或数字开头，且仅包含小写字母、数字、点号、连字符或下划线",
   );
 
 const pluginSandboxEnvironmentConfigSchema = z.object({
@@ -92,7 +92,7 @@ const pluginEnvironmentConfigSchema = z.object({
   pluginKey: z.string().min(1),
   driverKey: z.string().min(1).regex(
     /^[a-z0-9][a-z0-9._-]*$/,
-    "Environment driver key must start with a lowercase alphanumeric and contain only lowercase letters, digits, dots, hyphens, or underscores",
+    "环境驱动键必须以小写字母或数字开头，且仅包含小写字母、数字、点号、连字符或下划线",
   ),
   driverConfig: z.record(z.unknown()).optional().default({}),
 }).strict();
@@ -105,7 +105,7 @@ export type ParsedEnvironmentConfig =
 
 function toErrorMessage(error: z.ZodError) {
   const first = error.issues[0];
-  if (!first) return "Invalid environment config.";
+  if (!first) return "无效的环境配置。";
   return first.message;
 }
 
@@ -286,7 +286,7 @@ export function normalizeEnvironmentConfig(input: {
     return parsed.data satisfies PluginEnvironmentConfig;
   }
 
-  throw unprocessable(`Unsupported environment driver "${input.driver}".`);
+  throw unprocessable(`不支持的环境驱动 "${input.driver}"。`);
 }
 
 export function normalizeEnvironmentConfigForProbe(input: {
@@ -316,7 +316,7 @@ export function normalizeEnvironmentConfigForProbe(input: {
       return parsed.data;
     }
     if (!input.pluginWorkerManager) {
-      throw unprocessable("Sandbox provider config validation requires a running plugin worker manager.");
+      throw unprocessable("沙盒提供者配置验证需要运行中的插件工作器管理器。");
     }
     return validatePluginSandboxProviderConfig({
       db: input.db,
@@ -387,11 +387,11 @@ export async function normalizeEnvironmentConfigForPersistence(input: {
     }
     if (parsed.data.provider === "fake") {
       throw unprocessable(
-        "Built-in fake sandbox environments are reserved for internal probes and cannot be saved.",
+        "内置模拟沙盒环境仅供内部探测使用，无法保存。",
       );
     }
     if (!input.pluginWorkerManager) {
-      throw unprocessable("Sandbox provider config validation requires a running plugin worker manager.");
+      throw unprocessable("沙盒提供者配置验证需要运行中的插件工作器管理器。");
     }
     const validated = await validatePluginSandboxProviderConfig({
       db: input.db,
@@ -424,7 +424,7 @@ export async function normalizeEnvironmentConfigForPersistence(input: {
       });
     }
     if (!input.pluginWorkerManager) {
-      throw unprocessable("Plugin environment config validation requires a running plugin worker manager.");
+      throw unprocessable("插件环境配置验证需要运行中的插件工作器管理器。");
     }
     return { ...(await validatePluginEnvironmentDriverConfig({
       db: input.db,
@@ -522,5 +522,5 @@ export function parseEnvironmentDriverConfig(
     };
   }
 
-  throw new Error(`Unsupported environment driver "${environment.driver}".`);
+  throw new Error(`不支持的环境驱动 "${environment.driver}"。`);
 }

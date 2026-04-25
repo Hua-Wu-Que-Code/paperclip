@@ -21,7 +21,7 @@ export async function probeEnvironment(
     return {
       ok: true,
       driver: "local",
-      summary: "Local environment is available on this Paperclip host.",
+      summary: "此 Paperclip 主机上的本地环境可用。",
       details: {
         hostname: os.hostname(),
         cwd: process.cwd(),
@@ -35,7 +35,7 @@ export async function probeEnvironment(
         return {
           ok: false,
           driver: "sandbox",
-          summary: `Sandbox provider "${parsed.config.provider}" requires a running provider plugin.`,
+          summary: `沙盒提供者 "${parsed.config.provider}" 需要运行中的提供者插件。`,
           details: {
             provider: parsed.config.provider,
           },
@@ -58,7 +58,7 @@ export async function probeEnvironment(
       return {
         ok: false,
         driver: "plugin",
-        summary: `Plugin environment probes require a plugin worker manager for "${parsed.config.pluginKey}:${parsed.config.driverKey}".`,
+        summary: `插件环境探测需要 "${parsed.config.pluginKey}:${parsed.config.driverKey}" 的插件工作器管理器。`,
         details: {
           pluginKey: parsed.config.pluginKey,
           driverKey: parsed.config.driverKey,
@@ -80,7 +80,7 @@ export async function probeEnvironment(
     return {
       ok: true,
       driver: "ssh",
-      summary: `Connected to ${parsed.config.username}@${parsed.config.host} and verified the remote workspace path.`,
+      summary: `已连接到 ${parsed.config.username}@${parsed.config.host} 并验证了远程工作区路径。`,
       details: {
         host: parsed.config.host,
         port: parsed.config.port,
@@ -106,12 +106,12 @@ export async function probeEnvironment(
       stderr ||
       stdout ||
       (error instanceof Error ? error.message : String(error)) ||
-      "SSH probe failed.";
+      "SSH 探测失败。";
 
     return {
       ok: false,
       driver: "ssh",
-      summary: `SSH probe failed for ${parsed.config.username}@${parsed.config.host}.`,
+      summary: `${parsed.config.username}@${parsed.config.host} 的 SSH 探测失败。`,
       details: {
         host: parsed.config.host,
         port: parsed.config.port,

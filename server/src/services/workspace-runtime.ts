@@ -2914,17 +2914,17 @@ export function buildWorkspaceReadyComment(input: {
   workspace: RealizedExecutionWorkspace;
   runtimeServices: RuntimeServiceRef[];
 }) {
-  const lines = ["## Workspace Ready", ""];
-  lines.push(`- Strategy: \`${input.workspace.strategy}\``);
-  if (input.workspace.branchName) lines.push(`- Branch: \`${input.workspace.branchName}\``);
-  lines.push(`- CWD: \`${input.workspace.cwd}\``);
+  const lines = ["## 工作区已就绪", ""];
+  lines.push(`- 策略: \`${input.workspace.strategy}\``);
+  if (input.workspace.branchName) lines.push(`- 分支: \`${input.workspace.branchName}\``);
+  lines.push(`- 工作目录: \`${input.workspace.cwd}\``);
   if (input.workspace.worktreePath && input.workspace.worktreePath !== input.workspace.cwd) {
     lines.push(`- Worktree: \`${input.workspace.worktreePath}\``);
   }
   for (const service of input.runtimeServices) {
-    const detail = service.url ? `${service.serviceName}: ${service.url}` : `${service.serviceName}: running`;
-    const suffix = service.reused ? " (reused)" : "";
-    lines.push(`- Service: ${detail}${suffix}`);
+    const detail = service.url ? `${service.serviceName}: ${service.url}` : `${service.serviceName}: 运行中`;
+    const suffix = service.reused ? " (复用)" : "";
+    lines.push(`- 服务: ${detail}${suffix}`);
   }
   return lines.join("\n");
 }
